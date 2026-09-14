@@ -1,0 +1,14 @@
+.logo {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: clamp(70px, 12vw, 150px);
+    width: auto;
+    display: block;
+    margin-top: clamp(15px, 3vw, 45px);
+    margin-left: clamp(-140px, -10vw, -40px);
+}

@@ -1,0 +1,172 @@
+.world-path {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f1eab0, #f1eab0);
+    padding: 0 clamp(20px, 5vw, 60px) 60px;
+    font-family: "Noto Sans Mono", monospace;
+}
+
+.world-path-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: -15px;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.right-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.back-btn {
+    background: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    font-family: "Noto Sans Mono", monospace;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+}
+
+.world-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.world-title-row h1 {
+    font-size: clamp(22px, 3.4vw, 34px);
+    font-weight: 800;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.world-progress {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.world-map-frame {
+    position: relative;
+    width: 100%;
+    max-width: 1250px;
+    margin: 0 auto;
+    border-radius: clamp(18px, 3vw, 32px);
+    overflow: hidden;
+    border: clamp(3px, 0.5vw, 5px) solid #F6C84C;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+.world-bg {
+    width: 100%;
+    display: block;
+}
+
+.pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: clamp(38px, 6vw, 58px);
+    height: clamp(38px, 6vw, 58px);
+    border-radius: 50%;
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(16px, 2.2vw, 24px);
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s;
+}
+
+.pin:hover:not(:disabled) {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.pin-number {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.pin-locked {
+    background: #b7b3a0;
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+.pin-completed { background: #41be75; }
+.pin-completed .pin-icon { filter: grayscale(0); }
+
+.pin-current {
+    animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 8px 18px rgba(0,0,0,0.3), 0 0 0 0 rgba(255,255,255,0.6); }
+    70% { box-shadow: 0 8px 18px rgba(0,0,0,0.3), 0 0 0 14px rgba(255,255,255,0); }
+    100% { box-shadow: 0 8px 18px rgba(0,0,0,0.3), 0 0 0 0 rgba(255,255,255,0); }
+}
+
+.pin-coral.pin-current { background: #d85537; }
+.pin-green.pin-current { background: #41be75; }
+.pin-blue.pin-current { background: #3f95df; }
+.pin-purple.pin-current { background: #8a58db; }
+.pin-pink.pin-current { background: #db5ba0; }
+.pin-gold.pin-current { background: #e1b22f; }
+
+.frame-coral { border-color: #d85537; }
+.frame-green { border-color: #41be75; }
+.frame-blue { border-color: #3f95df; }
+.frame-purple { border-color: #8a58db; }
+.frame-pink { border-color: #db5ba0; }
+.frame-gold { border-color: #e1b22f; }
+
+.world-progress.pin-coral { color: #d85537; }
+.world-progress.pin-green { color: #41be75; }
+.world-progress.pin-blue { color: #3f95df; }
+.world-progress.pin-purple { color: #8a58db; }
+.world-progress.pin-pink { color: #db5ba0; }
+.world-progress.pin-gold { color: #e1b22f; }
+
+@media (max-width: 640px) {
+    .world-path-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .right-nav-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

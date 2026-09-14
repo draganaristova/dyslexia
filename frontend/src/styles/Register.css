@@ -1,0 +1,254 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Noto Sans Mono", monospace;
+    background: linear-gradient(180deg, #f1eab0, #f1eab0);
+    transition: background .4s ease;
+}
+
+body.gender-male {
+    background: linear-gradient(180deg, #cfe8fb, #a9d6f7);
+}
+
+body.gender-female {
+    background: linear-gradient(180deg, #fbdde6, #f7b9cf);
+}
+
+.register-page {
+    width: 100%;
+    min-height: 100vh;
+    background: transparent;
+}
+
+.register-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 clamp(20px, 8vw, 120px);
+    margin-top: clamp(-35px, -3vw, -15px);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.register-form-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 4vw, 40px) 20px;
+}
+
+.register-form {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    background: white;
+    border-radius: clamp(20px, 3vw, 32px);
+    padding: clamp(80px, 10vw, 100px) clamp(20px, 4vw, 40px) clamp(24px, 4vw, 40px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .10);
+    border: 2px solid transparent;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: clamp(20px, 5vw, 50px);
+}
+
+.register-form-wide {
+    max-width: 1200px;
+    text-align: left;
+}
+
+.register-form-wide h2,
+.register-form-wide .register-message {
+    text-align: left;
+}
+
+.register-kids-image {
+    position: absolute;
+    top: -216px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(180px, 22vw, 400px);
+    background: transparent;
+    padding-top: 0;
+}
+
+.register-form h2 {
+    color: #d85537;
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.register-message {
+    color: #666;
+    font-size: clamp(12px, 1.6vw, 14px);
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.register-banner-error {
+    background: #fdecea;
+    color: #d85537;
+    border: 1px solid #f1b3a6;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.register-input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0 20px;
+}
+
+.register-input {
+    text-align: left;
+    margin-bottom: 18px;
+    margin-right: 30px;
+}
+
+.register-input label {
+    display: block;
+    font-size: clamp(12px, 1.6vw, 14px);
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.register-input input {
+    width: 100%;
+    padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px);
+    border-radius: 16px;
+    border: 2px solid #f1eab0;
+    background: #fdfaf0;
+    font-size: clamp(13px, 1.6vw, 14px);
+    font-family: inherit;
+    outline: none;
+    transition: .2s;
+    box-sizing: border-box;
+}
+
+.register-input input:focus {
+    border-color: #F6C84C;
+    background: white;
+}
+
+.register-input input.register-input-error {
+    border-color: #d85537;
+    background: #fdecea;
+}
+
+.register-error-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #d85537;
+}
+
+.register-gender-field {
+    margin-top: 6px;
+    margin-bottom: 25px;
+}
+
+.register-gender-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-top: 6px;
+}
+
+.register-gender-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: clamp(12px, 2vw, 16px);
+    border-radius: 16px;
+    border: 2px solid #f1eab0;
+    background: #fdfaf0;
+    font-family: inherit;
+    font-size: clamp(13px, 1.6vw, 15px);
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.register-gender-option:hover {
+    border-color: #F6C84C;
+}
+
+.register-gender-emoji {
+    font-size: clamp(16px, 2vw, 20px);
+}
+
+.register-gender-option.register-selected-male {
+    border-color: #3f95df;
+    background: #e5f2fc;
+    color: #1f6fae;
+}
+
+.register-gender-option.register-selected-female {
+    border-color: #e07a9b;
+    background: #fdeaf0;
+    color: #c14a70;
+}
+
+.register-submit {
+    width: 100%;
+    background: #d85537;
+    color: white;
+    border: none;
+    padding: clamp(12px, 2.5vw, 16px);
+    border-radius: 18px;
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 12px 35px rgba(216, 85, 55, .35);
+    transition: .2s;
+}
+
+.register-submit:hover {
+    background: #c14a2f;
+}
+
+.register-submit:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.nav-icons-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+    .register-kids-image {
+        width: clamp(150px, 26vw, 300px);
+        top: -130px;
+    }
+}
+
+@media (max-width: 640px) {
+    .register-kids-image {
+        width: 160px;
+        top: -103px;
+    }
+
+    .register-form {
+        padding-top: 130px;
+    }
+
+    .register-input {
+        margin-right: 0;
+    }
+}

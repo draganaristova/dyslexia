@@ -1,0 +1,228 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Noto Sans Mono", monospace;
+}
+
+.login-page {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f1eab0, #f1eab0);
+}
+
+.login-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 clamp(20px, 8vw, 120px);
+    margin-top: clamp(-45px, -3vw, -20px);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.login-form-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 4vw, 40px) 20px;
+}
+
+.login-form {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: clamp(20px, 3vw, 32px);
+    padding: clamp(60px, 10vw, 80px) clamp(24px, 4vw, 40px) clamp(24px, 4vw, 40px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .10);
+    border: 2px solid transparent;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: clamp(20px, 5vw, 50px);
+}
+
+.login-kids-image {
+    position: absolute;
+    top: -290px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(180px, 30vw, 400px);
+    background: transparent;
+    padding-top: 50px;
+}
+
+.login-form h2 {
+    color: #d85537;
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.login-message {
+    color: #666;
+    font-size: clamp(12px, 1.6vw, 14px);
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.login-banner-error {
+    background: #fdecea;
+    color: #d85537;
+    border: 1px solid #f1b3a6;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.login-input {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.login-input label {
+    display: block;
+    font-size: clamp(12px, 1.6vw, 14px);
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.login-input input {
+    width: 100%;
+    padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px);
+    border-radius: 16px;
+    border: 2px solid #f1eab0;
+    background: #fdfaf0;
+    font-size: clamp(13px, 1.6vw, 14px);
+    font-family: inherit;
+    outline: none;
+    transition: .2s;
+    box-sizing: border-box;
+}
+
+.login-input input:focus {
+    border-color: #F6C84C;
+    background: white;
+}
+
+.login-input input.login-input-error {
+    border-color: #d85537;
+    background: #fdecea;
+}
+
+.login-error-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #d85537;
+}
+
+.login-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.login-remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-remember-me input[type="checkbox"] {
+    accent-color: #d85537;
+    width: 16px;
+    height: 16px;
+}
+
+.login-remember-me label {
+    font-size: 13px;
+    color: #666;
+}
+
+.login-forgot-link {
+    font-size: 13px;
+    color: #d85537;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-forgot-link:hover {
+    text-decoration: underline;
+}
+
+.login-submit {
+    width: 100%;
+    background: #d85537;
+    color: white;
+    border: none;
+    padding: clamp(12px, 2.5vw, 16px);
+    border-radius: 18px;
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 12px 35px rgba(216, 85, 55, .35);
+    transition: .2s;
+}
+
+.login-submit:hover {
+    background: #c14a2f;
+}
+
+.login-submit:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.login-signup-redirect {
+    margin-top: 22px;
+    font-size: 13px;
+    color: #666;
+}
+
+.login-signup-redirect a {
+    color: #d85537;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-signup-redirect a:hover {
+    text-decoration: underline;
+}
+
+.nav-icons-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+    .login-kids-image {
+        width: clamp(150px, 34vw, 300px);
+        top: -208px;
+    }
+}
+
+@media (max-width: 640px) {
+    .login-kids-image {
+        width: 150px;
+        top: -91px;
+        padding-top: 0;
+    }
+    .login-form {
+        padding-top: 120px;
+        margin-top: 20px;
+    }
+}

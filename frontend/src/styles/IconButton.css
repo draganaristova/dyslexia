@@ -1,0 +1,75 @@
+.icon-btn {
+    width: clamp(38px, 5vw, 48px);
+    height: clamp(38px, 5vw, 48px);
+    border-radius: clamp(12px, 2vw, 16px);
+    border: 3px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+}
+
+.icon-btn:hover {
+    transform: translateY(-4px) rotate(-4deg);
+}
+
+.icon-btn:active {
+    transform: translateY(-1px) rotate(0deg);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.icon-btn::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.home-btn-color {
+    background: linear-gradient(160deg, #ffd97a, #f6c84c);
+    border-color: #e1b22f;
+    color: #8a5a1d;
+}
+.home-btn-color:hover {
+    background: linear-gradient(160deg, #ffe19a, #f8d366);
+}
+
+.logout-btn-color {
+    background: linear-gradient(160deg, #ffab9c, #f0714e);
+    border-color: #d85537;
+    color: #7a2c1a;
+}
+.logout-btn-color:hover {
+    background: linear-gradient(160deg, #ffc1b5, #f2896a);
+}
+
+.profile-btn-color {
+    background: linear-gradient(160deg, #d8c4f7, #b99aea);
+    border-color: #8a58db;
+    color: #4a2d80;
+    overflow: hidden;
+}
+.profile-btn-color:hover {
+    background: linear-gradient(160deg, #e3d4fb, #c6adf0);
+}
+
+.profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 13px;
+}
+
+.nav-icons-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
