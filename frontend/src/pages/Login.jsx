@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 import kidsImage from '../assets/screens/login_kids.png';
 import HomeButton from '../widgets/HomeButton';
 import Logo from '../widgets/Logo';
+import { API } from "../data/api";
 
 export default function LoginForm() {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,8 +19,7 @@ export default function LoginForm() {
 
         if (!email) {
             formErrors.email = 'Полето е задолжително';
-        }
-        else if (!/\S+@\S+\.\S+/.test(email)) {
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
             formErrors.email = 'Не е внесена валидна емаил адреса';
         }
 
@@ -25,14 +28,11 @@ export default function LoginForm() {
 
         if (!password) {
             formErrors.password = 'Полето е задолжително';
-        }
-        else if (password.length <= 8) {
+        } else if (password.length < 8) {
             formErrors.password = 'Лозинката мора да содржи најмалку 8 карактери';
-        }
-        else if (!hasSpecialChar) {
+        } else if (!hasSpecialChar) {
             formErrors.password = 'Лозинката мора да содржи специјален карактер';
-        }
-        else if (!hasUppercase) {
+        } else if (!hasUppercase) {
             formErrors.password = 'Лозинката мора да содржи голема буква';
         }
 
@@ -52,7 +52,7 @@ export default function LoginForm() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('https://localhost:5173', {
+            const response = await fetch(`${API}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -61,16 +61,17 @@ export default function LoginForm() {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Успешно се најавивте!');
-            }
-            else {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.userId);
+                localStorage.setItem('userName', data.name);
+                localStorage.setItem('userEmail', data.email);
+                navigate('/');
+            } else {
                 setErrors({ server: data.message || 'Најавата не е успешна, обидете се повторно!' });
             }
-        }
-        catch (error) {
+        } catch (error) {
             setErrors({ server: 'Network error. Please try again later.' });
-        }
-        finally {
+        } finally {
             setIsSubmitting(false);
         }
     };
@@ -79,9 +80,9 @@ export default function LoginForm() {
         <div className="login-page">
             <header className="login-header">
                 <Logo />
-                 <div className="nav-icons-row">
+                <div className="nav-icons-row">
                     <HomeButton />
-                 </div>
+                </div>
             </header>
 
             <div className='login-form-wrapper'>
@@ -95,27 +96,13 @@ export default function LoginForm() {
 
                     <div className='login-input'>
                         <label htmlFor='email'>Е-пошта</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className={errors.email ? 'login-input-error' : ''}
-                            placeholder="you@example.com"
-                        />
+                        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} className={errors.email ? 'login-input-error' : ''} placeholder="you@example.com" />
                         {errors.email && <span className="login-error-text">{errors.email}</span>}
                     </div>
 
                     <div className="login-input">
                         <label htmlFor="password">Лозинка</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={errors.password ? 'login-input-error' : ''}
-                            placeholder="********"
-                        />
+                        <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className={errors.password ? 'login-input-error' : ''} placeholder="********" />
                         {errors.password && <span className="login-error-text">{errors.password}</span>}
                     </div>
 

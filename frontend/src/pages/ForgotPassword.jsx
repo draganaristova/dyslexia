@@ -4,6 +4,8 @@ import "../styles/ForgotPassword.css";
 import kidsImage from '../assets/screens/login_kids.png';
 import Logo from "../widgets/Logo";
 import HomeButton from "../widgets/HomeButton";
+import { API } from "../data/api";
+
 
 export default function ForgotPasswordForm() {
     const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function ForgotPasswordForm() {
         if (!newpassword) {
             formErrors.newpassword = 'Полето е задолжително';
         }
-        else if (newpassword.length <= 8) {
+        else if (newpassword.length < 8) {
             formErrors.newpassword = 'Лозинката мора да содржи најмалку 8 карактери';
         }
         else if (!hasSpecialChar) {
@@ -62,13 +64,13 @@ export default function ForgotPasswordForm() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('https://localhost:5173', {
+            const response = await fetch(`${API}/auth/forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, newpassword }),
+                body: JSON.stringify({ email, password: newpassword, repeatpassword }),
             });
 
-            const data = await response.json();
+            const data = await response.text();
 
             if (response.ok) {
             alert('Успешно се променета лозинката!');

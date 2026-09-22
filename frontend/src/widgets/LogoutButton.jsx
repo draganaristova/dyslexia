@@ -6,9 +6,12 @@ function LogoutButton() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/login");
-    };
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+
+    navigate("/login");
+};
 
     return (
         <button className="icon-btn logout-btn-color" onClick={handleLogout} aria-label="Одјави се">
