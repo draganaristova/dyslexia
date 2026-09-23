@@ -8,5 +8,5 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Games, Long> {
 
     List<Games> findAllByOrderByOrderIndexAsc();
-
+    List<Games> findByWorldNumberOrderByOrderIndexAsc(Integer worldNumber);
 }

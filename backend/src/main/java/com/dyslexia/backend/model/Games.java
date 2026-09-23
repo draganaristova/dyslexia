@@ -12,7 +12,8 @@ public class Games {
     private String color;
     private String imageUrl;
     private Integer orderIndex;
-    private Integer totalLevels = 7;
+    private Integer worldNumber;
+    private Integer totalLevels = 6;
 
     public Games() {
 
@@ -56,6 +57,14 @@ public class Games {
  
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
+    }
+
+    public Integer getWorldNumber() {
+        return worldNumber;
+    }
+ 
+    public void setWorldNumber(Integer worldNumber) {
+        this.worldNumber = worldNumber;
     }
  
     public Integer getTotalLevels() {
