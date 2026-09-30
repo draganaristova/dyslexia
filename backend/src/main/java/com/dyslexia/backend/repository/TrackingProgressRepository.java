@@ -6,13 +6,33 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface TrackingProgressRepository extends JpaRepository<TrackingProgress, Long> {
+public interface TrackingProgressRepository
+        extends JpaRepository<TrackingProgress, Long> {
+
+    Optional<TrackingProgress>
+    findByUserIdAndGamesIdAndPinNumber(
+            Long userId,
+            Long gamesId,
+            Integer pinNumber
+    );
 
     List<TrackingProgress> findByUserId(Long userId);
 
-    List<TrackingProgress> findByUserIdAndGamesId(Long userId, Long gamesId);
+    List<TrackingProgress>
+    findByUserIdOrderByCompletedAtDesc(Long userId);
 
-    Optional<TrackingProgress> findByUserIdAndGamesIdAndLevelNumber(Long userId, Long gamesId, Integer levelNumber);
+    List<TrackingProgress>
+    findByUserIdAndGamesId(Long userId, Long gamesId);
 
-    long countByUserIdAndGamesIdAndCompletedTrue(Long userId, Long gamesId);
+    Optional<TrackingProgress>
+    findByUserIdAndGamesIdAndLevelNumber(
+            Long userId,
+            Long gamesId,
+            Integer levelNumber
+    );
+
+    long countByUserIdAndGamesIdAndCompletedTrue(
+            Long userId,
+            Long gamesId
+    );
 }

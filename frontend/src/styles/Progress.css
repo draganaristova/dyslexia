@@ -1,0 +1,1605 @@
+.progress-page {
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            /* #f3efc5 0%,
+            #f8f7e9 38%,
+            #ffffff 100% */
+        );
+
+    padding-bottom: 70px;
+
+    font-family:
+        "Noto Sans Mono",
+        monospace;
+
+    color: #403a44;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.progress-page .home-header {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding:
+        18px
+        clamp(20px, 5vw, 60px);
+
+    box-sizing: border-box;
+}
+
+
+.progress-page .nav-icons-row {
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.progress-main {
+    width:
+        min(
+            1180px,
+            calc(100% - 40px)
+        );
+
+    margin: 0 auto;
+}
+
+
+/* =====================================================
+   HERO
+   НЕМА ПОСЕБНА ПОЗАДИНА
+===================================================== */
+
+.progress-hero {
+    position: relative;
+
+    min-height: 145px;
+
+    overflow: hidden;
+
+    background: transparent;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        22px
+        15px
+        30px;
+
+    box-sizing: border-box;
+
+    box-shadow: none;
+
+    border-radius: 0;
+
+    margin-bottom: 18px;
+}
+
+
+.hero-text {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 650px;
+
+    text-align: left;
+}
+
+
+.hero-text h1 {
+    margin:
+        0 0 20px;
+
+    font-size:
+        clamp(
+            30px,
+            5vw,
+            45px
+        );
+
+    font-weight: 900;
+
+    color: #39333d;
+}
+
+
+.hero-text p {
+    margin: 0;
+
+    color: #706b54;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    max-width: 650px;
+}
+
+
+.hero-trophy {
+    position: relative;
+
+    z-index: 2;
+
+    width: 110px;
+    height: 110px;
+
+    border-radius: 34px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.65
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 65px;
+
+    transform:
+        rotate(5deg);
+
+    box-shadow:
+        0 12px 25px
+        rgba(
+            150,
+            130,
+            50,
+            0.12
+        );
+}
+
+
+.hero-cloud {
+    position: absolute;
+
+    opacity: 0.5;
+
+    font-size: 70px;
+}
+
+
+.cloud-one {
+    right: 180px;
+    top: -20px;
+}
+
+
+.cloud-two {
+    right: 15px;
+    bottom: -30px;
+
+    font-size: 100px;
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.progress-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap: 17px;
+
+    margin:
+        22px 0 35px;
+}
+
+
+.summary-box {
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.9
+        );
+
+    border-radius: 22px;
+
+    padding:
+        18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    box-shadow:
+        0 9px 25px
+        rgba(
+            0,
+            0,
+            0,
+            0.06
+        );
+}
+
+
+.summary-icon {
+    width: 48px;
+    height: 48px;
+
+    flex:
+        0 0 48px;
+
+    border-radius: 15px;
+
+    background: #f7efaa;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+
+.summary-box strong {
+    display: block;
+
+    font-size: 22px;
+
+    color: #3e3842;
+}
+
+
+.summary-box span:not(.summary-icon) {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+
+    color: #827b83;
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.adventures-title {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 17px;
+}
+
+
+.adventures-title > div:first-child > span {
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+
+    color: #8a828c;
+}
+
+
+.adventures-title h2 {
+    margin:
+        4px 0 0;
+
+    font-size: 28px;
+
+    color: #39343d;
+}
+
+
+.adventures-decoration {
+    font-size: 16px;
+
+    letter-spacing: 5px;
+}
+
+
+/* =====================================================
+   ADVENTURE GRID
+===================================================== */
+
+.adventure-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 22px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.adventure-card {
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 29px;
+
+    padding: 24px;
+
+    border:
+        2px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.9
+        );
+
+    box-shadow:
+        0 13px 35px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.adventure-card:hover {
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 20px 42px
+        rgba(
+            0,
+            0,
+            0,
+            0.12
+        );
+}
+
+
+.adventure-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+
+    right: -55px;
+    top: -65px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.28
+        );
+}
+
+
+.adventure-card.sound {
+    background: #ffe2d7;
+}
+
+
+.adventure-card.memory {
+    background: #fff1b2;
+}
+
+
+.adventure-card.rhymes {
+    background: #dcefff;
+}
+
+
+.adventure-card.letters {
+    background: #eadfff;
+}
+
+
+.adventure-card.words {
+    background: #dff3df;
+}
+
+
+.adventure-card.changed {
+    background: #ffe0ee;
+}
+
+
+/* =====================================================
+   CARD TOP
+===================================================== */
+
+.adventure-card-top {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+}
+
+
+.adventure-number {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.adventure-number span {
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    color: #777079;
+}
+
+
+.adventure-number strong {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 12px;
+
+    box-shadow:
+        0 4px 9px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+
+.adventure-icon {
+    position: relative;
+
+    z-index: 3;
+
+    width: 68px;
+    height: 68px;
+
+    border-radius: 22px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.72
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 36px;
+
+    transform:
+        rotate(4deg);
+
+    box-shadow:
+        0 8px 18px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+
+/* =====================================================
+   CARD TITLE
+===================================================== */
+
+.adventure-card-title {
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 10px;
+}
+
+
+.adventure-card-title h3 {
+    margin: 0;
+
+    font-size: 21px;
+
+    color: #39343d;
+}
+
+
+.adventure-card-title p {
+    margin:
+        7px 0 0;
+
+    color: #746d75;
+
+    font-size: 11px;
+
+    line-height: 1.55;
+
+    max-width: 420px;
+}
+
+
+/* =====================================================
+   SCORE
+===================================================== */
+
+.adventure-score {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    margin-top: 20px;
+
+    padding:
+        15px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.55
+        );
+}
+
+
+.score-medal {
+    width: 67px;
+    height: 67px;
+
+    flex:
+        0 0 67px;
+
+    border-radius: 50%;
+
+    background:
+        white;
+
+    display: flex;
+
+    align-items: baseline;
+
+    justify-content: center;
+
+    box-shadow:
+        0 7px 15px
+        rgba(
+            0,
+            0,
+            0,
+            0.07
+        );
+}
+
+
+.score-medal span {
+    font-size: 13px;
+
+    align-self: flex-start;
+
+    margin-top: 14px;
+}
+
+
+.score-medal strong {
+    font-size: 28px;
+
+    align-self: center;
+}
+
+
+.score-medal small {
+    font-size: 10px;
+
+    color: #89828a;
+
+    align-self: center;
+}
+
+
+.score-details {
+    flex: 1;
+}
+
+
+.score-label-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+
+.score-label-row span {
+    font-size: 10px;
+
+    color: #78717a;
+
+    font-weight: 700;
+}
+
+
+.score-label-row strong {
+    font-size: 12px;
+}
+
+
+.beautiful-progress {
+    height: 10px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.75
+        );
+
+    overflow: hidden;
+}
+
+
+.beautiful-progress div {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #75c991,
+            #43b873
+        );
+}
+
+
+.attempts {
+    display: block;
+
+    margin-top: 7px;
+
+    font-size: 9px;
+
+    color: #817980;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.adventure-status {
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 14px;
+
+    padding-bottom: 14px;
+
+    border-bottom:
+        1px solid
+        rgba(
+            70,
+            60,
+            70,
+            0.08
+        );
+}
+
+
+.adventure-status > div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.status-check,
+.status-practice {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.75
+        );
+
+    font-size: 18px;
+}
+
+
+.status-check {
+    color: #3b9d65;
+}
+
+
+.adventure-status strong {
+    display: block;
+
+    font-size: 11px;
+}
+
+
+.adventure-status small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #7d757e;
+
+    font-size: 9px;
+}
+
+
+/* =====================================================
+   BOTTOM
+===================================================== */
+
+.adventure-bottom {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+
+.mistakes {
+    color: #756e76;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+.review-button {
+    border: none;
+
+    background:
+        white;
+
+    color: #49434c;
+
+    border-radius: 13px;
+
+    padding:
+        9px 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 13px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.review-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 8px 17px
+        rgba(
+            0,
+            0,
+            0,
+            0.12
+        );
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-progress {
+    background:
+        white;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    padding:
+        55px 25px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(
+            0,
+            0,
+            0,
+            0.07
+        );
+}
+
+
+.empty-character {
+    font-size: 70px;
+
+    margin-bottom: 10px;
+}
+
+
+.empty-progress h2 {
+    margin:
+        0 0 9px;
+
+    font-size: 22px;
+}
+
+
+.empty-progress p {
+    max-width: 550px;
+
+    margin:
+        0 auto 23px;
+
+    color: #77717a;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+.empty-progress button {
+    border: none;
+
+    background: #e6ef65;
+
+    color: #403b46;
+
+    border-radius: 15px;
+
+    padding:
+        13px 20px;
+
+    font-family: inherit;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.progress-loading {
+    min-height: 65vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+
+.loading-stars {
+    font-size: 60px;
+
+    animation:
+        floating 1.3s
+        infinite alternate;
+}
+
+
+@keyframes floating {
+
+    from {
+        transform:
+            translateY(0)
+            rotate(-5deg);
+    }
+
+    to {
+        transform:
+            translateY(-10px)
+            rotate(5deg);
+    }
+}
+
+
+.progress-loading h2 {
+    margin:
+        15px 0 5px;
+}
+
+
+.progress-loading p {
+    color: #77717a;
+}
+
+
+/* =====================================================
+   REVIEW OVERLAY
+===================================================== */
+
+.review-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    background:
+        rgba(
+            44,
+            39,
+            46,
+            0.56
+        );
+
+    backdrop-filter:
+        blur(7px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.review-modal {
+    position: relative;
+
+    width:
+        min(
+            700px,
+            100%
+        );
+
+    max-height:
+        90vh;
+
+    overflow-y: auto;
+
+    background:
+        #fffdf7;
+
+    border-radius: 31px;
+
+    padding:
+        30px;
+
+    box-shadow:
+        0 35px 90px
+        rgba(
+            0,
+            0,
+            0,
+            0.28
+        );
+
+    animation:
+        modalIn
+        0.25s ease;
+}
+
+
+@keyframes modalIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            scale(0.95)
+            translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            scale(1)
+            translateY(0);
+    }
+}
+
+
+.review-close {
+    position: absolute;
+
+    right: 17px;
+    top: 17px;
+
+    width: 37px;
+    height: 37px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f0ede3;
+
+    font-size: 24px;
+
+    color: #554e57;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   REVIEW HEADER
+===================================================== */
+
+.review-heading {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding-right: 35px;
+}
+
+
+.review-game-icon {
+    width: 67px;
+    height: 67px;
+
+    border-radius: 21px;
+
+    background: #fff0a8;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 35px;
+}
+
+
+.review-heading span {
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    color: #89818a;
+}
+
+
+.review-heading h2 {
+    margin:
+        4px 0 0;
+
+    font-size: 23px;
+}
+
+
+/* =====================================================
+   REVIEW RESULT
+===================================================== */
+
+.review-result {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+
+    margin:
+        23px 0;
+}
+
+
+.review-result > div {
+    background: #f5f1df;
+
+    border-radius: 17px;
+
+    padding:
+        15px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.review-result small {
+    font-size: 9px;
+
+    color: #817981;
+
+    font-weight: 900;
+}
+
+
+.review-result strong {
+    font-size: 21px;
+}
+
+
+/* =====================================================
+   MISTAKES
+===================================================== */
+
+.mistakes-review h3 {
+    margin:
+        0 0 4px;
+
+    font-size: 18px;
+}
+
+
+.review-intro {
+    margin:
+        0 0 15px;
+
+    color: #817981;
+
+    font-size: 11px;
+}
+
+
+.mistake-item {
+    display: flex;
+
+    gap: 12px;
+
+    background: white;
+
+    border:
+        1px solid
+        #ece6d9;
+
+    border-radius: 18px;
+
+    padding: 15px;
+
+    margin-bottom: 12px;
+}
+
+
+.mistake-number {
+    width: 34px;
+    height: 34px;
+
+    flex:
+        0 0 34px;
+
+    border-radius: 11px;
+
+    background: #ffe891;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+
+.mistake-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.mistake-question {
+    display: block;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 9px;
+}
+
+
+.answer-box {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding:
+        8px 11px;
+
+    border-radius: 11px;
+
+    margin-top: 6px;
+}
+
+
+.answer-box > span {
+    font-size: 15px;
+}
+
+
+.answer-box div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1px;
+}
+
+
+.answer-box small {
+    font-size: 8px;
+
+    font-weight: 800;
+}
+
+
+.answer-box strong {
+    font-size: 12px;
+}
+
+
+.your-answer {
+    background: #fff0ed;
+}
+
+
+.your-answer > span {
+    color: #d85537;
+}
+
+
+.your-answer small {
+    color: #a45c51;
+}
+
+
+.right-answer {
+    background: #eaf8ee;
+}
+
+
+.right-answer > span {
+    color: #3ea96c;
+}
+
+
+.right-answer small {
+    color: #548c63;
+}
+
+
+/* =====================================================
+   PERFECT REVIEW
+===================================================== */
+
+.perfect-review {
+    text-align: center;
+
+    padding:
+        35px 20px;
+}
+
+
+.perfect-review > div {
+    font-size: 60px;
+}
+
+
+.perfect-review h3 {
+    margin:
+        10px 0 5px;
+
+    font-size: 24px;
+}
+
+
+.perfect-review p {
+    color: #77717a;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+.review-close-button {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 15px;
+
+    background: #e6ef65;
+
+    color: #403b46;
+
+    padding:
+        13px;
+
+    margin-top: 17px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .adventure-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-hero {
+        min-height: 145px;
+
+        padding:
+            20px 5px 25px;
+    }
+
+    .hero-trophy {
+        width: 95px;
+        height: 95px;
+
+        font-size: 55px;
+    }
+
+    .cloud-one {
+        right: 120px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .progress-main {
+        width:
+            calc(
+                100% - 24px
+            );
+    }
+
+    .progress-page .home-header {
+        padding:
+            14px 12px;
+    }
+
+    .progress-hero {
+        border-radius: 0;
+
+        padding:
+            20px 0 25px;
+    }
+
+    .hero-text h1 {
+        font-size: 29px;
+
+        margin-bottom: 16px;
+    }
+
+    .hero-text p {
+        font-size: 11px;
+    }
+
+    .hero-trophy {
+        width: 75px;
+        height: 75px;
+
+        border-radius: 22px;
+
+        font-size: 42px;
+    }
+
+    .cloud-one,
+    .cloud-two {
+        display: none;
+    }
+
+    .adventures-title h2 {
+        font-size: 24px;
+    }
+
+    .adventures-decoration {
+        font-size: 12px;
+
+        letter-spacing: 2px;
+    }
+
+    .adventure-card {
+        padding: 18px;
+
+        border-radius: 23px;
+    }
+
+    .adventure-icon {
+        width: 57px;
+        height: 57px;
+
+        border-radius: 18px;
+
+        font-size: 29px;
+    }
+
+    .adventure-card-title h3 {
+        font-size: 18px;
+    }
+
+    .review-modal {
+        padding: 22px;
+
+        border-radius: 25px;
+    }
+}

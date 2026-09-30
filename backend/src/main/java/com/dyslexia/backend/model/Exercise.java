@@ -3,9 +3,20 @@ package com.dyslexia.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "exercises", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"games_id", "games_type", "age_group"})
-})
+@Table(
+        name = "exercises",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {
+                                "games_id",
+                                "games_type",
+                                "age_group",
+                                "pin_number",
+                                "task_number"
+                        }
+                )
+        }
+)
 public class Exercise {
 
     @Id
@@ -23,7 +34,9 @@ public class Exercise {
     private AgeGroup ageGroup;
 
     private Integer pinNumber;
-    
+
+    private Integer taskNumber;
+
     @Column(columnDefinition = "TEXT")
     private String contentJson;
 
@@ -68,6 +81,14 @@ public class Exercise {
 
     public void setPinNumber(Integer pinNumber) {
         this.pinNumber = pinNumber;
+    }
+
+    public Integer getTaskNumber() {
+        return taskNumber;
+    }
+
+    public void setTaskNumber(Integer taskNumber) {
+        this.taskNumber = taskNumber;
     }
 
     public String getContentJson() {

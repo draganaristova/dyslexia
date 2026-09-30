@@ -9,5 +9,11 @@ import java.util.Optional;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
-    Optional<Exercise> findByGamesIdAndGamesTypeAndAgeGroup(Long gamesId, GamesType gamesType, AgeGroup ageGroup);
+    Optional<Exercise> findByGamesIdAndGamesTypeAndAgeGroupAndPinNumberAndTaskNumber(
+            Long gamesId,
+            GamesType gamesType,
+            AgeGroup ageGroup,
+            Integer pinNumber,
+            Integer taskNumber
+    );
 }

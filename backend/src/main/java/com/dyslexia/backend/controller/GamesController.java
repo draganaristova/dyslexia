@@ -6,6 +6,8 @@ import com.dyslexia.backend.repository.TrackingProgressRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,30 +32,36 @@ public class GamesController {
         List<Games> allGames =
                 gameRepository.findAllByOrderByOrderIndexAsc();
 
-        List<Map<String, Object>> result = allGames.stream()
-                .map(game -> {
+        List<Map<String, Object>> result = new ArrayList<>();
 
-                    long pinsDone =
-                            trackingProgressRepository
-                                    .countByUserIdAndGamesIdAndCompletedTrue(
-                                            userId,
-                                            game.getId()
-                                    );
+        for (Games game : allGames) {
 
-                    return Map.<String, Object>of(
-                            "id", game.getId(),
-                            "name", game.getName(),
-                            "color", game.getColor(),
-                            "imageUrl", game.getImageUrl(),
-                            "worldNumber", game.getWorldNumber(),
-                            "totalLevels", game.getTotalLevels(),
-                            "pinsDone", pinsDone,
-                            "status", pinsDone > 0
-                                    ? "completed"
-                                    : "locked"
-                    );
-                })
-                .toList();
+            long pinsDone =
+                    trackingProgressRepository
+                            .countByUserIdAndGamesIdAndCompletedTrue(
+                                    userId,
+                                    game.getId()
+                            );
+
+            Map<String, Object> gameData = new HashMap<>();
+
+            gameData.put("id", game.getId());
+            gameData.put("name", game.getName());
+            gameData.put("color", game.getColor());
+            gameData.put("imageUrl", game.getImageUrl());
+            gameData.put("worldNumber", game.getWorldNumber());
+            gameData.put("totalLevels", game.getTotalLevels());
+            gameData.put("pinsDone", pinsDone);
+
+            gameData.put(
+                    "status",
+                    pinsDone > 0
+                            ? "completed"
+                            : "locked"
+            );
+
+            result.add(gameData);
+        }
 
         return ResponseEntity.ok(result);
     }
@@ -67,16 +75,21 @@ public class GamesController {
         List<Games> games =
                 gameRepository.findByWorldNumberOrderByOrderIndexAsc(worldNumber);
 
-        List<Map<String, Object>> result = games.stream()
-                .map(game -> Map.<String, Object>of(
-                        "id", game.getId(),
-                        "name", game.getName(),
-                        "color", game.getColor(),
-                        "imageUrl", game.getImageUrl(),
-                        "worldNumber", game.getWorldNumber(),
-                        "totalLevels", game.getTotalLevels()
-                ))
-                .toList();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Games game : games) {
+
+            Map<String, Object> gameData = new HashMap<>();
+
+            gameData.put("id", game.getId());
+            gameData.put("name", game.getName());
+            gameData.put("color", game.getColor());
+            gameData.put("imageUrl", game.getImageUrl());
+            gameData.put("worldNumber", game.getWorldNumber());
+            gameData.put("totalLevels", game.getTotalLevels());
+
+            result.add(gameData);
+        }
 
         return ResponseEntity.ok(result);
     }

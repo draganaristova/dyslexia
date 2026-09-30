@@ -40,7 +40,7 @@ function GameSelection() {
                                     <div className="lock-badge"><span>🔒</span></div>
                                 )}
                                 {!isLocked && (
-                                    <div className="progress-pill">{world.pinsDone}/7 пина</div>
+                                    <div className="progress-pill">{world.pinsDone}/6 пина</div>
                                 )}
                                 <div className="game-text">
                                     <h3>{world.name}</h3>

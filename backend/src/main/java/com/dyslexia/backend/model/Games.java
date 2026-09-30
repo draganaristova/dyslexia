@@ -13,7 +13,7 @@ public class Games {
     private String imageUrl;
     private Integer orderIndex;
     private Integer worldNumber;
-    private Integer totalLevels = 6;
+    private Integer totalLevels = 3;
 
     public Games() {
 

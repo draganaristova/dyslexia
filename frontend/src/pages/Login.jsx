@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css';
 import kidsImage from '../assets/screens/login_kids.png';
 import HomeButton from '../widgets/HomeButton';
@@ -118,7 +118,7 @@ export default function LoginForm() {
                         {isSubmitting ? 'Најавување...' : 'Најави се'}
                     </button>
 
-                    <p className="login-signup-redirect">Немате профил? <a href="/signup">Регистрирајте се</a></p>
+                    <p className="login-signup-redirect">Немате профил? <Link to="/register">Регистрирајте се</Link></p>
                 </form>
             </div>
         </div>

@@ -7,6 +7,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProfilePage from "./pages/ProfilePage";
 import GameSelection from "./pages/GameSelection";
 import WorldPath from "./pages/WorldPath";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Progress from "./pages/Progress";
+import ExercisePage from "./pages/ExercisePage";
 
 function App() {
   return (
@@ -15,9 +18,11 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/gameselection" element={<GameSelection />} />
-      <Route path="/world/:worldId" element={<WorldPath />} />
+      <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+      <Route path="/gameselection" element={<ProtectedRoute><GameSelection /></ProtectedRoute>} />
+      <Route path="/world/:worldId" element={<ProtectedRoute><WorldPath /></ProtectedRoute>} />
+      <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
+      <Route path="/world/:worldId/exercise/:gamesId/:gamesType/:pinNumber" element={<ProtectedRoute><ExercisePage /></ProtectedRoute>}/>
     </Routes>
   );
 }

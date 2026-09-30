@@ -4,8 +4,10 @@ import com.dyslexia.backend.model.Games;
 import com.dyslexia.backend.repository.GameRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.core.annotation.Order;
 
 @Component
+@Order(1) //означува дека прво се креираат игрите па после нив вежбите
 public class GamesData implements CommandLineRunner {
 
     private final GameRepository gameRepository;
@@ -87,7 +89,7 @@ public class GamesData implements CommandLineRunner {
         game.setImageUrl(imageUrl);
         game.setOrderIndex(orderIndex);
         game.setWorldNumber(worldNumber);
-        game.setTotalLevels(6);
+        game.setTotalLevels(3);
 
         gameRepository.save(game);
     }
