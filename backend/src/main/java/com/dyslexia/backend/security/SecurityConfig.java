@@ -27,8 +27,6 @@ public class SecurityConfig {
             HttpSecurity http
     ) throws Exception {
 
-        System.out.println("######## SECURITY CONFIG CREATED ########");
-
         http
                 .cors(cors ->
                         cors.configurationSource(
@@ -47,22 +45,37 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**")
-                        .permitAll()
+
+                        .requestMatchers(
+                                "/api/auth/**"
+                        ).permitAll()
+
                         .requestMatchers(
                                 HttpMethod.OPTIONS,
                                 "/**"
-                        )
-                        .permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/api/exercises/**")
-                        .authenticated()
-                        .requestMatchers("/api/progress/**")
-                        .authenticated()
-                        .requestMatchers("/api/games/**")
-                        .authenticated()
-                        .anyRequest()
-                        .authenticated()
+                        ).permitAll()
+
+                        .requestMatchers(
+                                "/error"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                "/api/exercises/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                "/api/exercise-progress/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                "/api/games/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                "/api/profile/**"
+                        ).authenticated()
+
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(
@@ -80,7 +93,9 @@ public class SecurityConfig {
                 new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173"
+                )
         );
 
         configuration.setAllowedMethods(

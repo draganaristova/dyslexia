@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/Progress.css";
@@ -8,51 +8,63 @@ import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
 
-const API = "http://localhost:8080/api";
+import { API } from "../data/api";
+
+
+const TOTAL_TASKS = 10;
+
 
 const gameData = {
-    RECOGNIZE_SOUND: {
-        name: "Препознај го гласот",
-        icon: "🔊",
-        description: "Слушај внимателно и препознај го точниот глас.",
-        theme: "sound"
-    },
 
     MEMORY: {
         name: "Меморија",
         icon: "🃏",
-        description: "Пронајди ги паровите и вежбај ја меморијата.",
+        description:
+            "Пронајди ги паровите и вежбај ја меморијата.",
         theme: "memory"
-    },
-
-    RHYMES: {
-        name: "Рими",
-        icon: "🎵",
-        description: "Пронајди ги зборовите што се римуваат.",
-        theme: "rhymes"
-    },
-
-    MISSING_LETTER: {
-        name: "Најди ја буквата",
-        icon: "🔤",
-        description: "Откриј која буква недостасува.",
-        theme: "letters"
     },
 
     WORD_BUILDING: {
         name: "Состави го зборот",
         icon: "🧩",
-        description: "Состави го зборот од дадените букви.",
+        description:
+            "Состави го зборот од дадените букви.",
         theme: "words"
     },
 
-    WHAT_CHANGED: {
-        name: "Што се смени?",
-        icon: "👀",
-        description: "Внимавај добро и откриј што се променило.",
+    MISSING_LETTER: {
+        name: "Која буква недостасува",
+        icon: "🔤",
+        description:
+            "Откриј која буква недостасува.",
+        theme: "letters"
+    },
+
+    RHYMES: {
+        name: "Најди ја римата",
+        icon: "🎵",
+        description:
+            "Пронајди ги зборовите што се римуваат.",
+        theme: "rhymes"
+    },
+
+    SYLLABLES: {
+        name: "Слогови",
+        icon: "👏",
+        description:
+            "Подели ги зборовите на слогови.",
+        theme: "sound"
+    },
+
+    SOUND_MANIPULATION: {
+        name: "Бриши и замени гласови",
+        icon: "✂️",
+        description:
+            "Вежбај бришење и замена на гласови.",
         theme: "changed"
     }
 };
+
 
 function Progress() {
 
@@ -72,6 +84,9 @@ function Progress() {
     const [progress, setProgress] =
         useState([]);
 
+    const [summary, setSummary] =
+        useState([]);
+
     const [loading, setLoading] =
         useState(true);
 
@@ -79,109 +94,359 @@ function Progress() {
         useState(null);
 
 
+    /*
+     * =========================
+     * LOAD DATA
+     * =========================
+     */
+
     useEffect(() => {
 
         if (!userId || !token) {
-
             navigate("/login");
             return;
         }
 
-        loadProgress();
 
-    }, [
-        userId,
-        token
-    ]);
+        const loadProgress = async () => {
+
+            try {
+
+                setLoading(true);
 
 
-    const loadProgress = async () => {
+                const headers = {
+                    Authorization:
+                        `Bearer ${token}`,
 
-        try {
+                    "Content-Type":
+                        "application/json"
+                };
 
-            setLoading(true);
 
-            const response = await fetch(
-                `${API}/progress/user/${userId}`,
-                {
-                    method: "GET",
+                const [
+                    progressResponse,
+                    summaryResponse
+                ] = await Promise.all([
 
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`,
+                    fetch(
+                        `${API}/exercise-progress/user/${userId}`,
+                        {
+                            method: "GET",
+                            headers
+                        }
+                    ),
 
-                        "Content-Type":
-                            "application/json"
-                    }
+                    fetch(
+                        `${API}/exercise-progress/user/${userId}/summary`,
+                        {
+                            method: "GET",
+                            headers
+                        }
+                    )
+
+                ]);
+
+
+                if (
+                    progressResponse.status === 401 ||
+                    progressResponse.status === 403 ||
+                    summaryResponse.status === 401 ||
+                    summaryResponse.status === 403
+                ) {
+
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+
+                    navigate("/login");
+
+                    return;
                 }
-            );
 
 
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                localStorage.removeItem(
-                    "token"
-                );
-
-                navigate("/login");
-                return;
-            }
+                const progressData =
+                    progressResponse.ok
+                        ? await progressResponse.json()
+                        : [];
 
 
-            if (!response.ok) {
-
-                throw new Error(
-                    "Progress loading failed"
-                );
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (Array.isArray(data)) {
-
-                const sorted =
-                    [...data].sort(
-                        (a, b) =>
-                            (a.pinNumber || 0) -
-                            (b.pinNumber || 0)
-                    );
+                const summaryData =
+                    summaryResponse.ok
+                        ? await summaryResponse.json()
+                        : [];
 
 
                 setProgress(
-                    sorted
+                    Array.isArray(progressData)
+                        ? progressData
+                        : []
                 );
 
-            } else {
 
-                setProgress([]);
+                setSummary(
+                    Array.isArray(summaryData)
+                        ? summaryData
+                        : []
+                );
+
             }
 
-        } catch (error) {
+            catch (error) {
 
-            console.error(
-                "Progress error:",
-                error
-            );
+                console.error(
+                    "Progress error:",
+                    error
+                );
 
-            setProgress([]);
+                setProgress([]);
+                setSummary([]);
 
-        } finally {
+            }
 
-            setLoading(false);
-        }
-    };
+            finally {
+
+                setLoading(false);
+
+            }
+
+        };
+
+
+        loadProgress();
+
+    }, [userId, token, navigate]);
 
 
     /*
-     * =====================================================
-     * PARSE WRONG ANSWERS
-     * =====================================================
+     * =========================
+     * CONVERT TASK PROGRESS
+     * INTO MISSION CARDS
+     * =========================
+     */
+
+    const adventures = useMemo(() => {
+
+        const grouped = {};
+
+
+        progress.forEach((item) => {
+
+            const key =
+                `${item.gamesId}-${item.gamesType}-${item.pinNumber}`;
+
+
+            if (!grouped[key]) {
+
+                grouped[key] = {
+                    gamesId: item.gamesId,
+                    gamesType: item.gamesType,
+                    pinNumber: item.pinNumber,
+                    tasks: [],
+                    attempts: 0
+                };
+
+            }
+
+
+            grouped[key].tasks.push(item);
+
+
+            grouped[key].attempts +=
+                Number(item.attempts || 0);
+
+        });
+
+
+        /*
+         * Summary има точни mission-level резултати.
+         * Ги комбинираме со task-level progress.
+         */
+
+        const result =
+            summary.map((item) => {
+
+                const key =
+                    `${item.gamesId}-${item.gamesType}-${item.pinNumber}`;
+
+                const group =
+                    grouped[key];
+
+
+                return {
+
+                    id: key,
+
+                    gamesId:
+                        item.gamesId,
+
+                    gamesType:
+                        item.gamesType,
+
+                    pinNumber:
+                        item.pinNumber,
+
+                    completedTasks:
+                        Number(
+                            item.completedTasks || 0
+                        ),
+
+                    totalTasks:
+                        Number(
+                            item.totalTasks || TOTAL_TASKS
+                        ),
+
+                    score:
+                        Number(
+                            item.score || 0
+                        ),
+
+                    passed:
+                        item.passed === true,
+
+                    completed:
+                        item.completed === true,
+
+                    attempts:
+                        group?.attempts || 0,
+
+                    wrongAnswers:
+                        []
+                };
+
+            });
+
+
+        /*
+         * Ако некој progress постои,
+         * а summary поради некој reason нема запис,
+         * го додаваме и него.
+         */
+
+        Object.values(grouped).forEach((group) => {
+
+            const exists =
+                result.some(
+                    (item) =>
+                        Number(item.gamesId) ===
+                            Number(group.gamesId) &&
+                        item.gamesType ===
+                            group.gamesType &&
+                        Number(item.pinNumber) ===
+                            Number(group.pinNumber)
+                );
+
+
+            if (!exists) {
+
+                const uniqueTasks =
+                    new Set(
+                        group.tasks.map(
+                            (item) =>
+                                item.taskNumber
+                        )
+                    );
+
+
+                const score =
+                    group.tasks.filter(
+                        (item) =>
+                            item.correct === true
+                    ).length;
+
+
+                const completed =
+                    uniqueTasks.size >= TOTAL_TASKS;
+
+
+                result.push({
+
+                    id:
+                        `${group.gamesId}-${group.gamesType}-${group.pinNumber}`,
+
+                    gamesId:
+                        group.gamesId,
+
+                    gamesType:
+                        group.gamesType,
+
+                    pinNumber:
+                        group.pinNumber,
+
+                    completedTasks:
+                        uniqueTasks.size,
+
+                    totalTasks:
+                        TOTAL_TASKS,
+
+                    score,
+
+                    passed:
+                        completed &&
+                        score >= 8,
+
+                    completed,
+
+                    attempts:
+                        group.attempts,
+
+                    wrongAnswers: []
+                });
+
+            }
+
+        });
+
+
+        return result.sort(
+            (a, b) =>
+                Number(a.pinNumber || 0) -
+                Number(b.pinNumber || 0)
+        );
+
+    }, [progress, summary]);
+
+
+    /*
+     * =========================
+     * SUMMARY NUMBERS
+     * =========================
+     */
+
+    const completedGames =
+        adventures.filter(
+            (item) =>
+                item.completed === true
+        ).length;
+
+
+    const totalScore =
+        adventures.reduce(
+            (sum, item) =>
+                sum +
+                Math.min(
+                    TOTAL_TASKS,
+                    Math.max(
+                        0,
+                        Number(item.score || 0)
+                    )
+                ),
+            0
+        );
+
+
+    const averageScore =
+        adventures.length > 0
+            ? Math.round(
+                totalScore /
+                adventures.length
+            )
+            : 0;
+
+
+    /*
+     * =========================
+     * REVIEW
+     * =========================
      */
 
     const parseWrongAnswers = (item) => {
@@ -193,7 +458,7 @@ function Progress() {
 
         try {
 
-            const result =
+            const parsed =
                 typeof item.wrongAnswers === "string"
                     ? JSON.parse(
                         item.wrongAnswers
@@ -201,44 +466,45 @@ function Progress() {
                     : item.wrongAnswers;
 
 
-            return Array.isArray(result)
-                ? result
+            return Array.isArray(parsed)
+                ? parsed
                 : [];
 
         } catch {
 
             return [];
+
         }
+
     };
 
 
     const openReview = (item) => {
 
         setSelectedReview({
-
             ...item,
-
             wrongAnswers:
                 parseWrongAnswers(item)
         });
+
     };
 
 
     const closeReview = () => {
-
         setSelectedReview(null);
     };
 
 
     /*
-     * =====================================================
+     * =========================
      * LOADING
-     * =====================================================
+     * =========================
      */
 
     if (loading) {
 
         return (
+
             <div className="progress-page">
 
                 <header className="home-header">
@@ -275,52 +541,21 @@ function Progress() {
                 </div>
 
             </div>
+
         );
+
     }
 
 
     /*
-     * =====================================================
-     * SUMMARY
-     * =====================================================
+     * =========================
+     * MAIN
+     * =========================
      */
-
-    const completedGames =
-        progress.filter(
-            item =>
-                item.completed === true
-        ).length;
-
-
-    const totalScore =
-        progress.reduce(
-            (sum, item) =>
-                sum +
-                Math.min(
-                    10,
-                    Number(
-                        item.score || 0
-                    )
-                ),
-            0
-        );
-
-
-    const averageScore =
-        progress.length > 0
-            ? Math.round(
-                totalScore /
-                progress.length
-            )
-            : 0;
-
 
     return (
 
         <div className="progress-page">
-
-
-            {/* HEADER */}
 
             <header className="home-header">
 
@@ -341,10 +576,9 @@ function Progress() {
 
             <main className="progress-main">
 
-
-                {/* =================================================
+                {/* =========================
                     HERO
-                ================================================= */}
+                ========================= */}
 
                 <section className="progress-hero">
 
@@ -378,7 +612,9 @@ function Progress() {
                 </section>
 
 
-                {/* SUMMARY */}
+                {/* =========================
+                    SUMMARY
+                ========================= */}
 
                 <section className="progress-summary">
 
@@ -433,7 +669,7 @@ function Progress() {
                         <div>
 
                             <strong>
-                                {progress.length}
+                                {adventures.length}
                             </strong>
 
                             <span>
@@ -447,7 +683,9 @@ function Progress() {
                 </section>
 
 
-                {/* TITLE */}
+                {/* =========================
+                    TITLE
+                ========================= */}
 
                 <div className="adventures-title">
 
@@ -471,9 +709,11 @@ function Progress() {
                 </div>
 
 
-                {/* EMPTY */}
+                {/* =========================
+                    EMPTY
+                ========================= */}
 
-                {progress.length === 0 ? (
+                {adventures.length === 0 ? (
 
                     <section className="empty-progress">
 
@@ -489,9 +729,7 @@ function Progress() {
 
                         <button
                             onClick={() =>
-                                navigate(
-                                    "/world/1"
-                                )
+                                navigate("/world/1")
                             }
                         >
                             🎮 Започни ја авантурата
@@ -503,22 +741,23 @@ function Progress() {
 
                     <section className="adventure-grid">
 
-                        {progress.map(
+                        {adventures.map(
                             (item) => {
 
-                                const type =
-                                    item.gamesType ||
-                                    "RECOGNIZE_SOUND";
-
-
                                 const game =
-                                    gameData[type] ||
-                                    gameData.RECOGNIZE_SOUND;
+                                    gameData[
+                                        item.gamesType
+                                    ];
+
+
+                                if (!game) {
+                                    return null;
+                                }
 
 
                                 const score =
                                     Math.min(
-                                        10,
+                                        TOTAL_TASKS,
                                         Math.max(
                                             0,
                                             Number(
@@ -528,44 +767,48 @@ function Progress() {
                                     );
 
 
-                                const total =
-                                    Number(
-                                        item.totalTasks || 10
-                                    );
-
-
-                                const percentage =
+                                const completedTasks =
                                     Math.min(
-                                        100,
-                                        Math.round(
-                                            (
-                                                score /
-                                                total
-                                            ) * 100
+                                        TOTAL_TASKS,
+                                        Math.max(
+                                            0,
+                                            Number(
+                                                item.completedTasks || 0
+                                            )
                                         )
                                     );
 
 
-                                const completed =
-                                    item.completed === true;
+                                const totalTasks =
+                                    Math.max(
+                                        TOTAL_TASKS,
+                                        Number(
+                                            item.totalTasks || TOTAL_TASKS
+                                        )
+                                    );
 
 
-                                const wrongAnswers =
-                                    parseWrongAnswers(
-                                        item
+                                const percentage =
+                                    Math.round(
+                                        (
+                                            completedTasks /
+                                            totalTasks
+                                        ) * 100
+                                    );
+
+
+                                const wrongCount =
+                                    Math.max(
+                                        0,
+                                        completedTasks - score
                                     );
 
 
                                 return (
 
                                     <article
-                                        className={
-                                            `adventure-card ${game.theme}`
-                                        }
-                                        key={
-                                            item.id ||
-                                            `${item.gamesId}-${item.pinNumber}`
-                                        }
+                                        className={`adventure-card ${game.theme}`}
+                                        key={item.id}
                                     >
 
                                         <div className="adventure-card-top">
@@ -584,9 +827,7 @@ function Progress() {
 
 
                                             <div className="adventure-icon">
-
                                                 {game.icon}
-
                                             </div>
 
                                         </div>
@@ -654,11 +895,8 @@ function Progress() {
                                                 <span className="attempts">
 
                                                     🔄{" "}
-                                                    {item.attempts || 1}{" "}
-                                                    {(
-                                                        item.attempts ||
-                                                        1
-                                                    ) === 1
+                                                    {item.attempts || 0}{" "}
+                                                    {(item.attempts || 0) === 1
                                                         ? "обид"
                                                         : "обиди"}
 
@@ -673,10 +911,9 @@ function Progress() {
 
                                             <div>
 
-                                                {completed ? (
+                                                {item.passed ? (
 
                                                     <>
-
                                                         <span className="status-check">
                                                             ✓
                                                         </span>
@@ -688,17 +925,15 @@ function Progress() {
                                                             </strong>
 
                                                             <small>
-                                                                Следната авантура е отклучена.
+                                                                Успешно ја помина авантурата.
                                                             </small>
 
                                                         </div>
-
                                                     </>
 
                                                 ) : (
 
                                                     <>
-
                                                         <span className="status-practice">
                                                             🌱
                                                         </span>
@@ -710,11 +945,10 @@ function Progress() {
                                                             </strong>
 
                                                             <small>
-                                                                Ти требаат 8/10 за отклучување.
+                                                                Ти требаат најмалку 8/10.
                                                             </small>
 
                                                         </div>
-
                                                     </>
 
                                                 )}
@@ -728,13 +962,14 @@ function Progress() {
 
                                             <span className="mistakes">
 
-                                                {wrongAnswers.length === 0
+                                                {wrongCount === 0
                                                     ? "🎉 Без грешки"
-                                                    : `💡 ${wrongAnswers.length} ${
-                                                        wrongAnswers.length === 1
+                                                    : `💡 ${wrongCount} ${
+                                                        wrongCount === 1
                                                             ? "грешка"
                                                             : "грешки"
-                                                    }`}
+                                                    }`
+                                                }
 
                                             </span>
 
@@ -742,11 +977,10 @@ function Progress() {
                                             <button
                                                 className="review-button"
                                                 onClick={() =>
-                                                    openReview(
-                                                        item
-                                                    )
+                                                    openReview(item)
                                                 }
                                             >
+
                                                 <span>
                                                     🔍
                                                 </span>
@@ -765,35 +999,31 @@ function Progress() {
                     </section>
                 )}
 
+
             </main>
 
 
-            {/* =================================================
+            {/* =========================
                 REVIEW MODAL
-            ================================================= */}
+            ========================= */}
 
             {selectedReview && (
 
                 <div
                     className="review-overlay"
-                    onClick={
-                        closeReview
-                    }
+                    onClick={closeReview}
                 >
 
                     <div
                         className="review-modal"
-                        onClick={
-                            event =>
-                                event.stopPropagation()
+                        onClick={(event) =>
+                            event.stopPropagation()
                         }
                     >
 
                         <button
                             className="review-close"
-                            onClick={
-                                closeReview
-                            }
+                            onClick={closeReview}
                         >
                             ×
                         </button>
@@ -806,8 +1036,7 @@ function Progress() {
                                 {
                                     gameData[
                                         selectedReview.gamesType
-                                    ]?.icon ||
-                                    "🎮"
+                                    ]?.icon || "🎮"
                                 }
 
                             </div>
@@ -817,17 +1046,14 @@ function Progress() {
 
                                 <span>
                                     АВАНТУРА{" "}
-                                    {
-                                        selectedReview.pinNumber
-                                    }
+                                    {selectedReview.pinNumber}
                                 </span>
 
                                 <h2>
                                     {
                                         gameData[
                                             selectedReview.gamesType
-                                        ]?.name ||
-                                        "Игра"
+                                        ]?.name || "Игра"
                                     }
                                 </h2>
 
@@ -845,15 +1071,12 @@ function Progress() {
                                 </small>
 
                                 <strong>
-                                    {
-                                        Math.min(
-                                            10,
-                                            Number(
-                                                selectedReview.score ||
-                                                0
-                                            )
+                                    {Math.min(
+                                        10,
+                                        Number(
+                                            selectedReview.score || 0
                                         )
-                                    }/10
+                                    )}/10
                                 </strong>
 
                             </div>
@@ -866,12 +1089,15 @@ function Progress() {
                                 </small>
 
                                 <strong>
-                                    {
-                                        selectedReview
-                                            .wrongAnswers
-                                            ?.length ||
-                                        0
-                                    }
+                                    {Math.max(
+                                        0,
+                                        Number(
+                                            selectedReview.completedTasks || 0
+                                        ) -
+                                        Number(
+                                            selectedReview.score || 0
+                                        )
+                                    )}
                                 </strong>
 
                             </div>
@@ -879,31 +1105,7 @@ function Progress() {
                         </div>
 
 
-                        {(
-                            selectedReview
-                                .wrongAnswers
-                                ?.length ||
-                            0
-                        ) === 0 ? (
-
-                            <div className="perfect-review">
-
-                                <div>
-                                    🏆
-                                </div>
-
-                                <h3>
-                                    Совршено!
-                                </h3>
-
-                                <p>
-                                    Сите одговори се точни.
-                                    Браво! 🎉
-                                </p>
-
-                            </div>
-
-                        ) : (
+                        {selectedReview.wrongAnswers?.length > 0 ? (
 
                             <div className="mistakes-review">
 
@@ -912,84 +1114,72 @@ function Progress() {
                                 </h3>
 
                                 <p className="review-intro">
-                                    Еве каде може уште малку
-                                    да се вежба:
+                                    Еве каде може уште малку да се вежба:
                                 </p>
 
 
-                                {selectedReview
-                                    .wrongAnswers
-                                    .map(
-                                        (
-                                            wrong,
-                                            index
-                                        ) => (
+                                {selectedReview.wrongAnswers.map(
+                                    (wrong, index) => (
 
-                                            <div
-                                                className="mistake-item"
-                                                key={
-                                                    `${wrong.taskNumber}-${index}`
-                                                }
-                                            >
+                                        <div
+                                            className="mistake-item"
+                                            key={
+                                                `${wrong.taskNumber}-${index}`
+                                            }
+                                        >
 
-                                                <div className="mistake-number">
+                                            <div className="mistake-number">
+                                                {wrong.taskNumber}
+                                            </div>
 
-                                                    {wrong.taskNumber}
+
+                                            <div className="mistake-content">
+
+                                                <strong className="mistake-question">
+                                                    {wrong.question}
+                                                </strong>
+
+
+                                                <div className="answer-box your-answer">
+
+                                                    <span>
+                                                        ✕
+                                                    </span>
+
+                                                    <div>
+
+                                                        <small>
+                                                            Твој одговор
+                                                        </small>
+
+                                                        <strong>
+                                                            {
+                                                                wrong.selectedAnswer
+                                                            }
+                                                        </strong>
+
+                                                    </div>
 
                                                 </div>
 
 
-                                                <div className="mistake-content">
+                                                <div className="answer-box right-answer">
 
-                                                    <strong className="mistake-question">
+                                                    <span>
+                                                        ✓
+                                                    </span>
 
-                                                        {wrong.question}
+                                                    <div>
 
-                                                    </strong>
+                                                        <small>
+                                                            Точен одговор
+                                                        </small>
 
-
-                                                    <div className="answer-box your-answer">
-
-                                                        <span>
-                                                            ✕
-                                                        </span>
-
-                                                        <div>
-
-                                                            <small>
-                                                                Твој одговор
-                                                            </small>
-
-                                                            <strong>
-                                                                {
-                                                                    wrong.selectedAnswer
-                                                                }
-                                                            </strong>
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                    <div className="answer-box right-answer">
-
-                                                        <span>
-                                                            ✓
-                                                        </span>
-
-                                                        <div>
-
-                                                            <small>
-                                                                Точен одговор
-                                                            </small>
-
-                                                            <strong>
-                                                                {
-                                                                    wrong.correctAnswer
-                                                                }
-                                                            </strong>
-
-                                                        </div>
+                                                        <strong>
+                                                            {
+                                                                wrong.correctAnswer
+                                                            }
+                                                        </strong>
 
                                                     </div>
 
@@ -997,8 +1187,39 @@ function Progress() {
 
                                             </div>
 
-                                        )
-                                    )}
+                                        </div>
+
+                                    )
+                                )}
+
+                            </div>
+
+                        ) : (
+
+                            <div className="perfect-review">
+
+                                <div>
+                                    {Number(selectedReview.score || 0) >= 8
+                                        ? "🏆"
+                                        : "📚"
+                                    }
+                                </div>
+
+                                <h3>
+                                    Резултатот е зачуван!
+                                </h3>
+
+                                <p>
+                                    Зачувани се твојот резултат,
+                                    бројот на решени задачи и напредокот
+                                    на авантурата.
+                                </p>
+
+                                <p>
+                                    Деталните избори од секоја задача
+                                    во моментов не се зачувуваат во
+                                    базата.
+                                </p>
 
                             </div>
 
@@ -1007,9 +1228,7 @@ function Progress() {
 
                         <button
                             className="review-close-button"
-                            onClick={
-                                closeReview
-                            }
+                            onClick={closeReview}
                         >
                             ✓ Готово
                         </button>

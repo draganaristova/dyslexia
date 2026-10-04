@@ -1,212 +1,375 @@
 import "../styles/WorldPath.css";
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+import {
+    useParams,
+    useNavigate
+} from "react-router-dom";
+
+import {
+    useEffect,
+    useState
+} from "react";
 
 import ProfileButton from "../widgets/ProfileButton";
-import { worldsData } from "../data/worldsData";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
+
+import { worldsData } from "../data/worldsData";
 import { API } from "../data/api";
 
+
+/*
+ * ==================================================
+ * GAME TYPES
+ *
+ * ОВА МОРА ДА БИДЕ ИСТО
+ * СО GamesType ENUM ВО BACKEND.
+ * ==================================================
+ */
+
 const gameTypes = [
-    "RECOGNIZE_SOUND",
     "MEMORY",
-    "RHYMES",
-    "MISSING_LETTER",
     "WORD_BUILDING",
-    "WHAT_CHANGED"
+    "MISSING_LETTER",
+    "RHYMES",
+    "SYLLABLES",
+    "SOUND_MANIPULATION"
 ];
+
+
+/*
+ * ==================================================
+ * FALLBACK NAMES
+ * ==================================================
+ */
 
 const gameNames = [
-    "Препознај го гласот",
     "Меморија",
-    "Рими",
-    "Најди ја буквата",
     "Состави го зборот",
-    "Што се смени?"
+    "Која буква недостасува",
+    "Најди ја римата",
+    "Слогови",
+    "Бриши и замени гласови"
 ];
 
+
+/*
+ * ==================================================
+ * ICONS
+ * ==================================================
+ */
+
 const gameIcons = [
-    "🔊",
     "🃏",
-    "🎵",
-    "🔤",
     "🧩",
-    "👀"
+    "🔤",
+    "🎵",
+    "👏",
+    "✂️"
 ];
+
 
 function WorldPath() {
 
-    const { worldId } = useParams();
-    const navigate = useNavigate();
+    const {
+        worldId
+    } = useParams();
 
-    const world = worldsData[worldId];
+    const navigate =
+        useNavigate();
 
-    const [games, setGames] = useState([]);
-    const [progress, setProgress] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const world =
+        worldsData[worldId];
+
+    const [games, setGames] =
+        useState([]);
+
+    const [progress, setProgress] =
+        useState([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+
+    /*
+     * ==================================================
+     * LOAD GAMES + EXERCISE PROGRESS
+     * ==================================================
+     */
 
     useEffect(() => {
 
-        const fetchWorldData = async () => {
+        const fetchWorldData =
+            async () => {
 
-            try {
+                try {
 
-                setLoading(true);
-                setError("");
+                    setLoading(true);
+                    setError("");
 
-                const token =
-                    localStorage.getItem("token");
+                    const token =
+                        localStorage.getItem(
+                            "token"
+                        );
 
-                const userId =
-                    localStorage.getItem("userId");
+                    const userId =
+                        localStorage.getItem(
+                            "userId"
+                        );
 
-                if (!token) {
 
-                    setError(
-                        "Сесијата е истечена. Најавете се повторно."
-                    );
+                    /*
+                     * AUTH CHECK
+                     */
 
-                    setLoading(false);
-                    return;
-                }
+                    if (!token) {
 
-                if (!userId) {
+                        setError(
+                            "Сесијата е истечена. Најавете се повторно."
+                        );
 
-                    setError(
-                        "Не е пронајден корисникот."
-                    );
+                        setLoading(false);
 
-                    setLoading(false);
-                    return;
-                }
+                        return;
+                    }
 
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                };
 
-                const [
-                    gamesResponse,
-                    progressResponse
-                ] = await Promise.all([
+                    if (!userId) {
 
-                    fetch(
-                        `${API}/games/world/${worldId}?userId=${userId}`,
-                        {
-                            method: "GET",
-                            headers
-                        }
-                    ),
+                        setError(
+                            "Не е пронајден корисникот."
+                        );
 
-                    fetch(
-                        `${API}/progress/user/${userId}`,
-                        {
-                            method: "GET",
-                            headers
-                        }
-                    )
+                        setLoading(false);
 
-                ]);
+                        return;
+                    }
 
-                if (
-                    gamesResponse.status === 401 ||
-                    gamesResponse.status === 403
-                ) {
 
-                    setError(
-                        "Немате дозвола за пристап. Најавете се повторно."
-                    );
+                    const headers = {
+                        Authorization:
+                            `Bearer ${token}`,
 
-                    setLoading(false);
-                    return;
-                }
+                        "Content-Type":
+                            "application/json"
+                    };
 
-                if (
-                    progressResponse.status === 401 ||
-                    progressResponse.status === 403
-                ) {
 
-                    setError(
-                        "Немате дозвола за пристап. Најавете се повторно."
-                    );
+                    /*
+                     * LOAD:
+                     *
+                     * 1. Games
+                     * 2. ExerciseProgress summary
+                     */
 
-                    setLoading(false);
-                    return;
-                }
+                    const [gamesResponse, progressResponse] = await Promise.all([
 
-                if (!gamesResponse.ok) {
+                        fetch(
+                            `${API}/games/world/${worldId}?userId=${userId}`,
+                            {
+                                method: "GET",
+                                headers
+                            }
+                        ),
 
-                    throw new Error(
-                        `Games HTTP error: ${gamesResponse.status}`
-                    );
-                }
-
-                const gamesData =
-                    await gamesResponse.json();
-
-                const progressData =
-                    progressResponse.ok
-                        ? await progressResponse.json()
-                        : [];
-
-                console.log(
-                    "Games from backend:",
-                    gamesData
-                );
-
-                console.log(
-                    "Progress from backend:",
-                    progressData
-                );
-
-                const sortedGames =
-                    Array.isArray(gamesData)
-                        ? [...gamesData].sort(
-                            (a, b) =>
-                                (a.orderIndex || 0) -
-                                (b.orderIndex || 0)
+                        fetch(
+                            `${API}/exercise-progress/user/${userId}/summary`,
+                            {
+                                method: "GET",
+                                headers
+                            }
                         )
-                        : [];
+                    ]);
 
-                setGames(
-                    sortedGames.slice(0, 6)
-                );
 
-                setProgress(
-                    Array.isArray(progressData)
-                        ? progressData
-                        : []
-                );
+                    /*
+                     * AUTH ERROR
+                     */
 
-            } catch (err) {
+                    if (
+                        gamesResponse.status === 401 ||
+                        gamesResponse.status === 403 ||
+                        progressResponse.status === 401 ||
+                        progressResponse.status === 403
+                    ) {
 
-                console.error(
-                    "Error loading world:",
-                    err
-                );
+                        localStorage.removeItem(
+                            "token"
+                        );
 
-                setError(
-                    "Не може да се вчитаат игрите."
-                );
+                        localStorage.removeItem(
+                            "userId"
+                        );
 
-            } finally {
+                        navigate("/login");
 
-                setLoading(false);
+                        return;
+                    }
 
-            }
-        };
+
+                    /*
+                     * GAMES ERROR
+                     */
+
+                    if (!gamesResponse.ok) {
+
+                        throw new Error(
+                            `Games HTTP error: ${gamesResponse.status}`
+                        );
+                    }
+
+
+                    /*
+                     * PROGRESS ERROR
+                     *
+                     * Ако summary endpoint не успее,
+                     * games сепак може да се прикажат.
+                     */
+
+                    if (!progressResponse.ok) {
+
+                        console.warn(
+                            "Progress summary could not be loaded:",
+                            progressResponse.status
+                        );
+                    }
+
+
+                    const gamesData =
+                        await gamesResponse.json();
+
+
+                    const progressData =
+                        progressResponse.ok
+                            ? await progressResponse.json()
+                            : [];
+
+
+                    console.log(
+                        "Games from backend:",
+                        gamesData
+                    );
+
+                    console.log(
+                        "Exercise progress summary:",
+                        progressData
+                    );
+
+
+                    /*
+                     * SORT GAMES
+                     */
+
+                    const sortedGames =
+                        Array.isArray(gamesData)
+                            ? [...gamesData].sort(
+                                (a, b) =>
+                                    (
+                                        a.orderIndex || 0
+                                    ) -
+                                    (
+                                        b.orderIndex || 0
+                                    )
+                            )
+                            : [];
+
+
+                    /*
+                     * WORLD HAS MAX 6 GAMES
+                     */
+
+                    setGames(
+                        sortedGames.slice(0, 6)
+                    );
+
+
+                    setProgress(
+                        Array.isArray(progressData)
+                            ? progressData
+                            : []
+                    );
+
+                } catch (err) {
+
+                    console.error(
+                        "Error loading world:",
+                        err
+                    );
+
+                    setError(
+                        "Не може да се вчитаат игрите."
+                    );
+
+                } finally {
+
+                    setLoading(false);
+                }
+            };
+
 
         fetchWorldData();
 
-    }, [worldId]);
+    }, [
+        worldId,
+        navigate
+    ]);
 
+
+    /*
+     * ==================================================
+     * HEADER
+     * ==================================================
+     */
+
+    const Header = () => (
+
+        <header className="world-path-header">
+
+            <Logo />
+
+            <div className="right-nav-group">
+
+                <button
+                    className="back-btn"
+                    onClick={() =>
+                        navigate(
+                            "/gameselection"
+                        )
+                    }
+                >
+                    Назад
+                </button>
+
+                <div className="nav-icons-row">
+
+                    <HomeButton />
+
+                    <LogoutButton />
+
+                    <ProfileButton />
+
+                </div>
+
+            </div>
+
+        </header>
+    );
+
+
+    /*
+     * ==================================================
+     * INVALID WORLD
+     * ==================================================
+     */
 
     if (!world) {
 
         return (
+
             <div className="world-path">
 
                 <p>
@@ -215,7 +378,9 @@ function WorldPath() {
 
                 <button
                     onClick={() =>
-                        navigate("/gameselection")
+                        navigate(
+                            "/gameselection"
+                        )
                     }
                 >
                     Назад
@@ -226,37 +391,19 @@ function WorldPath() {
     }
 
 
+    /*
+     * ==================================================
+     * LOADING
+     * ==================================================
+     */
+
     if (loading) {
 
         return (
+
             <div className="world-path">
 
-                <header className="world-path-header">
-
-                    <Logo />
-
-                    <div className="right-nav-group">
-
-                        <button
-                            className="back-btn"
-                            onClick={() =>
-                                navigate("/gameselection")
-                            }
-                        >
-                            Назад
-                        </button>
-
-                        <div className="nav-icons-row">
-
-                            <HomeButton />
-                            <LogoutButton />
-                            <ProfileButton />
-
-                        </div>
-
-                    </div>
-
-                </header>
+                <Header />
 
                 <div className="world-loading">
 
@@ -275,37 +422,19 @@ function WorldPath() {
     }
 
 
+    /*
+     * ==================================================
+     * ERROR
+     * ==================================================
+     */
+
     if (error) {
 
         return (
+
             <div className="world-path">
 
-                <header className="world-path-header">
-
-                    <Logo />
-
-                    <div className="right-nav-group">
-
-                        <button
-                            className="back-btn"
-                            onClick={() =>
-                                navigate("/gameselection")
-                            }
-                        >
-                            Назад
-                        </button>
-
-                        <div className="nav-icons-row">
-
-                            <HomeButton />
-                            <LogoutButton />
-                            <ProfileButton />
-
-                        </div>
-
-                    </div>
-
-                </header>
+                <Header />
 
                 <div className="world-error">
 
@@ -333,117 +462,123 @@ function WorldPath() {
 
 
     /*
-     * Секој pin се проверува според:
+     * ==================================================
+     * FIND PROGRESS FOR ONE PIN
      *
-     * gamesId + pinNumber
+     * Backend summary има:
      *
-     * Ова е важно затоа што имаш 6 различни игри.
+     * gamesId
+     * pinNumber
+     * completedTasks
+     * totalTasks
+     * score
+     * completed
+     * passed
+     * ==================================================
      */
-    const isPinCompleted = (
-        pinNumber,
-        game
+
+    const getPinProgress = (
+        game,
+        pinNumber
     ) => {
 
         if (!game) {
-            return false;
+            return null;
         }
 
-        return progress.some(
-            item => {
+        return progress.find(
+            item =>
+                Number(item.gamesId) ===
+                    Number(game.id)
+                &&
+                Number(item.pinNumber) ===
+                    Number(pinNumber)
+        ) || null;
+    };
 
-                const progressGameId =
-                    item.games?.id ??
-                    item.gamesId ??
-                    item.gameId;
 
-                return (
-                    Number(item.pinNumber) ===
-                        Number(pinNumber) &&
+    /*
+     * ==================================================
+     * COMPLETED
+     * ==================================================
+     */
 
-                    Number(progressGameId) ===
-                        Number(game.id) &&
+    const isPinCompleted = (
+        game,
+        pinNumber
+    ) => {
 
-                    item.completed === true
-                );
-            }
+        const item =
+            getPinProgress(
+                game,
+                pinNumber
+            );
+
+        return (
+            item?.passed === true
         );
     };
 
 
     /*
-     * Pin 1 е отклучен.
+     * ==================================================
+     * UNLOCKED
      *
-     * Pin 2 се отклучува кога Pin 1 е завршен.
-     * Pin 3 кога Pin 2 е завршен итн.
+     * First mission is unlocked.
+     *
+     * Every next mission opens
+     * after previous mission PASSED.
+     * ==================================================
      */
+
     const isPinUnlocked = (
-        pinNumber,
         index
     ) => {
 
-        if (pinNumber === 1) {
+        if (index === 0) {
             return true;
         }
 
         const previousGame =
             games[index - 1];
 
-        if (!previousGame) {
-            return false;
-        }
+        const previousPin =
+            index;
 
         return isPinCompleted(
-            pinNumber - 1,
-            previousGame
+            previousGame,
+            previousPin
         );
     };
 
 
     /*
-     * Број на завршени pins.
+     * ==================================================
+     * COMPLETED PINS
+     * ==================================================
      */
+
     const completedPins =
         games.filter(
             (game, index) =>
                 isPinCompleted(
-                    index + 1,
-                    game
+                    game,
+                    index + 1
                 )
         ).length;
 
 
+    /*
+     * ==================================================
+     * RENDER
+     * ==================================================
+     */
+
     return (
+
         <div className="world-path">
 
-
-            {/* HEADER */}
-
-            <header className="world-path-header">
-
-                <Logo />
-
-                <div className="right-nav-group">
-
-                    <button
-                        className="back-btn"
-                        onClick={() =>
-                            navigate("/gameselection")
-                        }
-                    >
-                        Назад
-                    </button>
-
-                    <div className="nav-icons-row">
-
-                        <HomeButton />
-                        <LogoutButton />
-                        <ProfileButton />
-
-                    </div>
-
-                </div>
-
-            </header>
+            <Header />
 
 
             {/* WORLD TITLE */}
@@ -455,7 +590,9 @@ function WorldPath() {
                 </h1>
 
                 <span
-                    className={`world-progress pin-${world.color}`}
+                    className={
+                        `world-progress pin-${world.color}`
+                    }
                 >
                     {completedPins}/6 мисии
                 </span>
@@ -466,7 +603,9 @@ function WorldPath() {
             {/* MAP */}
 
             <div
-                className={`world-map-frame frame-${world.color}`}
+                className={
+                    `world-map-frame frame-${world.color}`
+                }
             >
 
                 <img
@@ -476,123 +615,143 @@ function WorldPath() {
                 />
 
 
-                {/* SIX PINS */}
-
                 {world.positions
                     .slice(0, 6)
-                    .map((pos, index) => {
+                    .map(
+                        (
+                            pos,
+                            index
+                        ) => {
 
-                        const pinNumber =
-                            index + 1;
+                            const pinNumber =
+                                index + 1;
 
-                        const game =
-                            games[index];
-
-                        const completed =
-                            isPinCompleted(
-                                pinNumber,
-                                game
-                            );
-
-                        const unlocked =
-                            isPinUnlocked(
-                                pinNumber,
-                                index
-                            );
+                            const game =
+                                games[index];
 
 
-                        let status =
-                            "locked";
-
-                        if (completed) {
-
-                            status =
-                                "completed";
-
-                        } else if (unlocked) {
-
-                            status =
-                                "current";
-
-                        }
-
-
-                        const gameType =
-                            gameTypes[index];
-
-                        const gameName =
-                            game?.name ||
-                            gameNames[index];
-
-                        const icon =
-                            gameIcons[index];
-
-
-                        const handlePinClick =
-                            () => {
-
-                                if (!unlocked) {
-                                    return;
-                                }
-
-                                if (!game) {
-                                    return;
-                                }
-
-                                navigate(
-                                    `/world/${worldId}/exercise/${game.id}/${gameType}/${pinNumber}`
+                            const progressItem =
+                                getPinProgress(
+                                    game,
+                                    pinNumber
                                 );
-                            };
 
 
-                        return (
+                            const completed =
+                                isPinCompleted(
+                                    game,
+                                    pinNumber
+                                );
 
-                            <button
-                                key={pinNumber}
 
-                                className={`
-                                    pin
-                                    pin-${world.color}
-                                    pin-${status}
-                                `}
+                            const unlocked =
+                                isPinUnlocked(
+                                    index
+                                );
 
-                                style={{
-                                    top: pos.top,
-                                    left: pos.left
-                                }}
 
-                                disabled={!unlocked}
+                            let status =
+                                "locked";
 
-                                onClick={
-                                    handlePinClick
-                                }
 
-                                title={
-                                    unlocked
-                                        ? gameName
-                                        : "Оваа мисија е заклучена"
-                                }
-                            >
+                            if (completed) {
 
-                                <span className="pin-number">
-                                    {pinNumber}
-                                </span>
+                                status =
+                                    "completed";
 
-                                <span className="pin-icon">
+                            } else if (unlocked) {
 
-                                    {completed
-                                        ? "✓"
-                                        : unlocked
-                                            ? icon
-                                            : "🔒"}
+                                status =
+                                    "current";
+                            }
 
-                                </span>
 
-                            </button>
+                            /*
+                             * BACKEND GAME TYPE
+                             */
 
-                        );
+                            const gameType =
+                                game?.gamesType ||
+                                game?.type ||
+                                gameTypes[index];
 
-                    })}
+
+                            const gameName =
+                                game?.name ||
+                                gameNames[index];
+
+
+                            const icon =
+                                gameIcons[index];
+
+
+                            const handlePinClick =
+                                () => {
+
+                                    if (
+                                        !unlocked ||
+                                        !game
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    navigate(
+                                        `/world/${worldId}/exercise/${game.id}/${gameType}/${pinNumber}`
+                                    );
+                                };
+
+
+                            return (
+
+                                <button
+                                    key={pinNumber}
+
+                                    className={
+                                        `pin ` +
+                                        `pin-${world.color} ` +
+                                        `pin-${status}`
+                                    }
+
+                                    style={{
+                                        top: pos.top,
+                                        left: pos.left
+                                    }}
+
+                                    disabled={
+                                        !unlocked
+                                    }
+
+                                    onClick={
+                                        handlePinClick
+                                    }
+
+                                    title={
+                                        unlocked
+                                            ? gameName
+                                            : "Оваа мисија е заклучена"
+                                    }
+                                >
+
+                                    <span className="pin-number">
+                                        {pinNumber}
+                                    </span>
+
+                                    <span className="pin-icon">
+
+                                        {completed
+                                            ? "✓"
+                                            : unlocked
+                                                ? icon
+                                                : "🔒"}
+
+                                    </span>
+
+                                </button>
+
+                            );
+                        }
+                    )}
 
             </div>
 

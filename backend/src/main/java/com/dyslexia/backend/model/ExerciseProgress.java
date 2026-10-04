@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
         name = "exercise_progress",
         uniqueConstraints = {
                 @UniqueConstraint(
+                        name = "uk_user_exercise",
                         columnNames = {"user_id", "exercise_id"}
                 )
         }
@@ -19,26 +20,27 @@ public class ExerciseProgress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-    // Колку поени освои детето на оваа задача
-    private Integer score = 0;
+    @Column(nullable = false)
+    private Integer score;
 
-    // Колку пати се обидело на оваа задача
-    private Integer attempts = 0;
+    @Column(nullable = false)
+    private Integer attempts;
 
-    // Дали задачата е успешно завршена
-    private Boolean completed = false;
+    @Column(nullable = false)
+    private Boolean correct;
 
-    // Дали последниот одговор бил точен
-    private Boolean correct = false;
+    @Column(nullable = false)
+    private Boolean completed;
 
+    @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
     public ExerciseProgress() {
@@ -46,10 +48,6 @@ public class ExerciseProgress {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getUser() {
@@ -84,20 +82,20 @@ public class ExerciseProgress {
         this.attempts = attempts;
     }
 
-    public Boolean getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
-
     public Boolean getCorrect() {
         return correct;
     }
 
     public void setCorrect(Boolean correct) {
         this.correct = correct;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 
     public LocalDateTime getCompletedAt() {
@@ -108,4 +106,3 @@ public class ExerciseProgress {
         this.completedAt = completedAt;
     }
 }
-

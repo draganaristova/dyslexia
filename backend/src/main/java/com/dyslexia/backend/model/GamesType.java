@@ -6,5 +6,5 @@ public enum GamesType {
     MISSING_LETTER,
     RHYMES,
     SYLLABLES,
-    DELETE_REPLACE_SOUNDS
+    SOUND_MANIPULATION
 }

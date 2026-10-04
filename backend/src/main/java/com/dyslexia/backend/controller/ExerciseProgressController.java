@@ -6,138 +6,159 @@ import com.dyslexia.backend.model.User;
 import com.dyslexia.backend.repository.ExerciseProgressRepository;
 import com.dyslexia.backend.repository.ExerciseRepository;
 import com.dyslexia.backend.repository.UserRepository;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/exercise-progress")
 public class ExerciseProgressController {
 
-    private final ExerciseProgressRepository exerciseProgressRepository;
+    private static final int TOTAL_TASKS = 10;
+    private static final int PASSING_SCORE = 8;
+
+    private final ExerciseProgressRepository progressRepository;
     private final ExerciseRepository exerciseRepository;
     private final UserRepository userRepository;
 
     public ExerciseProgressController(
-            ExerciseProgressRepository exerciseProgressRepository,
+            ExerciseProgressRepository progressRepository,
             ExerciseRepository exerciseRepository,
             UserRepository userRepository
     ) {
-        this.exerciseProgressRepository = exerciseProgressRepository;
+        this.progressRepository = progressRepository;
         this.exerciseRepository = exerciseRepository;
         this.userRepository = userRepository;
     }
 
-    /**
-     * Зачувување на резултатот од една задача.
-     */
     @PostMapping
-    public ResponseEntity<?> saveExerciseProgress(
+    public ResponseEntity<?> saveProgress(
             @RequestBody Map<String, Object> request
     ) {
 
-        Long userId = Long.valueOf(
-                request.get("userId").toString()
-        );
+        try {
 
-        Long exerciseId = Long.valueOf(
-                request.get("exerciseId").toString()
-        );
+            if (request.get("userId") == null ||
+                    request.get("exerciseId") == null ||
+                    request.get("score") == null ||
+                    request.get("correct") == null) {
 
-        Integer score = Integer.valueOf(
-                request.get("score").toString()
-        );
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "message",
+                                "Недостасуваат податоци."
+                        ));
+            }
 
-        Integer attempts = Integer.valueOf(
-                request.get("attempts").toString()
-        );
+            Long userId =
+                    Long.valueOf(
+                            request.get("userId").toString()
+                    );
 
-        Boolean correct = Boolean.valueOf(
-                request.get("correct").toString()
-        );
+            Long exerciseId =
+                    Long.valueOf(
+                            request.get("exerciseId").toString()
+                    );
 
-        Optional<User> userOpt =
-                userRepository.findById(userId);
+            Integer score =
+                    Integer.valueOf(
+                            request.get("score").toString()
+                    );
 
-        if (userOpt.isEmpty()) {
+            Boolean correct =
+                    Boolean.valueOf(
+                            request.get("correct").toString()
+                    );
+
+            User user =
+                    userRepository.findById(userId)
+                            .orElse(null);
+
+            if (user == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "message",
+                                "Не постои корисникот."
+                        ));
+            }
+
+            Exercise exercise =
+                    exerciseRepository.findById(exerciseId)
+                            .orElse(null);
+
+            if (exercise == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "message",
+                                "Не постои задачата."
+                        ));
+            }
+
+            Optional<ExerciseProgress> existing =
+                    progressRepository
+                            .findByUserIdAndExerciseId(
+                                    userId,
+                                    exerciseId
+                            );
+
+            ExerciseProgress progress;
+
+            if (existing.isPresent()) {
+
+                progress = existing.get();
+
+                int oldAttempts =
+                        progress.getAttempts() == null
+                                ? 0
+                                : progress.getAttempts();
+
+                progress.setAttempts(oldAttempts + 1);
+
+            } else {
+
+                progress = new ExerciseProgress();
+
+                progress.setUser(user);
+                progress.setExercise(exercise);
+                progress.setAttempts(1);
+            }
+
+            progress.setScore(
+                    Math.max(0, Math.min(score, 1))
+            );
+
+            progress.setCorrect(correct);
+            progress.setCompleted(true);
+            progress.setCompletedAt(LocalDateTime.now());
+
+            ExerciseProgress saved =
+                    progressRepository.save(progress);
+
+            return ResponseEntity.ok(
+                    createResponse(saved)
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
             return ResponseEntity.badRequest()
                     .body(Map.of(
                             "message",
-                            "Не постои корисникот."
+                            "Не може да се зачува напредокот."
                     ));
         }
-
-        Optional<Exercise> exerciseOpt =
-                exerciseRepository.findById(exerciseId);
-
-        if (exerciseOpt.isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "message",
-                            "Не постои задачата."
-                    ));
-        }
-
-        User user = userOpt.get();
-        Exercise exercise = exerciseOpt.get();
-
-        Optional<ExerciseProgress> existingOpt =
-                exerciseProgressRepository
-                        .findByUserIdAndExerciseId(
-                                userId,
-                                exerciseId
-                        );
-
-        ExerciseProgress progress;
-
-        if (existingOpt.isPresent()) {
-            progress = existingOpt.get();
-        } else {
-            progress = new ExerciseProgress();
-            progress.setUser(user);
-            progress.setExercise(exercise);
-        }
-
-        progress.setScore(score);
-        progress.setAttempts(attempts);
-        progress.setCorrect(correct);
-        progress.setCompleted(true);
-        progress.setCompletedAt(LocalDateTime.now());
-
-        ExerciseProgress saved =
-                exerciseProgressRepository.save(progress);
-
-        Map<String, Object> response = new HashMap<>();
-
-        response.put("id", saved.getId());
-        response.put("exerciseId", exercise.getId());
-        response.put("taskNumber", exercise.getTaskNumber());
-        response.put("score", saved.getScore());
-        response.put("attempts", saved.getAttempts());
-        response.put("correct", saved.getCorrect());
-        response.put("completed", saved.getCompleted());
-
-        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Детален progress за едно дете.
-     */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserExerciseProgress(
+    public ResponseEntity<?> getUserProgress(
             @PathVariable Long userId
     ) {
 
-        Optional<User> userOpt =
-                userRepository.findById(userId);
-
-        if (userOpt.isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
                             "message",
@@ -145,8 +166,8 @@ public class ExerciseProgressController {
                     ));
         }
 
-        List<ExerciseProgress> progressList =
-                exerciseProgressRepository
+        List<ExerciseProgress> progress =
+                progressRepository
                         .findByUserIdOrderByCompletedAtDesc(
                                 userId
                         );
@@ -154,84 +175,148 @@ public class ExerciseProgressController {
         List<Map<String, Object>> result =
                 new ArrayList<>();
 
-        for (ExerciseProgress progress : progressList) {
+        for (ExerciseProgress item : progress) {
+            result.add(createResponse(item));
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/user/{userId}/summary")
+    public ResponseEntity<?> getSummary(
+            @PathVariable Long userId
+    ) {
+
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "message",
+                            "Не постои корисникот."
+                    ));
+        }
+
+        List<ExerciseProgress> progress =
+                progressRepository
+                        .findByUserIdOrderByCompletedAtDesc(
+                                userId
+                        );
+
+        Map<String, List<ExerciseProgress>> grouped =
+                new LinkedHashMap<>();
+
+        for (ExerciseProgress item : progress) {
 
             Exercise exercise =
-                    progress.getExercise();
+                    item.getExercise();
+
+            String key =
+                    exercise.getGames().getId()
+                            + "_"
+                            + exercise.getGamesType().name()
+                            + "_"
+                            + exercise.getPinNumber();
+
+            grouped
+                    .computeIfAbsent(
+                            key,
+                            k -> new ArrayList<>()
+                    )
+                    .add(item);
+        }
+
+        List<Map<String, Object>> result =
+                new ArrayList<>();
+
+        for (List<ExerciseProgress> mission :
+                grouped.values()) {
+
+            if (mission.isEmpty()) {
+                continue;
+            }
+
+            Exercise first =
+                    mission.get(0).getExercise();
+
+            Set<Integer> completedTaskNumbers =
+                    new HashSet<>();
+
+            int score = 0;
+
+            for (ExerciseProgress item : mission) {
+
+                if (Boolean.TRUE.equals(
+                        item.getCompleted()
+                )) {
+
+                    completedTaskNumbers.add(
+                            item.getExercise()
+                                    .getTaskNumber()
+                    );
+
+                    if (Boolean.TRUE.equals(
+                            item.getCorrect()
+                    )) {
+                        score++;
+                    }
+                }
+            }
+
+            int completedTasks =
+                    completedTaskNumbers.size();
+
+            boolean completed =
+                    completedTasks == TOTAL_TASKS;
+
+            boolean passed =
+                    completed &&
+                            score >= PASSING_SCORE;
 
             Map<String, Object> item =
-                    new HashMap<>();
-
-            item.put(
-                    "exerciseProgressId",
-                    progress.getId()
-            );
-
-            item.put(
-                    "exerciseId",
-                    exercise.getId()
-            );
+                    new LinkedHashMap<>();
 
             item.put(
                     "gamesId",
-                    exercise.getGames().getId()
+                    first.getGames().getId()
             );
 
             item.put(
                     "gameName",
-                    exercise.getGames().getName()
+                    first.getGames().getName()
             );
 
             item.put(
                     "gamesType",
-                    exercise.getGamesType()
-            );
-
-            item.put(
-                    "ageGroup",
-                    exercise.getAgeGroup()
+                    first.getGamesType().name()
             );
 
             item.put(
                     "pinNumber",
-                    exercise.getPinNumber()
+                    first.getPinNumber()
             );
 
             item.put(
-                    "taskNumber",
-                    exercise.getTaskNumber()
+                    "completedTasks",
+                    completedTasks
             );
 
             item.put(
-                    "levelNumber",
-                    resolveLevel(
-                            exercise.getPinNumber()
-                    )
+                    "totalTasks",
+                    TOTAL_TASKS
             );
 
             item.put(
                     "score",
-                    progress.getScore()
+                    score
             );
 
             item.put(
-                    "attempts",
-                    progress.getAttempts()
-            );
-
-            item.put(
-                    "correct",
-                    progress.getCorrect()
+                    "passed",
+                    passed
             );
 
             item.put(
                     "completed",
-                    progress.getCompleted()
-            );
-
-            item.put(
-                    "completedAt",
-                    progress.getCompletedAt()
+                    completed
             );
 
             result.add(item);
@@ -240,20 +325,81 @@ public class ExerciseProgressController {
         return ResponseEntity.ok(result);
     }
 
-    private Integer resolveLevel(Integer pinNumber) {
+    private Map<String, Object> createResponse(
+            ExerciseProgress progress
+    ) {
 
-        if (pinNumber == null) {
-            return 1;
-        }
+        Exercise exercise =
+                progress.getExercise();
 
-        if (pinNumber <= 2) {
-            return 1;
-        }
+        Map<String, Object> response =
+                new LinkedHashMap<>();
 
-        if (pinNumber <= 4) {
-            return 2;
-        }
+        response.put(
+                "exerciseProgressId",
+                progress.getId()
+        );
 
-        return 3;
+        response.put(
+                "exerciseId",
+                exercise.getId()
+        );
+
+        response.put(
+                "gamesId",
+                exercise.getGames().getId()
+        );
+
+        response.put(
+                "gameName",
+                exercise.getGames().getName()
+        );
+
+        response.put(
+                "gamesType",
+                exercise.getGamesType().name()
+        );
+
+        response.put(
+                "ageGroup",
+                exercise.getAgeGroup().name()
+        );
+
+        response.put(
+                "pinNumber",
+                exercise.getPinNumber()
+        );
+
+        response.put(
+                "taskNumber",
+                exercise.getTaskNumber()
+        );
+
+        response.put(
+                "score",
+                progress.getScore()
+        );
+
+        response.put(
+                "attempts",
+                progress.getAttempts()
+        );
+
+        response.put(
+                "correct",
+                progress.getCorrect()
+        );
+
+        response.put(
+                "completed",
+                progress.getCompleted()
+        );
+
+        response.put(
+                "completedAt",
+                progress.getCompletedAt()
+        );
+
+        return response;
     }
 }

@@ -17,9 +17,4 @@ public interface ExerciseProgressRepository
     List<ExerciseProgress> findByUserIdOrderByCompletedAtDesc(
             Long userId
     );
-
-    List<ExerciseProgress> findByUserIdAndExerciseGamesId(
-            Long userId,
-            Long gamesId
-    );
 }

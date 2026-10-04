@@ -7,6 +7,7 @@ import jakarta.persistence.*;
         name = "exercises",
         uniqueConstraints = {
                 @UniqueConstraint(
+                        name = "uk_exercise_definition",
                         columnNames = {
                                 "games_id",
                                 "games_type",
@@ -23,21 +24,25 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "games_id", nullable = false)
     private Games games;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "games_type", nullable = false)
     private GamesType gamesType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "age_group", nullable = false)
     private AgeGroup ageGroup;
 
+    @Column(name = "pin_number", nullable = false)
     private Integer pinNumber;
 
+    @Column(name = "task_number", nullable = false)
     private Integer taskNumber;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "content_json", columnDefinition = "TEXT", nullable = false)
     private String contentJson;
 
     public Exercise() {
@@ -45,10 +50,6 @@ public class Exercise {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Games getGames() {
