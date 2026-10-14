@@ -6,6 +6,9 @@ import com.dyslexia.backend.repository.GameRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 @Order(1)
@@ -18,70 +21,114 @@ public class GamesData implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) {
 
-        if (gameRepository.count() > 0) {
-            return;
+        String[] names = {
+                "Меморија",
+                "Состави го зборот",
+                "Која буква недостасува",
+                "Најди ја римата",
+                "Слогови",
+                "Бриши и замени гласови"
+        };
+
+        String[] colors = {
+                "#FF8A65",
+                "#66BB6A",
+                "#42A5F5",
+                "#AB47BC",
+                "#EC407A",
+                "#FFCA28"
+        };
+
+        String[] images = {
+                "/games/game1.png",
+                "/games/game2.png",
+                "/games/game3.png",
+                "/games/game4.png",
+                "/games/game5.png",
+                "/games/game6.png"
+        };
+
+        /*
+         * ==========================================================
+         * CREATE ALL 6 WORLDS
+         * ==========================================================
+         *
+         * World 1 -> games 1-6
+         * World 2 -> games 1-6
+         * ...
+         * World 6 -> games 1-6
+         *
+         * Вкупно:
+         *
+         * 6 worlds x 6 games = 36 game records
+         */
+
+        for (int world = 1; world <= 6; world++) {
+
+            for (int orderIndex = 1; orderIndex <= 6; orderIndex++) {
+
+                createOrUpdateGame(
+                        world,
+                        orderIndex,
+                        names[orderIndex - 1],
+                        colors[orderIndex - 1],
+                        images[orderIndex - 1]
+                );
+            }
         }
 
-        createGame(
-                "Меморија",
-                "#FF8A65",
-                "/images/games/memory.png",
-                1
-        );
-
-        createGame(
-                "Состави го зборот",
-                "#FFD54F",
-                "/images/games/word-building.png",
-                2
-        );
-
-        createGame(
-                "Која буква недостасува",
-                "#81C784",
-                "/images/games/missing-letter.png",
-                3
-        );
-
-        createGame(
-                "Најди ја римата",
-                "#64B5F6",
-                "/images/games/rhymes.png",
-                4
-        );
-
-        createGame(
-                "Слогови",
-                "#BA68C8",
-                "/images/games/syllables.png",
-                5
-        );
-
-        createGame(
-                "Бриши и замени гласови",
-                "#FFB74D",
-                "/images/games/sound-manipulation.png",
-                6
-        );
     }
 
-    private void createGame(
+    private void createOrUpdateGame(
+            int worldNumber,
+            int orderIndex,
             String name,
             String color,
-            String imageUrl,
-            int orderIndex
+            String imageUrl
     ) {
 
+        /*
+         * Наоѓаме игра само во конкретниот свет.
+         *
+         * Пример:
+         *
+         * World 1 + order 1 = Memory World 1
+         * World 2 + order 1 = Memory World 2
+         *
+         * Не ги мешаме.
+         */
+
+        List<Games> games =
+                gameRepository
+                        .findByWorldNumberOrderByOrderIndexAsc(
+                                worldNumber
+                        );
+
         Games game =
-                new Games();
+                games.stream()
+                        .filter(g ->
+                                g.getOrderIndex() != null &&
+                                g.getOrderIndex() == orderIndex
+                        )
+                        .findFirst()
+                        .orElse(null);
+
+        if (game == null) {
+
+            game = new Games();
+
+            game.setWorldNumber(worldNumber);
+            game.setOrderIndex(orderIndex);
+        }
 
         game.setName(name);
         game.setColor(color);
         game.setImageUrl(imageUrl);
+        game.setWorldNumber(worldNumber);
         game.setOrderIndex(orderIndex);
-        game.setWorldNumber(1);
         game.setTotalLevels(3);
 
         gameRepository.save(game);

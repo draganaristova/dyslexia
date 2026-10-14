@@ -79,6 +79,7 @@ public class ProfileController {
         map.put("name", user.getName());
         map.put("surname", user.getSurname());
         map.put("age", user.getAge());
+        map.put("gender", user.getGender());
         map.put("avatarEmoji", user.getAvatarEmoji());
         map.put("fontSize", user.getFontSize());
         map.put("letterSpacing", user.getLetterSpacing());

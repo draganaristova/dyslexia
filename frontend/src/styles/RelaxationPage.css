@@ -1,0 +1,854 @@
+
+/* ==========================================
+   LEXILAND - RELAXATION PAGE
+   ========================================== */
+
+.relaxation-page {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: #eaf7f1;
+    font-family: inherit;
+    z-index: 1;
+}
+
+/* ==========================================
+   MAIN HEADER
+   ========================================== */
+
+.relaxation-header-main {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: min(1250px, 88vw);
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 10px;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.relaxation-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.relaxation-header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==========================================
+   MAIN CONTENT
+   ========================================== */
+
+.relaxation-content {
+    width: 100%;
+    min-height: 100dvh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 145px 20px 35px;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   BACK BUTTON
+   ========================================== */
+
+.relaxation-back {
+    position: fixed;
+    top: 110px;
+    left: max(20px, calc((100vw - 1200px) / 2));
+
+    width: 48px;
+    height: 48px;
+
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+
+    font-size: 25px;
+    cursor: pointer;
+
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    z-index: 10;
+}
+
+/* ==========================================
+   INTRO
+   ========================================== */
+
+.relaxation-intro {
+    width: min(850px, 90vw);
+    padding: 30px 30px 50px;
+    margin: 0 auto;
+
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.relaxation-leaf {
+    font-size: 68px;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.relaxation-intro h1 {
+    margin: 12px 0 20px;
+    font-size: clamp(28px, 4vw, 38px);
+    color: #1f2925;
+}
+
+.relaxation-intro-text {
+    max-width: 700px;
+    margin: 12px auto;
+
+    font-size: 19px;
+    line-height: 1.65;
+    color: #527064;
+}
+
+.relaxation-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 38px;
+    margin: 35px auto;
+}
+
+.relaxation-info div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+    min-width: 90px;
+    font-size: 26px;
+}
+
+.relaxation-info span {
+    color: #607a70;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.relaxation-info div > span:first-child {
+    font-size: 27px;
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+
+.relaxation-start-button {
+    border: none;
+    padding: 16px 42px;
+    border-radius: 18px;
+
+    background: #79cfa4;
+    color: #fff;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.relaxation-start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.relaxation-back-button {
+    border: none;
+    padding: 14px 30px;
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.85);
+    color: #476356;
+
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.relaxation-back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================
+   INITIAL COUNTDOWN
+   ========================================== */
+
+.relaxation-countdown {
+    width: min(850px, 100%);
+    padding: 30px 20px;
+    margin: 0 auto;
+
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.relaxation-small-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #5d9b7b;
+}
+
+.relaxation-countdown h1 {
+    font-size: clamp(28px, 4vw, 35px);
+    margin: 15px 0;
+    color: #1f2925;
+}
+
+.big-countdown {
+    font-size: clamp(100px, 16vw, 150px);
+    font-weight: 800;
+    line-height: 1;
+    margin: 20px 0;
+    color: #477d64;
+}
+
+.relaxation-countdown p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #607a70;
+}
+
+/* ==========================================
+   TRANSITION BETWEEN EXERCISES
+   ========================================== */
+
+.relaxation-transition {
+    width: min(580px, 92vw);
+    margin: 0 auto;
+    padding: 42px 35px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+
+    text-align: center;
+    box-sizing: border-box;
+
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 32px;
+
+    box-shadow: 0 18px 45px rgba(45, 103, 75, 0.09);
+}
+
+.transition-icon {
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.relaxation-transition h2 {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #365e4c;
+    margin: 0;
+}
+
+.relaxation-transition p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #71877d;
+    margin: 0;
+}
+
+.relaxation-transition h1 {
+    font-size: clamp(23px, 3vw, 34px);
+    font-weight: 800;
+    line-height: 1.3;
+    color: #407d60;
+
+    margin: 0 0 4px;
+    overflow-wrap: anywhere;
+}
+
+.transition-countdown {
+    width: 108px;
+    height: 108px;
+    margin: 8px 0 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eaf7f1;
+    border-radius: 50%;
+
+    font-size: 58px;
+    font-weight: 800;
+    line-height: 1;
+    color: #407d60;
+}
+
+.relaxation-transition > span {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #71877d;
+}
+
+/* ==========================================
+   WORKOUT
+   ========================================== */
+
+.relaxation-page-section {
+    width: 100%;
+}
+
+.relaxation-workout {
+    width: min(1050px, 94vw);
+    min-height: auto;
+    margin: 0 auto;
+    padding: 0 0 28px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   WORKOUT HEADER
+   ========================================== */
+
+.relaxation-header {
+    width: 100%;
+    padding: 0 0 16px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.relaxation-exit {
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+
+    font-size: 19px;
+    cursor: pointer;
+
+    box-shadow: 0 6px 18px rgba(41, 92, 67, 0.09);
+}
+
+.exercise-counter {
+    font-size: 20px;
+    font-weight: 800;
+    color: #407b60;
+}
+
+/* ==========================================
+   PROGRESS BAR
+   ========================================== */
+
+.session-progress {
+    width: 100%;
+    height: 12px;
+    margin-bottom: 24px;
+
+    background: #d0e9dc;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.session-progress-fill {
+    height: 100%;
+    background: #76cda2;
+    border-radius: inherit;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================
+   VIDEO + SIDE TIMER STAGE
+   ========================================== */
+
+.relaxation-workout .relaxation-video-stage {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* ==========================================
+   VIDEO CARD
+   ========================================== */
+
+.exercise-animation.exercise-video-container {
+    width: fit-content;
+    max-width: min(100%, 600px);
+    height: auto;
+    min-height: 0;
+
+    margin: 0;
+    padding: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+
+    box-shadow: 0 15px 38px rgba(45, 103, 75, 0.09);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.relaxation-video {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: min(53vh, 510px);
+    max-height: 510px;
+
+    object-fit: contain;
+    border-radius: 20px;
+}
+
+/* ==========================================
+   FLOATING TIMER - RIGHT OF VIDEO
+   ========================================== */
+
+.relaxation-video-stage .relaxation-floating-timer {
+    position: absolute;
+
+    top: 50%;
+    left: calc(100% + 35px);
+    transform: translateY(-50%);
+
+    width: 175px;
+    padding: 24px 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #fff;
+    border-radius: 28px;
+
+    box-shadow: 0 12px 30px rgba(45, 103, 75, 0.09);
+
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+.floating-timer-label {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+    color: #547568;
+}
+
+.relaxation-floating-timer .exercise-timer {
+    margin: 0;
+}
+
+.relaxation-floating-timer .timer-circle {
+    width: 110px;
+    height: 110px;
+    background: #eaf7f1;
+    box-shadow: none;
+}
+
+.relaxation-floating-timer .timer-circle span {
+    font-size: 42px;
+}
+
+.floating-timer-hint {
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    color: #71877d;
+}
+
+/* ==========================================
+   MISSING VIDEO
+   ========================================== */
+
+.exercise-video-unavailable {
+    width: min(480px, 80vw);
+    min-height: 280px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 25px;
+    box-sizing: border-box;
+    text-align: center;
+
+    color: #365e4c;
+}
+
+.exercise-video-unavailable > span {
+    font-size: 46px;
+}
+
+.exercise-video-unavailable strong {
+    font-size: 18px;
+}
+
+.exercise-video-unavailable p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #71877d;
+}
+
+/* ==========================================
+   INSTRUCTION
+   ========================================== */
+
+.exercise-instruction {
+    max-width: 620px;
+    margin: 22px auto 10px;
+    padding: 0 14px;
+
+    font-size: 18px;
+    line-height: 1.65;
+    font-weight: 500;
+    text-align: center;
+    color: #547568;
+}
+
+/* ==========================================
+   TIMER CIRCLE
+   ========================================== */
+
+.exercise-timer {
+    margin: 12px auto 0;
+}
+
+.timer-circle {
+    width: 110px;
+    height: 110px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+
+    box-shadow: 0 10px 28px rgba(52, 110, 79, 0.1);
+}
+
+.timer-circle span {
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #407d60;
+}
+
+.timer-circle small {
+    font-size: 13px;
+    color: #71877d;
+}
+
+/* ==========================================
+   BOTTOM TEXT
+   ========================================== */
+
+.exercise-bottom {
+    margin-top: 14px;
+    font-size: 14px;
+    color: #71877d;
+    text-align: center;
+}
+
+/* ==========================================
+   FINISHED
+   ========================================== */
+
+.relaxation-finished {
+    width: min(700px, 90vw);
+    margin: 0 auto;
+    padding: 40px 30px 55px;
+
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.finished-icon {
+    margin-bottom: 40px;
+    font-size: 75px;
+}
+
+.relaxation-finished h1 {
+    font-size: 45px;
+    margin: 10px 0;
+    color: #365e4c;
+}
+
+.relaxation-finished > p {
+    font-size: 20px;
+    line-height: 1.6;
+    color: #607a70;
+}
+
+.finished-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 55px;
+    margin: 35px 0;
+}
+
+.finished-stats div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.finished-stats strong {
+    font-size: 28px;
+    color: #477d64;
+}
+
+.finished-stats span {
+    font-size: 13px;
+    color: #71877d;
+}
+
+.finished-message {
+    margin-bottom: 30px !important;
+}
+
+.finished-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* ==========================================
+   TABLET
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    .relaxation-video-stage .relaxation-floating-timer {
+        left: calc(100% + 12px);
+        width: 135px;
+        padding: 16px 8px;
+    }
+
+    .relaxation-floating-timer .timer-circle {
+        width: 85px;
+        height: 85px;
+    }
+
+    .relaxation-floating-timer .timer-circle span {
+        font-size: 32px;
+    }
+}
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 700px) {
+
+    .relaxation-header-main {
+        width: 94vw;
+        height: 75px;
+        padding: 0 5px;
+    }
+
+    .relaxation-header-buttons {
+        gap: 6px;
+    }
+
+    .relaxation-content {
+        padding: 110px 12px 25px;
+    }
+
+    .relaxation-back {
+        top: 88px;
+        left: 12px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .relaxation-intro {
+        width: 100%;
+        padding: 40px 15px 35px;
+    }
+
+    .relaxation-intro h1 {
+        font-size: 30px;
+    }
+
+    .relaxation-intro-text {
+        font-size: 17px;
+    }
+
+    .relaxation-info {
+        gap: 12px;
+    }
+
+    .relaxation-info div {
+        min-width: 75px;
+    }
+
+    .relaxation-info span {
+        font-size: 12px;
+    }
+
+    .relaxation-workout {
+        width: 100%;
+        padding-bottom: 20px;
+    }
+
+    .relaxation-header {
+        padding-bottom: 12px;
+    }
+
+    .session-progress {
+        margin-bottom: 16px;
+    }
+
+    /* Video and timer vertically aligned on mobile */
+
+    .relaxation-workout .relaxation-video-stage {
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .exercise-animation.exercise-video-container {
+        max-width: 100%;
+        padding: 7px;
+        border-radius: 22px;
+    }
+
+    .relaxation-video {
+        height: min(47vh, 420px);
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .relaxation-video-stage .relaxation-floating-timer {
+        position: static;
+        transform: none;
+        order: -1;
+
+        width: min(100%, 340px);
+        padding: 10px 15px;
+
+        flex-direction: row;
+        justify-content: center;
+        gap: 14px;
+
+        border-radius: 20px;
+    }
+
+    .relaxation-floating-timer .timer-circle {
+        width: 70px;
+        height: 70px;
+    }
+
+    .relaxation-floating-timer .timer-circle span {
+        font-size: 28px;
+    }
+
+    .floating-timer-hint {
+        display: none;
+    }
+
+    .floating-timer-label {
+        font-size: 13px;
+    }
+
+    .exercise-instruction {
+        font-size: 15px;
+        margin: 16px auto 8px;
+    }
+
+    .exercise-bottom {
+        font-size: 13px;
+        padding: 0 10px;
+    }
+
+    .relaxation-transition {
+        width: 100%;
+        padding: 35px 22px;
+        gap: 12px;
+    }
+
+    .relaxation-transition h2 {
+        font-size: 26px;
+    }
+
+    .transition-countdown {
+        width: 96px;
+        height: 96px;
+        font-size: 50px;
+    }
+
+    .relaxation-finished {
+        width: 100%;
+        padding: 35px 15px;
+    }
+
+    .relaxation-finished h1 {
+        font-size: 36px;
+    }
+
+    .finished-stats {
+        gap: 20px;
+    }
+}

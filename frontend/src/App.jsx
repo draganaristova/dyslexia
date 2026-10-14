@@ -10,6 +10,8 @@ import WorldPath from "./pages/WorldPath";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Progress from "./pages/Progress";
 import ExercisePage from "./pages/ExercisePage";
+import RelaxationPage from "./pages/RelaxationPage";
+import LearningPage from "./pages/LearningPage";
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
       <Route path="/gameselection" element={<ProtectedRoute><GameSelection /></ProtectedRoute>} />
       <Route path="/world/:worldId" element={<ProtectedRoute><WorldPath /></ProtectedRoute>} />
       <Route path="/progress" element={<ProtectedRoute><Progress /></ProtectedRoute>} />
-      <Route path="/world/:worldId/exercise/:gamesId/:gamesType/:pinNumber" element={<ProtectedRoute><ExercisePage /></ProtectedRoute>}/>
+      <Route path="/world/:worldId/exercise/:gamesId/:gamesType/:pinNumber" element={<ProtectedRoute><ExercisePage /></ProtectedRoute>} />
+      <Route path="/relaxation" element={<ProtectedRoute><RelaxationPage /></ProtectedRoute>} />
+      <Route path="/learning" element={<ProtectedRoute><LearningPage /></ProtectedRoute>} />
     </Routes>
   );
 }

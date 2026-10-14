@@ -47,21 +47,34 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/favicon.ico",
+                                "/assets/**",
+                                "/static/**",
+
+                                "/login",
+                                "/register",
+                                "/forgot-password",
+                                "/gameselection",
+                                "/progress",
+                                "/profile",
+                                "/world/**"
+
+                        ).permitAll()
+
+                        .requestMatchers(
                                 "/api/auth/**"
                         ).permitAll()
 
                         .requestMatchers(
-                                HttpMethod.OPTIONS,
-                                "/**"
+                               HttpMethod.OPTIONS,
+                               "/**"
                         ).permitAll()
 
                         .requestMatchers(
                                 "/error"
                         ).permitAll()
-
-                        .requestMatchers(
-                                "/api/exercises/**"
-                        ).authenticated()
 
                         .requestMatchers(
                                 "/api/exercise-progress/**"

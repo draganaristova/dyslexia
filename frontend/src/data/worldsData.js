@@ -7,28 +7,34 @@ import game6 from "../assets/games/game6.png";
 
 export const exerciseTypes = [
     {
-        type: "RECOGNIZE_SOUND",
-        icon: "🔊",
-    },
-    {
         type: "MEMORY",
         icon: "🃏",
-    },
-    {
-        type: "RHYMES",
-        icon: "🎵",
-    },
-    {
-        type: "MISSING_LETTER",
-        icon: "🔤",
+        name: "Меморија",
     },
     {
         type: "WORD_BUILDING",
         icon: "🧩",
+        name: "Состави го зборот",
     },
     {
-        type: "WHAT_CHANGED",
-        icon: "👀",
+        type: "MISSING_LETTER",
+        icon: "🔤",
+        name: "Која буква недостасува",
+    },
+    {
+        type: "RHYMES",
+        icon: "🎵",
+        name: "Најди ја римата",
+    },
+    {
+        type: "SYLLABLES",
+        icon: "👏",
+        name: "Слогови",
+    },
+    {
+        type: "SOUND_MANIPULATION",
+        icon: "✂️",
+        name: "Бриши и замени гласови",
     },
 ];
 

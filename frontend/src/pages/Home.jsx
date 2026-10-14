@@ -125,9 +125,10 @@ function Home() {
 
                 </Link>
 
-
-                <div className="card card-green">
-
+                <Link
+                to="/learning"
+                className="card card-green clickable-card"
+                >
                     <span className="card-icon">
                         🧠
                     </span>
@@ -141,7 +142,7 @@ function Home() {
                         преку овозможено слушање и читање.
                     </p>
 
-                </div>
+                </Link>
 
 
                 <Link
@@ -165,8 +166,10 @@ function Home() {
                 </Link>
 
 
-                <div className="card card-purple">
-
+                <Link
+                    to="/relaxation"
+                    className="card card-purple clickable-card"
+                >   
                     <span className="card-icon">
                         🌿
                     </span>
@@ -179,8 +182,7 @@ function Home() {
                         Кратки вежби за дишење и истегнување - момент
                         за пауза и смирување помеѓу игрите.
                     </p>
-
-                </div>
+                </Link>
 
             </section>
 

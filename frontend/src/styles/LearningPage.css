@@ -1,0 +1,757 @@
+
+/* ==========================================
+   LEXILAND - LEARNING PAGE
+   ========================================== */
+
+.learning-page {
+  min-height: 100vh;
+  width: 100%;
+  background: #fff8db;
+  color: #343b38;
+  box-sizing: border-box;
+  padding: 25px 25px 55px;
+}
+
+.learning-page *,
+.learning-page *::before,
+.learning-page *::after {
+  box-sizing: border-box;
+}
+
+.learning-page button,
+.learning-page input,
+.learning-page select {
+  font: inherit;
+}
+
+.learning-page button {
+  cursor: pointer;
+}
+
+.learning-page button:focus-visible,
+.learning-page input:focus-visible,
+.learning-page select:focus-visible {
+  outline: 3px solid #7455db;
+  outline-offset: 3px;
+}
+
+.learning-page button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.learning-container {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+}
+
+/* TOP BAR */
+
+.learning-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.learning-back,
+.learning-settings-toggle {
+  border: 2px solid #e8d9a0;
+  border-radius: 16px;
+  padding: 12px 20px;
+  background: #fff;
+  color: #554d3d;
+  font-weight: 700;
+}
+
+.learning-brand {
+  font-size: 23px;
+  font-weight: 800;
+  color: #7b5d2c;
+}
+
+/* INTRO */
+
+.learning-intro {
+  text-align: center;
+  margin: 15px auto 35px;
+  max-width: 750px;
+}
+
+.learning-intro-icon {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.learning-intro h1 {
+  font-size: clamp(29px, 4vw, 43px);
+  color: #4a3d2b;
+  margin: 8px 0 12px;
+}
+
+.learning-intro p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #75694f;
+  margin: 0;
+}
+
+/* MAIN GRID */
+
+.learning-layout {
+  display: grid;
+  grid-template-columns: 315px minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.learning-sidebar,
+.reading-player,
+.learning-settings {
+  background: #fffefa;
+  border: 1px solid #efe6c7;
+  border-radius: 28px;
+  box-shadow: 0 12px 32px rgba(111, 91, 48, 0.07);
+}
+
+.learning-sidebar {
+  padding: 22px;
+}
+
+.learning-sidebar h2 {
+  margin: 0 0 18px;
+  font-size: 20px;
+  color: #4d4534;
+}
+
+/* CATEGORIES */
+
+.learning-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+
+.learning-categories button {
+  border: 1px solid #e6dcc2;
+  border-radius: 12px;
+  background: #f8f3e7;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #665e4c;
+}
+
+.learning-categories button.selected {
+  background: #f6cf65;
+  border-color: #e6b83b;
+  color: #49370c;
+  font-weight: 800;
+}
+
+/* STORY CARDS */
+
+.learning-story-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.learning-story-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 12px;
+
+  background: #fff9e9;
+  border: 2px solid transparent;
+  border-radius: 17px;
+  text-align: left;
+
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.learning-story-card:hover {
+  background: #fff0c5;
+}
+
+.learning-story-card.active {
+  background: #e7f8e9;
+  border-color: #72ca93;
+}
+
+.learning-card-icon {
+  font-size: 29px;
+  flex-shrink: 0;
+}
+
+.learning-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  flex: 1;
+}
+
+.learning-card-info strong {
+  font-size: 15px;
+  color: #403d35;
+}
+
+.learning-card-info small {
+  font-size: 12px;
+  color: #827b6d;
+}
+
+.learning-card-arrow {
+  color: #8b9c85;
+  font-size: 20px;
+}
+
+/* MAIN CONTENT */
+
+.learning-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* READING PLAYER */
+
+.reading-player {
+  padding: 28px;
+}
+
+.reading-player-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.reading-player-heading > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reading-story-icon {
+  font-size: 34px;
+}
+
+.reading-player-heading h2 {
+  font-size: 26px;
+  margin: 0;
+  color: #3d4b3e;
+}
+
+.reading-level {
+  background: #e4f5e8;
+  border-radius: 20px;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #427253;
+  white-space: nowrap;
+}
+
+/* AUDIO BUTTONS */
+
+.reading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.reading-primary-button,
+.reading-stop-button {
+  border: none;
+  border-radius: 15px;
+  padding: 13px 19px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.reading-primary-button {
+  background: #7bd8a3;
+  color: #214e36;
+}
+
+.reading-primary-button:hover:not(:disabled) {
+  background: #66ca91;
+}
+
+.reading-stop-button {
+  background: #f6dfd8;
+  color: #994e42;
+}
+
+/* TEXT BACKGROUNDS */
+
+.reading-text {
+  padding: 25px;
+  border-radius: 22px;
+  line-height: 1.95;
+  color: #273b32;
+  overflow-wrap: break-word;
+}
+
+.reading-bg-cream {
+  background: #fff5d9;
+}
+
+.reading-bg-white {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+}
+
+.reading-bg-mint {
+  background: #e9f8ec;
+}
+
+.reading-bg-blue {
+  background: #e8f2ff;
+}
+
+/* READING FONT */
+
+.reading-text {
+  font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+.reading-text.reading-dyslexia {
+  font-family:
+    "LexiDyslexia",
+    "Trebuchet MS",
+    Arial,
+    sans-serif;
+}
+
+/* SENTENCES */
+
+.reading-sentence {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 13px 16px;
+  margin-bottom: 9px;
+
+  border-radius: 16px;
+  border: 2px solid transparent;
+  transition: background 0.2s;
+}
+
+.reading-sentence:last-child {
+  margin-bottom: 0;
+}
+
+.reading-sentence-active {
+  background: #ffe39a;
+  border-color: #e6b646;
+}
+
+.reading-sentence-text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.8;
+}
+
+.reading-sentence-audio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 49px;
+  height: 49px;
+  min-width: 49px;
+
+  background: #fff;
+  border: 1px solid #d5e6d5;
+  border-radius: 14px;
+  font-size: 22px;
+}
+
+.reading-sentence-audio:hover:not(:disabled) {
+  background: #dcf4e5;
+}
+
+/* MESSAGES */
+
+.reading-message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 15px;
+  background: #f1faef;
+  color: #4b7851;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.reading-warning {
+  padding: 15px;
+  background: #fff0d6;
+  border: 1px solid #edce87;
+  border-radius: 14px;
+  color: #815d21;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.reading-empty {
+  padding: 50px 20px;
+  text-align: center;
+  font-size: 19px;
+  color: #7b7463;
+}
+
+/* SETTINGS */
+
+.learning-settings {
+  padding: 25px;
+}
+
+.learning-settings h3 {
+  margin: 0 0 22px;
+  font-size: 20px;
+  color: #4a574c;
+}
+
+.learning-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 22px;
+}
+
+.learning-setting label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5e665a;
+}
+
+.learning-setting input[type="range"] {
+  width: 100%;
+  accent-color: #73c996;
+  cursor: pointer;
+}
+
+.learning-setting select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dce5d9;
+  border-radius: 12px;
+  background: #fff;
+  color: #3e4b41;
+}
+
+.learning-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: #4d5d51;
+  cursor: pointer;
+}
+
+.learning-check input {
+  width: 19px;
+  height: 19px;
+  accent-color: #73c996;
+}
+
+/* FOOTER */
+
+.learning-footer {
+  margin-top: 35px;
+  text-align: center;
+  color: #827752;
+  font-size: 14px;
+}
+
+/* =========================================
+   LEARNING PAGE - SHARED HEADER
+   ========================================= */
+
+.learning-page {
+    min-height: 100vh;
+    width: 100%;
+    background: #f1eab0;
+    padding: 0 0 55px;
+    overflow-x: hidden;
+}
+
+/* Ист header како Home и Progress */
+
+.learning-page .home-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px clamp(20px, 5vw, 70px);
+    margin: 0;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    position: relative;
+    z-index: 10;
+}
+
+/* Лого лево, иконки десно */
+
+.learning-page .nav-icons-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Главен дел */
+
+.learning-page .learning-container {
+    width: min(1320px, 94%);
+    margin: 0 auto;
+}
+
+/* Наслов под header */
+
+.learning-page .learning-intro {
+    text-align: center;
+    max-width: 750px;
+    margin: 20px auto 38px;
+}
+
+/* Копче за поставки */
+
+.learning-page .learning-settings-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 22px;
+    padding: 12px 22px;
+
+    background: #ffffff;
+    border: 2px solid #e8d9a0;
+    border-radius: 16px;
+
+    color: #554d3d;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.learning-page .learning-settings-toggle:hover {
+    background: #fff8dc;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================
+   LEARNING PAGE - SHARED HEADER
+   ========================================= */
+
+.learning-page {
+    min-height: 100vh;
+    width: 100%;
+    background: #f1eab0;
+    padding: 0 0 55px;
+    overflow-x: hidden;
+}
+
+/* Ист header како Home и Progress */
+
+.learning-page .home-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px clamp(20px, 5vw, 70px);
+    margin: 0;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    position: relative;
+    z-index: 10;
+}
+
+/* Лого лево, иконки десно */
+
+.learning-page .nav-icons-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Главен дел */
+
+.learning-page .learning-container {
+    width: min(1320px, 94%);
+    margin: 0 auto;
+}
+
+/* Наслов под header */
+
+.learning-page .learning-intro {
+    text-align: center;
+    max-width: 750px;
+    margin: 20px auto 38px;
+}
+
+/* Копче за поставки */
+
+.learning-page .learning-settings-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 22px;
+    padding: 12px 22px;
+
+    background: #ffffff;
+    border: 2px solid #e8d9a0;
+    border-radius: 16px;
+
+    color: #554d3d;
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.learning-page .learning-settings-toggle:hover {
+    background: #fff8dc;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+
+    .learning-page .home-header {
+        padding: 15px 16px;
+    }
+
+    .learning-page .nav-icons-row {
+        gap: 6px;
+    }
+
+    .learning-page .learning-container {
+        width: 94%;
+    }
+
+    .learning-page .learning-intro {
+        margin: 20px auto 28px;
+    }
+
+    .learning-page .learning-settings-toggle {
+        font-size: 13px;
+        padding: 11px 16px;
+    }
+}
+
+
+/* TABLET */
+
+@media (max-width: 950px) {
+  .learning-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-story-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .learning-page {
+    padding: 16px 12px 35px;
+  }
+
+  .learning-topbar {
+    gap: 8px;
+  }
+
+  .learning-back,
+  .learning-settings-toggle {
+    padding: 10px 11px;
+    font-size: 13px;
+  }
+
+  .learning-brand {
+    font-size: 17px;
+  }
+
+  .learning-intro {
+    margin: 20px auto 25px;
+  }
+
+  .learning-intro h1 {
+    font-size: 29px;
+  }
+
+  .learning-intro p {
+    font-size: 15px;
+  }
+
+  .learning-sidebar,
+  .reading-player,
+  .learning-settings {
+    padding: 17px;
+    border-radius: 20px;
+  }
+
+  .learning-story-list {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-player-heading h2 {
+    font-size: 21px;
+  }
+
+  .reading-text {
+    padding: 12px;
+  }
+
+  .reading-sentence {
+    gap: 8px;
+    padding: 10px 6px;
+  }
+
+  .reading-sentence-audio {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learning-page *,
+  .learning-page *::before,
+  .learning-page *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

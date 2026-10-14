@@ -1,108 +1,127 @@
-package com.dyslexia.backend.model;
+package com.dyslexia.backend.model; import jakarta.persistence.*; import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+@Entity @Table( name = "exercise_progress", uniqueConstraints = { @UniqueConstraint( name = "uk_user_exercise", columnNames = {"user_id", "exercise_id"} ) } ) public class ExerciseProgress {
 
-import java.time.LocalDateTime;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
-@Entity
-@Table(
-        name = "exercise_progress",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_user_exercise",
-                        columnNames = {"user_id", "exercise_id"}
-                )
-        }
-)
-public class ExerciseProgress {
+@ManyToOne(fetch = FetchType.LAZY, optional = false)
+@JoinColumn(name = "user_id", nullable = false)
+private User user;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ManyToOne(fetch = FetchType.LAZY, optional = false)
+@JoinColumn(name = "exercise_id", nullable = false)
+private Exercise exercise;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+@Column(nullable = false)
+private Integer score;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+@Column(nullable = false)
+private Integer attempts;
 
-    @Column(nullable = false)
-    private Integer score;
+@Column(nullable = false)
+private Boolean correct;
 
-    @Column(nullable = false)
-    private Integer attempts;
+@Column(nullable = false)
+private Boolean completed;
 
-    @Column(nullable = false)
-    private Boolean correct;
+@Column(name = "completed_at")
+private LocalDateTime completedAt;
 
-    @Column(nullable = false)
-    private Boolean completed;
+@Column(columnDefinition = "TEXT")
+private String question;
 
-    @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+@Column(columnDefinition = "TEXT")
+private String selectedAnswer;
 
-    public ExerciseProgress() {
-    }
+@Column(columnDefinition = "TEXT")
+private String correctAnswer;
 
-    public Long getId() {
-        return id;
-    }
+public ExerciseProgress() {
+}
 
-    public User getUser() {
-        return user;
-    }
+public Long getId() {
+    return id;
+}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+public User getUser() {
+    return user;
+}
 
-    public Exercise getExercise() {
-        return exercise;
-    }
+public void setUser(User user) {
+    this.user = user;
+}
 
-    public void setExercise(Exercise exercise) {
-        this.exercise = exercise;
-    }
+public Exercise getExercise() {
+    return exercise;
+}
 
-    public Integer getScore() {
-        return score;
-    }
+public void setExercise(Exercise exercise) {
+    this.exercise = exercise;
+}
 
-    public void setScore(Integer score) {
-        this.score = score;
-    }
+public Integer getScore() {
+    return score;
+}
 
-    public Integer getAttempts() {
-        return attempts;
-    }
+public void setScore(Integer score) {
+    this.score = score;
+}
 
-    public void setAttempts(Integer attempts) {
-        this.attempts = attempts;
-    }
+public Integer getAttempts() {
+    return attempts;
+}
 
-    public Boolean getCorrect() {
-        return correct;
-    }
+public void setAttempts(Integer attempts) {
+    this.attempts = attempts;
+}
 
-    public void setCorrect(Boolean correct) {
-        this.correct = correct;
-    }
+public Boolean getCorrect() {
+    return correct;
+}
 
-    public Boolean getCompleted() {
-        return completed;
-    }
+public void setCorrect(Boolean correct) {
+    this.correct = correct;
+}
 
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
+public Boolean getCompleted() {
+    return completed;
+}
 
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
+public void setCompleted(Boolean completed) {
+    this.completed = completed;
+}
 
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
+public LocalDateTime getCompletedAt() {
+    return completedAt;
+}
+
+public void setCompletedAt(LocalDateTime completedAt) {
+    this.completedAt = completedAt;
+}
+
+public String getQuestion() {
+    return question;
+}
+
+public void setQuestion(String question) {
+    this.question = question;
+}
+
+public String getSelectedAnswer() {
+    return selectedAnswer;
+}
+
+public void setSelectedAnswer(String selectedAnswer) {
+    this.selectedAnswer = selectedAnswer;
+}
+
+public String getCorrectAnswer() {
+    return correctAnswer;
+}
+
+public void setCorrectAnswer(String correctAnswer) {
+    this.correctAnswer = correctAnswer;
+}
 }

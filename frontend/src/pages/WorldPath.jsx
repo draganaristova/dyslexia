@@ -19,15 +19,6 @@ import { worldsData } from "../data/worldsData";
 import { API } from "../data/api";
 
 
-/*
- * ==================================================
- * GAME TYPES
- *
- * ОВА МОРА ДА БИДЕ ИСТО
- * СО GamesType ENUM ВО BACKEND.
- * ==================================================
- */
-
 const gameTypes = [
     "MEMORY",
     "WORD_BUILDING",
@@ -38,11 +29,15 @@ const gameTypes = [
 ];
 
 
-/*
- * ==================================================
- * FALLBACK NAMES
- * ==================================================
- */
+const gameIcons = [
+    "🃏",
+    "🧩",
+    "🔤",
+    "🎵",
+    "👏",
+    "✂️"
+];
+
 
 const gameNames = [
     "Меморија",
@@ -55,26 +50,34 @@ const gameNames = [
 
 
 /*
- * ==================================================
- * ICONS
- * ==================================================
+ * ==========================================================
+ * AGE -> LEVEL
+ * ==========================================================
+ *
+ * 5–7  -> Level 1
+ * 8–10 -> Level 2
+ * 11–15 -> Level 3
  */
 
-const gameIcons = [
-    "🃏",
-    "🧩",
-    "🔤",
-    "🎵",
-    "👏",
-    "✂️"
-];
+function levelFromAge(age) {
+
+    const numericAge = Number(age);
+
+    if (!numericAge || numericAge <= 7) {
+        return 1;
+    }
+
+    if (numericAge <= 10) {
+        return 2;
+    }
+
+    return 3;
+}
 
 
 function WorldPath() {
 
-    const {
-        worldId
-    } = useParams();
+    const { worldId } = useParams();
 
     const navigate =
         useNavigate();
@@ -82,11 +85,18 @@ function WorldPath() {
     const world =
         worldsData[worldId];
 
+
     const [games, setGames] =
         useState([]);
 
     const [progress, setProgress] =
         useState([]);
+
+    const [user, setUser] =
+        useState(null);
+
+    const [worldAccess, setWorldAccess] =
+        useState(null);
 
     const [loading, setLoading] =
         useState(true);
@@ -96,9 +106,9 @@ function WorldPath() {
 
 
     /*
-     * ==================================================
-     * LOAD GAMES + EXERCISE PROGRESS
-     * ==================================================
+     * ==========================================================
+     * LOAD WORLD
+     * ==========================================================
      */
 
     useEffect(() => {
@@ -111,90 +121,124 @@ function WorldPath() {
                     setLoading(true);
                     setError("");
 
+
                     const token =
-                        localStorage.getItem(
-                            "token"
-                        );
+                        localStorage.getItem("token");
 
                     const userId =
-                        localStorage.getItem(
-                            "userId"
-                        );
+                        localStorage.getItem("userId");
 
 
-                    /*
-                     * AUTH CHECK
-                     */
+                    if (!token || !userId) {
 
-                    if (!token) {
-
-                        setError(
-                            "Сесијата е истечена. Најавете се повторно."
-                        );
-
-                        setLoading(false);
-
+                        navigate("/login");
                         return;
                     }
 
 
-                    if (!userId) {
+                    const worldNumber =
+                        Number(worldId);
+
+
+                    if (
+                        !worldNumber ||
+                        worldNumber < 1 ||
+                        worldNumber > 6
+                    ) {
 
                         setError(
-                            "Не е пронајден корисникот."
+                            "Невалиден свет."
                         );
-
-                        setLoading(false);
 
                         return;
                     }
 
 
                     const headers = {
+
                         Authorization:
                             `Bearer ${token}`,
 
                         "Content-Type":
                             "application/json"
+
                     };
 
 
                     /*
-                     * LOAD:
+                     * ==================================================
+                     * FETCH:
                      *
                      * 1. Games
-                     * 2. ExerciseProgress summary
+                     * 2. Progress
+                     * 3. Profile
+                     * 4. World access
+                     * ==================================================
                      */
 
-                    const [gamesResponse, progressResponse] = await Promise.all([
+                    const [
+                        gamesResponse,
+                        progressResponse,
+                        profileResponse,
+                        accessResponse
+                    ] =
+                        await Promise.all([
 
-                        fetch(
-                            `${API}/games/world/${worldId}?userId=${userId}`,
-                            {
-                                method: "GET",
-                                headers
-                            }
-                        ),
+                            fetch(
+                                `${API}/games/world/${worldNumber}?userId=${userId}`,
+                                {
+                                    method: "GET",
+                                    headers
+                                }
+                            ),
 
-                        fetch(
-                            `${API}/exercise-progress/user/${userId}/summary`,
-                            {
-                                method: "GET",
-                                headers
-                            }
-                        )
-                    ]);
+                            fetch(
+                                `${API}/exercise-progress/user/${userId}/summary`,
+                                {
+                                    method: "GET",
+                                    headers
+                                }
+                            ),
+
+                            fetch(
+                                `${API}/profile/${userId}`,
+                                {
+                                    method: "GET",
+                                    headers
+                                }
+                            ),
+
+                            fetch(
+                                `${API}/games/world/${worldNumber}/access?userId=${userId}`,
+                                {
+                                    method: "GET",
+                                    headers
+                                }
+                            )
+
+                        ]);
 
 
                     /*
-                     * AUTH ERROR
+                     * ==================================================
+                     * AUTH CHECK
+                     * ==================================================
                      */
 
                     if (
+
                         gamesResponse.status === 401 ||
                         gamesResponse.status === 403 ||
+
                         progressResponse.status === 401 ||
-                        progressResponse.status === 403
+                        progressResponse.status === 403 ||
+
+                        profileResponse.status === 401 ||
+                        profileResponse.status === 403 ||
+
+                        accessResponse.status === 401 ||
+                        accessResponse.status === 403
+
                     ) {
 
                         localStorage.removeItem(
@@ -212,32 +256,24 @@ function WorldPath() {
 
 
                     /*
+                     * ==================================================
                      * GAMES ERROR
+                     * ==================================================
                      */
 
                     if (!gamesResponse.ok) {
 
                         throw new Error(
-                            `Games HTTP error: ${gamesResponse.status}`
+                            "Не може да се вчитаат игрите."
                         );
                     }
 
 
                     /*
-                     * PROGRESS ERROR
-                     *
-                     * Ако summary endpoint не успее,
-                     * games сепак може да се прикажат.
+                     * ==================================================
+                     * READ RESPONSES
+                     * ==================================================
                      */
-
-                    if (!progressResponse.ok) {
-
-                        console.warn(
-                            "Progress summary could not be loaded:",
-                            progressResponse.status
-                        );
-                    }
-
 
                     const gamesData =
                         await gamesResponse.json();
@@ -249,41 +285,28 @@ function WorldPath() {
                             : [];
 
 
-                    console.log(
-                        "Games from backend:",
-                        gamesData
-                    );
-
-                    console.log(
-                        "Exercise progress summary:",
-                        progressData
-                    );
+                    const profileData =
+                        profileResponse.ok
+                            ? await profileResponse.json()
+                            : null;
 
 
-                    /*
-                     * SORT GAMES
-                     */
-
-                    const sortedGames =
-                        Array.isArray(gamesData)
-                            ? [...gamesData].sort(
-                                (a, b) =>
-                                    (
-                                        a.orderIndex || 0
-                                    ) -
-                                    (
-                                        b.orderIndex || 0
-                                    )
-                            )
-                            : [];
+                    const accessData =
+                        accessResponse.ok
+                            ? await accessResponse.json()
+                            : null;
 
 
                     /*
-                     * WORLD HAS MAX 6 GAMES
+                     * ==================================================
+                     * SAVE DATA
+                     * ==================================================
                      */
 
                     setGames(
-                        sortedGames.slice(0, 6)
+                        Array.isArray(gamesData)
+                            ? gamesData
+                            : []
                     );
 
 
@@ -293,21 +316,35 @@ function WorldPath() {
                             : []
                     );
 
+
+                    setUser(
+                        profileData
+                    );
+
+
+                    setWorldAccess(
+                        accessData
+                    );
+
                 } catch (err) {
 
                     console.error(
-                        "Error loading world:",
+                        "World loading error:",
                         err
                     );
 
+
                     setError(
-                        "Не може да се вчитаат игрите."
+                        err.message ||
+                        "Не може да се вчита патеката."
                     );
 
                 } finally {
 
                     setLoading(false);
+
                 }
+
             };
 
 
@@ -320,9 +357,219 @@ function WorldPath() {
 
 
     /*
-     * ==================================================
+     * ==========================================================
+     * WORLD VALIDATION
+     * ==========================================================
+     */
+
+    if (!world) {
+
+        return (
+
+            <div className="world-path">
+
+                <p>
+                    Светот не постои.
+                </p>
+
+
+                <button
+                    onClick={() =>
+                        navigate("/gameselection")
+                    }
+                >
+                    Назад
+                </button>
+
+            </div>
+        );
+    }
+
+
+    /*
+     * ==========================================================
+     * CURRENT AGE
+     * ==========================================================
+     */
+
+    const currentAge =
+        Number(user?.age);
+
+
+    /*
+     * ==========================================================
+     * CURRENT LEVEL
+     * ==========================================================
+     */
+
+    const currentLevel =
+        levelFromAge(
+            currentAge
+        );
+
+
+    /*
+     * ==========================================================
+     * GET LEVEL PROGRESS
+     * ==========================================================
+     */
+
+    const getLevelProgress = (
+        gameId,
+        level
+    ) => {
+
+        return progress.find(
+            item =>
+
+                Number(item.gamesId) ===
+                    Number(gameId)
+
+                &&
+
+                Number(item.pinNumber) ===
+                    Number(level)
+
+        ) || null;
+    };
+
+
+    /*
+     * ==========================================================
+     * CHECK PASSED LEVEL
+     * ==========================================================
+     */
+
+    const isLevelPassed = (
+        gameId,
+        level
+    ) => {
+
+        const item =
+            getLevelProgress(
+                gameId,
+                level
+            );
+
+
+       if (!item) {
+        return false;
+    }
+
+    /*
+     * Ниво е завршено кога сите 10 задачи
+     * се завршени.
+     *
+     * Backend summary враќа:
+     * completedTasks: 10
+     */
+
+    return Number(item.completedTasks) >= 10;
+};
+
+
+    /*
+     * ==========================================================
+     * CHECK GAME UNLOCKED
+     * ==========================================================
+     *
+     * Game 1 -> always unlocked
+     *
+     * Game 2 -> after Game 1
+     * Game 3 -> after Game 2
+     * ...
+     */
+
+    const isGameUnlocked = (
+        gameIndex
+    ) => {
+
+        if (gameIndex === 0) {
+            return true;
+        }
+
+
+        const previousGame =
+            games[
+                gameIndex - 1
+            ];
+
+
+        if (!previousGame) {
+            return false;
+        }
+
+
+        return isLevelPassed(
+            previousGame.id,
+            currentLevel
+        );
+    };
+
+
+    /*
+     * ==========================================================
+     * OPEN GAME
+     * ==========================================================
+     */
+
+    const openGame = (
+        game,
+        index
+    ) => {
+
+        if (!game) {
+            return;
+        }
+
+
+        if (!isGameUnlocked(index)) {
+            return;
+        }
+
+
+        const type =
+            game.gamesType ||
+            gameTypes[index];
+
+
+        navigate(
+            `/world/${worldId}/exercise/${game.id}/${type}/${currentLevel}`
+        );
+
+    };
+
+
+    /*
+     * ==========================================================
+     * COMPLETED GAMES
+     * ==========================================================
+     */
+
+    const completedGames =
+        games.filter(
+            game =>
+                isLevelPassed(
+                    game.id,
+                    currentLevel
+                )
+        ).length;
+
+
+    /*
+     * ==========================================================
+     * WORLD UNLOCKED?
+     * ==========================================================
+     */
+
+    const isWorldUnlocked =
+        worldAccess?.unlocked === true;
+
+
+    /*
+     * ==========================================================
      * HEADER
-     * ==================================================
+     * ==========================================================
      */
 
     const Header = () => (
@@ -331,18 +578,18 @@ function WorldPath() {
 
             <Logo />
 
+
             <div className="right-nav-group">
 
                 <button
                     className="back-btn"
                     onClick={() =>
-                        navigate(
-                            "/gameselection"
-                        )
+                        navigate("/gameselection")
                     }
                 >
                     Назад
                 </button>
+
 
                 <div className="nav-icons-row">
 
@@ -357,44 +604,14 @@ function WorldPath() {
             </div>
 
         </header>
+
     );
 
 
     /*
-     * ==================================================
-     * INVALID WORLD
-     * ==================================================
-     */
-
-    if (!world) {
-
-        return (
-
-            <div className="world-path">
-
-                <p>
-                    Светот не постои.
-                </p>
-
-                <button
-                    onClick={() =>
-                        navigate(
-                            "/gameselection"
-                        )
-                    }
-                >
-                    Назад
-                </button>
-
-            </div>
-        );
-    }
-
-
-    /*
-     * ==================================================
+     * ==========================================================
      * LOADING
-     * ==================================================
+     * ==========================================================
      */
 
     if (loading) {
@@ -423,9 +640,9 @@ function WorldPath() {
 
 
     /*
-     * ==================================================
+     * ==========================================================
      * ERROR
-     * ==================================================
+     * ==========================================================
      */
 
     if (error) {
@@ -462,116 +679,69 @@ function WorldPath() {
 
 
     /*
-     * ==================================================
-     * FIND PROGRESS FOR ONE PIN
-     *
-     * Backend summary има:
-     *
-     * gamesId
-     * pinNumber
-     * completedTasks
-     * totalTasks
-     * score
-     * completed
-     * passed
-     * ==================================================
+     * ==========================================================
+     * LOCKED WORLD
+     * ==========================================================
      */
 
-    const getPinProgress = (
-        game,
-        pinNumber
-    ) => {
+    if (!isWorldUnlocked) {
 
-        if (!game) {
-            return null;
-        }
+        const completedPrevious =
+            worldAccess?.completedGames || 0;
 
-        return progress.find(
-            item =>
-                Number(item.gamesId) ===
-                    Number(game.id)
-                &&
-                Number(item.pinNumber) ===
-                    Number(pinNumber)
-        ) || null;
-    };
+        const requiredPrevious =
+            worldAccess?.requiredGames || 6;
 
-
-    /*
-     * ==================================================
-     * COMPLETED
-     * ==================================================
-     */
-
-    const isPinCompleted = (
-        game,
-        pinNumber
-    ) => {
-
-        const item =
-            getPinProgress(
-                game,
-                pinNumber
-            );
 
         return (
-            item?.passed === true
+
+            <div className="world-path">
+
+                <Header />
+
+
+                <div className="world-error">
+
+                    <h2>
+                        🔒 Светот е заклучен
+                    </h2>
+
+
+                    <p>
+                        Прво заврши ги сите игри
+                        од претходниот свет.
+                    </p>
+
+
+                    <p>
+                        Напредок:
+                        {" "}
+                        {completedPrevious}
+                        /
+                        {requiredPrevious}
+                    </p>
+
+
+                    <button
+                        onClick={() =>
+                            navigate("/gameselection")
+                        }
+                    >
+                        Назад
+                    </button>
+
+                </div>
+
+            </div>
+
         );
-    };
+    }
 
 
     /*
-     * ==================================================
-     * UNLOCKED
-     *
-     * First mission is unlocked.
-     *
-     * Every next mission opens
-     * after previous mission PASSED.
-     * ==================================================
-     */
-
-    const isPinUnlocked = (
-        index
-    ) => {
-
-        if (index === 0) {
-            return true;
-        }
-
-        const previousGame =
-            games[index - 1];
-
-        const previousPin =
-            index;
-
-        return isPinCompleted(
-            previousGame,
-            previousPin
-        );
-    };
-
-
-    /*
-     * ==================================================
-     * COMPLETED PINS
-     * ==================================================
-     */
-
-    const completedPins =
-        games.filter(
-            (game, index) =>
-                isPinCompleted(
-                    game,
-                    index + 1
-                )
-        ).length;
-
-
-    /*
-     * ==================================================
-     * RENDER
-     * ==================================================
+     * ==========================================================
+     * RENDER WORLD
+     * ==========================================================
      */
 
     return (
@@ -581,26 +751,23 @@ function WorldPath() {
             <Header />
 
 
-            {/* WORLD TITLE */}
-
             <div className="world-title-row">
 
                 <h1>
                     {world.name}
                 </h1>
 
+
                 <span
                     className={
                         `world-progress pin-${world.color}`
                     }
                 >
-                    {completedPins}/6 мисии
+                    {completedGames}/6 игри
                 </span>
 
             </div>
 
-
-            {/* MAP */}
 
             <div
                 className={
@@ -615,134 +782,103 @@ function WorldPath() {
                 />
 
 
-                {world.positions
+                {games
                     .slice(0, 6)
                     .map(
                         (
-                            pos,
+                            game,
                             index
                         ) => {
 
-                            const pinNumber =
-                                index + 1;
-
-                            const game =
-                                games[index];
+                            const pos =
+                                world.positions[index];
 
 
-                            const progressItem =
-                                getPinProgress(
-                                    game,
-                                    pinNumber
-                                );
-
-
-                            const completed =
-                                isPinCompleted(
-                                    game,
-                                    pinNumber
+                            const passed =
+                                isLevelPassed(
+                                    game.id,
+                                    currentLevel
                                 );
 
 
                             const unlocked =
-                                isPinUnlocked(
+                                isGameUnlocked(
                                     index
                                 );
-
-
-                            let status =
-                                "locked";
-
-
-                            if (completed) {
-
-                                status =
-                                    "completed";
-
-                            } else if (unlocked) {
-
-                                status =
-                                    "current";
-                            }
-
-
-                            /*
-                             * BACKEND GAME TYPE
-                             */
-
-                            const gameType =
-                                game?.gamesType ||
-                                game?.type ||
-                                gameTypes[index];
-
-
-                            const gameName =
-                                game?.name ||
-                                gameNames[index];
 
 
                             const icon =
                                 gameIcons[index];
 
 
-                            const handlePinClick =
-                                () => {
-
-                                    if (
-                                        !unlocked ||
-                                        !game
-                                    ) {
-                                        return;
-                                    }
-
-
-                                    navigate(
-                                        `/world/${worldId}/exercise/${game.id}/${gameType}/${pinNumber}`
-                                    );
-                                };
+                            const gameName =
+                                game.name ||
+                                gameNames[index];
 
 
                             return (
 
                                 <button
-                                    key={pinNumber}
+                                    key={
+                                        game.id
+                                    }
 
                                     className={
-                                        `pin ` +
-                                        `pin-${world.color} ` +
-                                        `pin-${status}`
+                                        `pin pin-${world.color} ` +
+                                        `pin-${
+                                            passed
+                                                ? "completed"
+                                                : unlocked
+                                                    ? "current"
+                                                    : "locked"
+                                        }`
                                     }
 
                                     style={{
-                                        top: pos.top,
-                                        left: pos.left
+                                        top:
+                                            pos?.top,
+
+                                        left:
+                                            pos?.left
                                     }}
 
                                     disabled={
                                         !unlocked
                                     }
 
-                                    onClick={
-                                        handlePinClick
+                                    onClick={() =>
+                                        openGame(
+                                            game,
+                                            index
+                                        )
                                     }
 
                                     title={
                                         unlocked
                                             ? gameName
-                                            : "Оваа мисија е заклучена"
+                                            : "Оваа игра е заклучена"
                                     }
                                 >
 
-                                    <span className="pin-number">
-                                        {pinNumber}
+                                    <span
+                                        className="pin-number"
+                                    >
+                                        {index + 1}
                                     </span>
 
-                                    <span className="pin-icon">
 
-                                        {completed
+                                    <span
+                                        className="pin-icon"
+                                    >
+
+                                        {passed
+
                                             ? "✓"
+
                                             : unlocked
+
                                                 ? icon
+
                                                 : "🔒"}
 
                                     </span>
@@ -750,6 +886,7 @@ function WorldPath() {
                                 </button>
 
                             );
+
                         }
                     )}
 
@@ -758,5 +895,6 @@ function WorldPath() {
         </div>
     );
 }
+
 
 export default WorldPath;

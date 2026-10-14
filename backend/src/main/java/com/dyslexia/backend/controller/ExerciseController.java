@@ -10,7 +10,9 @@ import com.dyslexia.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/exercises")
@@ -27,162 +29,331 @@ public class ExerciseController {
         this.userRepository = userRepository;
     }
 
+    /*
+     * ==========================================================
+     * GET ONE EXERCISE
+     * ==========================================================
+     *
+     * URL:
+     *
+     * /api/exercises/{gamesId}/{gamesType}/{pinNumber}/{taskNumber}
+     *
+     * Example:
+     *
+     * /api/exercises/9/MISSING_LETTER/1/1?userId=2
+     *
+     * ВАЖНО:
+     *
+     * ageGroup НЕ го земаме од frontend.
+     *
+     * Го земаме age од User во database.
+     *
+     * Example:
+     *
+     * user.age = 5
+     *      -> AGE_5_7
+     *
+     * user.age = 9
+     *      -> _10
+     *
+     * user.age = 12
+     *      -> AGE_10_15
+     *
+     * ==========================================================
+     */
+
     @GetMapping("/{gamesId}/{gamesType}/{pinNumber}/{taskNumber}")
     public ResponseEntity<?> getExercise(
             @PathVariable Long gamesId,
-            @PathVariable String gamesType,
+            @PathVariable GamesType gamesType,
             @PathVariable Integer pinNumber,
             @PathVariable Integer taskNumber,
             @RequestParam Long userId
     ) {
 
         try {
-            Optional<User> userOptional = userRepository.findById(userId);
 
-            if (userOptional.isEmpty()) {
-                return ResponseEntity.status(404)
+            /*
+             * --------------------------------------------------
+             * VALIDATION
+             * --------------------------------------------------
+             */
+
+            if (gamesId == null ||
+                    gamesType == null ||
+                    pinNumber == null ||
+                    taskNumber == null ||
+                    userId == null) {
+
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "message",
+                                "Недостасуваат податоци."
+                        ));
+            }
+
+            /*
+             * --------------------------------------------------
+             * FIND USER
+             * --------------------------------------------------
+             */
+
+            User user =
+                    userRepository
+                            .findById(userId)
+                            .orElse(null);
+
+            if (user == null) {
+
+                return ResponseEntity.badRequest()
                         .body(Map.of(
                                 "message",
                                 "Не постои корисникот."
                         ));
             }
 
-            User user = userOptional.get();
+            /*
+             * --------------------------------------------------
+             * GET USER AGE
+             * --------------------------------------------------
+             */
 
-            GamesType type;
+            Integer age = user.getAge();
 
-            try {
-                type = GamesType.valueOf(gamesType.toUpperCase());
-            } catch (IllegalArgumentException e) {
+            if (age == null) {
+
                 return ResponseEntity.badRequest()
                         .body(Map.of(
                                 "message",
-                                "Непознат тип на игра."
+                                "Корисникот нема внесено возраст."
                         ));
             }
 
-            AgeGroup ageGroup = resolveAgeGroup(user);
+            /*
+             * --------------------------------------------------
+             * DETERMINE AGE GROUP
+             * --------------------------------------------------
+             */
 
-            Optional<Exercise> exerciseOptional =
+            AgeGroup ageGroup =
+                    determineAgeGroup(age);
+
+            /*
+             * --------------------------------------------------
+             * DEBUG
+             * --------------------------------------------------
+             *
+             * Ова е корисно додека тестираме.
+             */
+
+            /*
+             * --------------------------------------------------
+             * FIND EXACT EXERCISE
+             * --------------------------------------------------
+             *
+             * Клучниот дел е што тука го користиме:
+             *
+             * gamesId
+             * gamesType
+             * ageGroup
+             * pinNumber
+             * taskNumber
+             *
+             * Значи НЕ може да ја земе задачата за друга возраст.
+             */
+
+            Exercise exercise =
                     exerciseRepository
                             .findByGamesIdAndGamesTypeAndAgeGroupAndPinNumberAndTaskNumber(
                                     gamesId,
-                                    type,
+                                    gamesType,
                                     ageGroup,
                                     pinNumber,
                                     taskNumber
-                            );
+                            )
+                            .orElse(null);
 
-            if (exerciseOptional.isEmpty()) {
-                return ResponseEntity.status(404)
-                        .body(Map.of(
-                                "message",
-                                "Не постои задачата.",
-                                "gamesId",
-                                gamesId,
-                                "gamesType",
-                                type.name(),
-                                "ageGroup",
-                                ageGroup.name(),
-                                "pinNumber",
-                                pinNumber,
-                                "taskNumber",
-                                taskNumber
-                        ));
+            /*
+             * --------------------------------------------------
+             * EXERCISE NOT FOUND
+             * --------------------------------------------------
+             */
+
+            if (exercise == null) {
+
+                return ResponseEntity
+                        .notFound()
+                        .build();
             }
 
-            Exercise exercise = exerciseOptional.get();
+            /*
+             * --------------------------------------------------
+             * RESPONSE
+             * --------------------------------------------------
+             */
 
-            Map<String, Object> response = new LinkedHashMap<>();
+            Map<String, Object> response =
+                    new LinkedHashMap<>();
 
-            response.put("id", exercise.getId());
-            response.put("gamesId", exercise.getGames().getId());
-            response.put("gameName", exercise.getGames().getName());
-            response.put("gamesType", exercise.getGamesType().name());
-            response.put("ageGroup", exercise.getAgeGroup().name());
-            response.put("pinNumber", exercise.getPinNumber());
-            response.put("taskNumber", exercise.getTaskNumber());
-            response.put("levelNumber", getLevelNumber(pinNumber));
-            response.put("content", exercise.getContentJson());
+            response.put(
+                    "id",
+                    exercise.getId()
+            );
 
-            return ResponseEntity.ok(response);
+            response.put(
+                    "gamesId",
+                    exercise.getGames().getId()
+            );
+
+            response.put(
+                    "gamesType",
+                    exercise.getGamesType().name()
+            );
+
+            response.put(
+                    "ageGroup",
+                    exercise.getAgeGroup().name()
+            );
+
+            response.put(
+                    "pinNumber",
+                    exercise.getPinNumber()
+            );
+
+            response.put(
+                    "taskNumber",
+                    exercise.getTaskNumber()
+            );
+
+            response.put(
+                    "content",
+                    exercise.getContentJson()
+            );
+
+            return ResponseEntity.ok(
+                    response
+            );
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            return ResponseEntity.internalServerError()
+            return ResponseEntity
+                    .internalServerError()
                     .body(Map.of(
                             "message",
-                            "Грешка при вчитување на задачата."
+                            "Не може да се вчита задачата."
                     ));
         }
     }
 
+
+    /*
+     * ==========================================================
+     * GET ALL EXERCISES FOR ONE MISSION
+     * ==========================================================
+     *
+     * Ова не е задолжително за ExercisePage,
+     * но е корисно ако некогаш сакаш да ги земеш
+     * сите 10 задачи одеднаш.
+     *
+     * ==========================================================
+     */
+
     @GetMapping("/{gamesId}/{gamesType}/{pinNumber}")
-    public ResponseEntity<?> getExercises(
+    public ResponseEntity<?> getMissionExercises(
             @PathVariable Long gamesId,
-            @PathVariable String gamesType,
+            @PathVariable GamesType gamesType,
             @PathVariable Integer pinNumber,
             @RequestParam Long userId
     ) {
 
         try {
 
-            Optional<User> userOptional =
-                    userRepository.findById(userId);
+            /*
+             * FIND USER
+             */
 
-            if (userOptional.isEmpty()) {
-                return ResponseEntity.status(404)
+            User user =
+                    userRepository
+                            .findById(userId)
+                            .orElse(null);
+
+            if (user == null) {
+
+                return ResponseEntity.badRequest()
                         .body(Map.of(
                                 "message",
                                 "Не постои корисникот."
                         ));
             }
 
-            GamesType type =
-                    GamesType.valueOf(gamesType.toUpperCase());
+            /*
+             * USER AGE
+             */
+
+            Integer age = user.getAge();
+
+            if (age == null) {
+
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "message",
+                                "Корисникот нема внесено возраст."
+                        ));
+            }
+
+            /*
+             * AGE GROUP
+             */
 
             AgeGroup ageGroup =
-                    resolveAgeGroup(userOptional.get());
+                    determineAgeGroup(age);
+
+            /*
+             * FIND EXERCISES
+             */
 
             List<Exercise> exercises =
                     exerciseRepository
-                            .findByGamesIdAndGamesTypeAndAgeGroupAndPinNumberOrderByTaskNumberAsc(
+                            .findByGamesIdAndGamesTypeAndAgeGroupAndPinNumber(
                                     gamesId,
-                                    type,
+                                    gamesType,
                                     ageGroup,
                                     pinNumber
                             );
 
+            /*
+             * SORT BY TASK NUMBER
+             */
+
+            exercises.sort(
+                    (a, b) ->
+                            Integer.compare(
+                                    a.getTaskNumber(),
+                                    b.getTaskNumber()
+                            )
+            );
+
+            /*
+             * RESPONSE
+             */
+
             List<Map<String, Object>> result =
-                    new ArrayList<>();
+                    exercises.stream()
+                            .map(this::createResponse)
+                            .toList();
 
-            for (Exercise exercise : exercises) {
-
-                Map<String, Object> item =
-                        new LinkedHashMap<>();
-
-                item.put("id", exercise.getId());
-                item.put("gamesId", exercise.getGames().getId());
-                item.put("gameName", exercise.getGames().getName());
-                item.put("gamesType", exercise.getGamesType().name());
-                item.put("ageGroup", exercise.getAgeGroup().name());
-                item.put("pinNumber", exercise.getPinNumber());
-                item.put("taskNumber", exercise.getTaskNumber());
-                item.put("levelNumber", getLevelNumber(pinNumber));
-                item.put("content", exercise.getContentJson());
-
-                result.add(item);
-            }
-
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(
+                    result
+            );
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            return ResponseEntity.badRequest()
+            return ResponseEntity
+                    .internalServerError()
                     .body(Map.of(
                             "message",
                             "Не може да се вчитаат задачите."
@@ -190,31 +361,88 @@ public class ExerciseController {
         }
     }
 
-    private AgeGroup resolveAgeGroup(User user) {
 
-        Integer age = user.getAge();
+    /*
+     * ==========================================================
+     * AGE -> AGE GROUP
+     * ==========================================================
+     *
+     * ОВА Е НАЈВАЖНИОТ ДЕЛ.
+     *
+     * 5, 6, 7  -> AGE_5_7
+     * 8, 9, 10 -> AGE_8_10
+     * 11-15    -> AGE_10_15
+     *
+     * ==========================================================
+     */
 
-        if (age == null || age <= 7) {
+    private AgeGroup determineAgeGroup(
+            Integer age
+    ) {
+
+        if (age <= 7) {
+
             return AgeGroup.AGE_5_7;
-        }
 
-        if (age <= 10) {
-            return AgeGroup.AGE_7_10;
-        }
+        } else if (age <= 10) {
 
-        return AgeGroup.AGE_10_15;
+            return AgeGroup.AGE_8_10;
+
+        } else {
+
+            return AgeGroup.AGE_10_15;
+        }
     }
 
-    private int getLevelNumber(Integer pinNumber) {
 
-        if (pinNumber == null || pinNumber <= 1) {
-            return 1;
-        }
+    /*
+     * ==========================================================
+     * RESPONSE HELPER
+     * ==========================================================
+     */
 
-        if (pinNumber == 2) {
-            return 2;
-        }
+    private Map<String, Object> createResponse(
+            Exercise exercise
+    ) {
 
-        return 3;
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put(
+                "id",
+                exercise.getId()
+        );
+
+        response.put(
+                "gamesId",
+                exercise.getGames().getId()
+        );
+
+        response.put(
+                "gamesType",
+                exercise.getGamesType().name()
+        );
+
+        response.put(
+                "ageGroup",
+                exercise.getAgeGroup().name()
+        );
+
+        response.put(
+                "pinNumber",
+                exercise.getPinNumber()
+        );
+
+        response.put(
+                "taskNumber",
+                exercise.getTaskNumber()
+        );
+
+        response.put(
+                "content",
+                exercise.getContentJson()
+        );
+
+        return response;
     }
 }

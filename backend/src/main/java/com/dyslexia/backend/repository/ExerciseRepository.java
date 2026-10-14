@@ -3,6 +3,7 @@ package com.dyslexia.backend.repository;
 import com.dyslexia.backend.model.AgeGroup;
 import com.dyslexia.backend.model.Exercise;
 import com.dyslexia.backend.model.GamesType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
             Integer taskNumber
     );
 
-    List<Exercise> findByGamesIdAndGamesTypeAndAgeGroupAndPinNumberOrderByTaskNumberAsc(
+    List<Exercise> findByGamesIdAndGamesTypeAndAgeGroupAndPinNumber(
             Long gamesId,
             GamesType gamesType,
             AgeGroup ageGroup,
