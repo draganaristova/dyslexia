@@ -74,6 +74,8 @@
     position: fixed;
     top: 110px;
     left: max(20px, calc((100vw - 1200px) / 2));
+    margin-top: 40px;
+    margin-left: 80px;
 
     width: 48px;
     height: 48px;

@@ -35,6 +35,19 @@
     background: transparent;
 }
 
+.profile-header > :first-child,
+.exercise-header > :first-child {
+    margin-left: 65px;
+}
+
+@media (max-width: 768px) {
+    .profile-header > :first-child,
+    .exercise-header > :first-child {
+        margin-left: 15px;
+    }
+}
+
+
 
 /* =========================
    CONTENT

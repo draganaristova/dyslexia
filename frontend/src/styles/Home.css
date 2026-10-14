@@ -30,6 +30,19 @@ body {
     gap: 10px;
 }
 
+.home-header > :first-child,
+.exercise-header > :first-child {
+    margin-left: 65px;
+}
+
+@media (max-width: 768px) {
+    .home-header > :first-child,
+    .exercise-header > :first-child {
+        margin-left: 15px;
+    }
+}
+
+
 .center {
     width: 100%;
     display: flex;

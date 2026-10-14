@@ -42,7 +42,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         System.out.println("========== JWT FILTER ==========");
         System.out.println("REQUEST: " + request.getMethod() + " " + request.getRequestURI());
-        System.out.println("AUTH HEADER: " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 

@@ -1,5 +1,10 @@
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 const API_URL = "http://localhost:8080/api/speech/tts";
 
@@ -13,15 +18,6 @@ export default function useMacedonianTTS() {
   const controllerRef = useRef(null);
   const urlRef = useRef(null);
   const pendingResolveRef = useRef(null);
-
-  // Македонскиот говор се генерира преку Azure,
-  // наместо преку гласовите инсталирани во Chrome.
-  const supported = true;
-  const voicesLoaded = true;
-  const voice = {
-    name: "Azure Macedonian",
-    lang: "mk-MK"
-  };
 
   const cleanup = useCallback(() => {
     if (controllerRef.current) {
@@ -49,7 +45,6 @@ export default function useMacedonianTTS() {
 
   const stop = useCallback(() => {
     runId.current += 1;
-
     cleanup();
 
     setSpeaking(false);
@@ -57,39 +52,44 @@ export default function useMacedonianTTS() {
     setError("");
   }, [cleanup]);
 
+  // startIndex е позицијата во оригиналниот текст.
+  // За една реченица се користи нејзиниот вистински индекс.
   const speakSentences = useCallback(
-    async (sentences, rate = 0.85, startIndex = 0) => {
-      if (!Array.isArray(sentences) || sentences.length === 0) {
+    async (sentences, rate = 1, startIndex = 0) => {
+      if (
+        !Array.isArray(sentences) ||
+        sentences.length === 0
+      ) {
         return;
       }
 
       stop();
-      setError("");
 
       const thisRun = runId.current;
 
       const safeRate = Math.min(
         1.2,
-        Math.max(0.65, Number(rate) || 0.85)
+        Math.max(0.65, Number(rate) || 1)
       );
 
-      const firstIndex = Math.max(
+      const offset = Math.max(
         0,
         Math.floor(Number(startIndex) || 0)
       );
 
       for (
-        let index = firstIndex;
+        let index = 0;
         index < sentences.length;
         index++
       ) {
-        if (runId.current !== thisRun) {
-          return;
-        }
+        if (runId.current !== thisRun) return;
 
         const text = sentences[index];
 
-        if (typeof text !== "string" || !text.trim()) {
+        if (
+          typeof text !== "string" ||
+          !text.trim()
+        ) {
           continue;
         }
 
@@ -98,9 +98,8 @@ export default function useMacedonianTTS() {
 
         try {
           setSpeaking(true);
-          setActiveIndex(index);
+          setActiveIndex(offset + index);
 
-          // JWT од постојната најава во ЛексиЛенд.
           const token = localStorage.getItem("token");
 
           if (!token) {
@@ -118,19 +117,12 @@ export default function useMacedonianTTS() {
           });
 
           if (!response.ok) {
-            console.error(
-              "Azure Speech API HTTP status:",
-              response.status
-            );
-
             throw new Error(`HTTP_${response.status}`);
           }
 
           const blob = await response.blob();
 
-          if (runId.current !== thisRun) {
-            return;
-          }
+          if (runId.current !== thisRun) return;
 
           if (!blob.size) {
             throw new Error("EMPTY_AUDIO");
@@ -164,52 +156,42 @@ export default function useMacedonianTTS() {
 
             audio.onended = () => finish();
 
-            audio.onerror = () =>
+            audio.onerror = () => {
               finish(new Error("AUDIO_PLAYBACK_ERROR"));
+            };
 
             audio.play().catch(finish);
           });
 
-          if (runId.current !== thisRun) {
-            return;
-          }
+          if (runId.current !== thisRun) return;
 
           audioRef.current = null;
 
           URL.revokeObjectURL(url);
           urlRef.current = null;
-
           controllerRef.current = null;
 
         } catch (err) {
-          if (runId.current !== thisRun) {
-            return;
-          }
+          if (runId.current !== thisRun) return;
 
           cleanup();
-
           setSpeaking(false);
           setActiveIndex(-1);
+
+          if (err.name === "AbortError") return;
 
           console.error("Azure Speech error:", err);
 
           if (err.message === "NO_TOKEN") {
             setError(
-              "Потребно е да се најавиш за да го користиш читањето."
+              "Најави се за да го користиш слушањето."
             );
           } else if (
-            err.message === "HTTP_401" ||
-            err.message === "HTTP_403"
+            ["HTTP_401", "HTTP_403"].includes(err.message)
           ) {
             setError(
-              "Пристапот до читањето е одбиен. Провери ја најавата и JWT токенот."
+              "Сесијата не е валидна. Најави се повторно."
             );
-          } else if (err.message === "HTTP_500") {
-            setError(
-              "Серверот не успеа да генерира говор. Провери го Azure Speech."
-            );
-          } else if (err.name === "AbortError") {
-            return;
           } else {
             setError(
               "Не успеа читањето. Провери дали backend и Azure Speech работат."
@@ -222,7 +204,6 @@ export default function useMacedonianTTS() {
 
       if (runId.current === thisRun) {
         cleanup();
-
         setSpeaking(false);
         setActiveIndex(-1);
       }
@@ -238,9 +219,12 @@ export default function useMacedonianTTS() {
   }, [cleanup]);
 
   return {
-    supported,
-    voice,
-    voicesLoaded,
+    supported: true,
+    voicesLoaded: true,
+    voice: {
+      name: "Azure Macedonian",
+      lang: "mk-MK"
+    },
     speaking,
     activeIndex,
     error,

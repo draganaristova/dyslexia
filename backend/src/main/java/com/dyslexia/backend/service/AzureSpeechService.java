@@ -3,8 +3,10 @@ package com.dyslexia.backend.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 @Service
 public class AzureSpeechService {
@@ -25,6 +27,12 @@ public class AzureSpeechService {
             );
         }
 
+        if (text.length() > 3000) {
+            throw new IllegalArgumentException(
+                    "Text is too long"
+            );
+        }
+
         String url = "https://" + speechRegion
                 + ".tts.speech.microsoft.com/cognitiveservices/v1";
 
@@ -33,47 +41,104 @@ public class AzureSpeechService {
                        xmlns="http://www.w3.org/2001/10/synthesis"
                        xml:lang="mk-MK">
                     <voice name="mk-MK-MarijaNeural">
-                        %s
+                        <prosody rate="0.75">
+                            %s
+                        </prosody>
                     </voice>
                 </speak>
                 """.formatted(escapeXml(text));
 
-        byte[] audio = restClient.post()
-                .uri(url)
-                .header(
-                        "Ocp-Apim-Subscription-Key",
-                        speechKey
-                )
-                .header(
-                        "X-Microsoft-OutputFormat",
-                        "audio-16khz-128kbitrate-mono-mp3"
-                )
-                .contentType(
-                        MediaType.parseMediaType(
-                                "application/ssml+xml"
-                        )
-                )
-                .accept(MediaType.valueOf("audio/mpeg"))
-                .body(ssml)
-                .retrieve()
-                .body(byte[].class);
+        try {
 
-        System.out.println(
-                "AZURE AUDIO SIZE: "
-                        + (audio == null ? "NULL" : audio.length)
-        );
-
-        if (audio == null || audio.length == 0) {
-            throw new IllegalStateException(
-                    "Azure returned empty audio"
+            System.out.println(
+                    "AZURE TTS: Generating Macedonian speech..."
             );
-        }
 
-        return audio;
+            ResponseEntity<byte[]> response = restClient.post()
+                    .uri(url)
+                    .header(
+                            "Ocp-Apim-Subscription-Key",
+                            speechKey
+                    )
+                    .header(
+                            "X-Microsoft-OutputFormat",
+                            "audio-16khz-128kbitrate-mono-mp3"
+                    )
+                    .header(
+                            "User-Agent",
+                            "LexiLand"
+                    )
+                    .contentType(
+                            MediaType.parseMediaType(
+                                    "application/ssml+xml; charset=utf-8"
+                            )
+                    )
+                    .accept(
+                            MediaType.parseMediaType("audio/mpeg")
+                    )
+                    .body(ssml.getBytes(java.nio.charset.StandardCharsets.UTF_8))
+                    .retrieve()
+                    .toEntity(byte[].class);
+
+            byte[] audio = response.getBody();
+
+            System.out.println(
+                    "AZURE STATUS: " + response.getStatusCode()
+            );
+
+            System.out.println(
+                    "AZURE HEADERS: " + response.getHeaders()
+            );
+
+            int audioSize = audio == null ? 0 : audio.length;
+
+            System.out.println(
+                    "AZURE AUDIO SIZE: " + audioSize
+            );
+
+            if (audioSize == 0) {
+                throw new IllegalStateException(
+                        "Azure returned empty audio"
+                );
+            }
+
+            System.out.println(
+                    "AZURE TTS: Audio generated successfully"
+            );
+
+            return audio;
+
+        } catch (RestClientResponseException e) {
+
+            System.err.println(
+                    "AZURE HTTP STATUS: " + e.getStatusCode()
+            );
+
+            System.err.println(
+                    "AZURE RESPONSE: "
+                            + e.getResponseBodyAsString()
+            );
+
+            throw new IllegalStateException(
+                    "Azure Speech request failed: "
+                            + e.getStatusCode(),
+                    e
+            );
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "AZURE TTS ERROR: " + e.getMessage()
+            );
+
+            throw e;
+        }
     }
 
     private String escapeXml(String text) {
-        return text.replace("&", "&amp;")
+
+        return text
+                .replace("&", "&amp;")
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;")

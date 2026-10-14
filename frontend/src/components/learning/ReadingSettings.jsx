@@ -13,13 +13,26 @@ export default function ReadingSettings({
   };
 
   return (
-    <section className="learning-settings">
-      <h3>⚙️ Прилагоди го читањето</h3>
+    <section
+      className="learning-settings"
+      aria-label="Поставки за читање"
+    >
+      <div className="learning-settings-heading">
+        <span className="learning-settings-gear">
+          ⚙️
+        </span>
+
+        <div>
+          <h3>Мои поставки</h3>
+        </div>
+      </div>
 
       <div className="learning-setting">
         <label htmlFor="learning-font-size">
-          Големина на буквите: {settings.fontSize}px
+          Големина на буквите
+          <strong>{settings.fontSize}px</strong>
         </label>
+
         <input
           id="learning-font-size"
           type="range"
@@ -35,8 +48,10 @@ export default function ReadingSettings({
 
       <div className="learning-setting">
         <label htmlFor="learning-spacing">
-          Растојание меѓу буквите: {settings.letterSpacing}px
+          Растојание меѓу буквите
+          <strong>{settings.letterSpacing}px</strong>
         </label>
+
         <input
           id="learning-spacing"
           type="range"
@@ -52,8 +67,12 @@ export default function ReadingSettings({
 
       <div className="learning-setting">
         <label htmlFor="learning-speed">
-          Брзина на читање: {settings.speed.toFixed(2)}×
+          Брзина на слушање
+          <strong>
+            {Number(settings.speed).toFixed(2)}×
+          </strong>
         </label>
+
         <input
           id="learning-speed"
           type="range"
@@ -65,9 +84,16 @@ export default function ReadingSettings({
             update("speed", Number(e.target.value))
           }
         />
+
+        <div className="learning-range-labels">
+          <span>🐢 Полека</span>
+          <span>🐇 Побрзо</span>
+        </div>
       </div>
 
       <label className="learning-check">
+        <span>Фонт за дислексија</span>
+
         <input
           type="checkbox"
           checked={settings.dyslexiaFont}
@@ -75,10 +101,11 @@ export default function ReadingSettings({
             update("dyslexiaFont", e.target.checked)
           }
         />
-        Користи фонт за дислексија
       </label>
 
       <label className="learning-check">
+        <span>Означи ја реченицата што се чита</span>
+
         <input
           type="checkbox"
           checked={settings.highlight}
@@ -86,13 +113,13 @@ export default function ReadingSettings({
             update("highlight", e.target.checked)
           }
         />
-        Истакни ја реченицата што се чита
       </label>
 
       <div className="learning-setting">
         <label htmlFor="learning-background">
-          Боја на позадината
+          Боја на подлогата
         </label>
+
         <select
           id="learning-background"
           value={settings.background}

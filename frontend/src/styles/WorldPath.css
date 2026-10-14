@@ -1,3 +1,8 @@
+
+/* ==================================================
+   LEXILAND - WORLD PATH
+================================================== */
+
 .world-path {
     width: 100%;
     min-height: 100vh;
@@ -18,63 +23,58 @@
 ================================================== */
 
 .world-path-header {
-
     width: 100%;
 
     display: flex;
-
     justify-content: space-between;
     align-items: center;
 
     margin-bottom: -15px;
 
     flex-wrap: wrap;
-
     gap: 14px;
 }
 
+/* Логото малку повнатре од левата страна */
+
+.world-path-header > :first-child {
+    margin-left: 65px;
+}
+
 .right-nav-group {
-
     display: flex;
-
     align-items: center;
 
     gap: 16px;
-
     flex-wrap: wrap;
 }
 
+/* ==================================================
+   BACK BUTTON
+================================================== */
+
 .world-path .back-btn {
-
     display: inline-flex;
-
     align-items: center;
-
     gap: 8px;
 
-    padding:
-        10px 18px;
+    padding: 10px 18px;
 
     border: none;
-
     border-radius: 14px;
 
-    background:
-        rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.92);
 
     color: #5b5366;
 
     font-family: inherit;
-
     font-size: 15px;
-
     font-weight: 700;
 
     cursor: pointer;
 
     box-shadow:
-        0 4px 12px
-        rgba(0, 0, 0, 0.10);
+        0 4px 12px rgba(0, 0, 0, 0.10);
 
     transition:
         transform 0.2s ease,
@@ -83,26 +83,20 @@
 }
 
 .world-path .back-btn::before {
-
     content: "←";
 
     font-size: 20px;
-
     font-weight: 800;
-
     line-height: 1;
 }
 
 .world-path .back-btn:hover {
-
     background: #e6ef65;
 
-    transform:
-        translateX(-3px);
+    transform: translateX(-3px);
 
     box-shadow:
-        0 6px 16px
-        rgba(0, 0, 0, 0.14);
+        0 6px 16px rgba(0, 0, 0, 0.14);
 }
 
 /* ==================================================
@@ -111,95 +105,90 @@
 
 .world-loading,
 .world-error {
-
     min-height: 50vh;
 
     display: flex;
-
     flex-direction: column;
 
     align-items: center;
     justify-content: center;
 
     text-align: center;
-
     gap: 10px;
 }
 
 .world-error button {
-
     margin-top: 10px;
 
-    padding:
-        12px 24px;
+    padding: 12px 24px;
 
     border: none;
-
     border-radius: 14px;
 
     background: #f6cf63;
 
     font-family: inherit;
-
     font-weight: bold;
 
     cursor: pointer;
 }
 
 /* ==================================================
-   WORLD TITLE
+   WORLD TITLE - CENTERED
 ================================================== */
 
 .world-title-row {
+    position: relative;
 
     display: flex;
-
     align-items: center;
+    justify-content: center;
 
-    justify-content: space-between;
+    width: 100%;
+    max-width: 1250px;
+    min-height: 55px;
 
-    margin-top: 25px;
-
-    margin-bottom: 20px;
-
-    flex-wrap: wrap;
+    margin: 25px auto 24px;
 
     gap: 12px;
 }
 
-.world-title-row h1 {
+/* Центриран наслов со нежна виолетова боја */
 
+.world-title-row h1 {
     margin: 0;
 
-    font-size:
-        clamp(
-            22px,
-            3.4vw,
-            34px
-        );
+    text-align: center;
 
+    font-size: clamp(26px, 3.4vw, 38px);
     font-weight: 800;
+    line-height: 1.3;
 
-    color:
-        rgba(0, 0, 0, 0.75);
+    color: #d85537;
 }
 
+/* Бројот на игрите останува десно */
+
 .world-progress {
+    position: absolute;
 
-    background: white;
+    right: 0;
+    top: 50%;
 
-    padding:
-        10px 20px;
+    transform: translateY(-50%);
 
+    background: #ffffff;
+
+    padding: 10px 20px;
     border-radius: 999px;
 
     font-weight: 700;
-
     font-size: 14px;
 
+    white-space: nowrap;
+
     box-shadow:
-        0 8px 20px
-        rgba(0, 0, 0, 0.08);
+        0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ==================================================
@@ -207,41 +196,28 @@
 ================================================== */
 
 .world-map-frame {
-
     position: relative;
 
     width: 100%;
-
     max-width: 1250px;
 
     margin: 0 auto;
 
     border-radius:
-        clamp(
-            18px,
-            3vw,
-            32px
-        );
+        clamp(18px, 3vw, 32px);
 
     overflow: hidden;
 
     border:
-        clamp(
-            3px,
-            0.5vw,
-            5px
-        )
+        clamp(3px, 0.5vw, 5px)
         solid #F6C84C;
 
     box-shadow:
-        0 20px 50px
-        rgba(0, 0, 0, 0.12);
+        0 20px 50px rgba(0, 0, 0, 0.12);
 }
 
 .world-bg {
-
     width: 100%;
-
     display: block;
 }
 
@@ -250,96 +226,58 @@
 ================================================== */
 
 .pin {
-
     position: absolute;
 
-    transform:
-        translate(
-            -50%,
-            -50%
-        );
+    transform: translate(-50%, -50%);
 
-    width:
-        clamp(
-            38px,
-            6vw,
-            58px
-        );
-
-    height:
-        clamp(
-            38px,
-            6vw,
-            58px
-        );
+    width: clamp(38px, 6vw, 58px);
+    height: clamp(38px, 6vw, 58px);
 
     border-radius: 50%;
-
-    border:
-        4px solid white;
+    border: 4px solid white;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
-    font-size:
-        clamp(
-            16px,
-            2.2vw,
-            24px
-        );
+    font-size: clamp(16px, 2.2vw, 24px);
 
     cursor: pointer;
 
     box-shadow:
-        0 8px 18px
-        rgba(0, 0, 0, 0.30);
+        0 8px 18px rgba(0, 0, 0, 0.30);
 
-    transition:
-        transform 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .pin:hover:not(:disabled) {
-
     transform:
-        translate(
-            -50%,
-            -50%
-        )
-        scale(1.1);
+        translate(-50%, -50%) scale(1.1);
 }
 
 .pin-number {
-
     position: absolute;
 
     top: -8px;
-
     right: -8px;
 
     width: 22px;
-
     height: 22px;
 
     background: white;
-
     border-radius: 50%;
 
     font-size: 11px;
-
     font-weight: 800;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     color: #333;
 
     box-shadow:
-        0 3px 6px
-        rgba(0, 0, 0, 0.2);
+        0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .pin-icon {
@@ -351,53 +289,40 @@
 ================================================== */
 
 .pin-locked {
-
     background: #b7b3a0;
 
     cursor: not-allowed;
-
     opacity: 0.85;
 }
 
 .pin-completed {
-
     background: #41be75;
 
     color: white;
-
     font-weight: 800;
 }
 
 .pin-current {
-
-    animation:
-        pulse 1.6s infinite;
+    animation: pulse 1.6s infinite;
 }
 
 @keyframes pulse {
-
     0% {
         box-shadow:
-            0 8px 18px
-            rgba(0, 0, 0, 0.3),
-            0 0 0 0
-            rgba(255, 255, 255, 0.6);
+            0 8px 18px rgba(0, 0, 0, 0.3),
+            0 0 0 0 rgba(255, 255, 255, 0.6);
     }
 
     70% {
         box-shadow:
-            0 8px 18px
-            rgba(0, 0, 0, 0.3),
-            0 0 0 14px
-            rgba(255, 255, 255, 0);
+            0 8px 18px rgba(0, 0, 0, 0.3),
+            0 0 0 14px rgba(255, 255, 255, 0);
     }
 
     100% {
         box-shadow:
-            0 8px 18px
-            rgba(0, 0, 0, 0.3),
-            0 0 0 0
-            rgba(255, 255, 255, 0);
+            0 8px 18px rgba(0, 0, 0, 0.3),
+            0 0 0 0 rgba(255, 255, 255, 0);
     }
 }
 
@@ -486,35 +411,81 @@
 }
 
 /* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 900px) {
+    .world-title-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .world-progress {
+        position: static;
+        transform: none;
+    }
+}
+
+/* ==================================================
    MOBILE
 ================================================== */
 
 @media (max-width: 640px) {
+    .world-path {
+        padding:
+            0 16px 40px;
+    }
 
     .world-path-header {
-
         flex-direction: column;
-
         align-items: flex-start;
+    }
+
+    .world-path-header > :first-child {
+        margin-left: 15px;
     }
 
     .right-nav-group {
-
         width: 100%;
-
-        justify-content:
-            space-between;
+        justify-content: space-between;
     }
 
     .world-title-row {
-
-        align-items: flex-start;
-
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .world-title-row h1 {
+        font-size: 25px;
+        text-align: center;
     }
 
     .world-progress {
+        position: static;
+        transform: none;
+        align-self: center;
+    }
 
-        align-self: flex-start;
+    .world-map-frame {
+        border-radius: 18px;
+    }
+}
+
+/* ==================================================
+   ACCESSIBILITY
+================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .pin-current {
+        animation: none;
+    }
+
+    .pin,
+    .world-path .back-btn {
+        transition: none;
     }
 }

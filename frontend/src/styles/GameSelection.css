@@ -5,6 +5,18 @@
     font-family: "Noto Sans Mono", monospace;
 }
 
+.game-selection-header > :first-child
+{
+    margin-left: 65px;
+}
+
+@media (max-width: 768px) {
+    .game-selection-header > :first-child {
+        margin-left: 15px;
+    }
+}
+
+
 .game-selection {
     width: 100%;
     min-height: 100vh;

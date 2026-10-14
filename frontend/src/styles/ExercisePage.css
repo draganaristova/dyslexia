@@ -1,6 +1,12 @@
 /* =========================================================
    MAIN PAGE
 ========================================================= */
+#root {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
 
 .exercise-page {
     min-height: 100vh;
@@ -41,6 +47,17 @@
     align-items: center;
     gap: 10px;
 }
+
+.exercise-header > :first-child{
+    margin-left: 65px;
+}
+
+@media (max-width: 768px) {
+    .exercise-header > :first-child {
+        margin-left: 15px;
+    }
+}
+
 
 /* =========================================================
    MAIN
