@@ -1,6 +1,16 @@
-package com.dyslexia.backend.model; import jakarta.persistence.*; import java.time.LocalDateTime;
+package com.dyslexia.backend.model;
+ import jakarta.persistence.*; 
+ import java.time.LocalDateTime;
 
-@Entity @Table( name = "exercise_progress", uniqueConstraints = { @UniqueConstraint( name = "uk_user_exercise", columnNames = {"user_id", "exercise_id"} ) } ) public class ExerciseProgress {
+@Entity
+@Table( name = "exercise_progress", uniqueConstraints ={ 
+            @UniqueConstraint( name = "uk_user_exercise", columnNames = {
+            "user_id", "exercise_id"
+            }
+        ) 
+    } 
+) 
+public class ExerciseProgress {
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)

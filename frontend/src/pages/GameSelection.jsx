@@ -1,9 +1,6 @@
-
 import "../styles/GameSelection.css";
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 import ProfileButton from "../widgets/ProfileButton";
 import { worldsData } from "../data/worldsData";
 import { API } from "../data/api";
@@ -12,20 +9,15 @@ import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
 
 function GameSelection() {
-
     const navigate = useNavigate();
-
     const [worldAccess, setWorldAccess] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
         const loadWorldAccess = async () => {
 
             try {
-
                 setLoading(true);
-
                 const token = localStorage.getItem("token");
                 const userId = localStorage.getItem("userId");
 
@@ -78,25 +70,17 @@ function GameSelection() {
                     })
                 );
 
-                setWorldAccess(
-                    Object.fromEntries(results)
-                );
+                setWorldAccess(Object.fromEntries(results));
 
             } catch (error) {
-
-                console.error(
-                    "Error loading world access:",
-                    error
-                );
+                console.error("Error loading world access:", error);
 
             } finally {
 
                 setLoading(false);
             }
         };
-
         loadWorldAccess();
-
     }, [navigate]);
 
     return (
@@ -104,11 +88,8 @@ function GameSelection() {
         <div className="game-selection">
 
             <header className="game-selection-header">
-
                 <Logo />
-
                 <div className="nav-icons-row">
-
                     <HomeButton />
                     <LogoutButton />
                     <ProfileButton />

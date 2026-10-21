@@ -1,17 +1,12 @@
-
 import React, { useEffect, useState } from "react";
-
 import learningTexts from "../data/learningTexts";
 import useMacedonianTTS from "../hooks/useMacedonianTTS";
-
 import ReadingPlayer from "../components/learning/ReadingPlayer";
 import ReadingSettings from "../components/learning/ReadingSettings";
-
 import ProfileButton from "../widgets/ProfileButton";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
-
 import "../styles/LearningPage.css";
 
 const DEFAULT_SETTINGS = {
@@ -109,8 +104,7 @@ export default function LearningPage() {
 
   return (
     <div className="learning-page">
-      {/* HEADER */}
-
+    
       <header className="home-header learning-site-header">
         <Logo />
 
@@ -127,7 +121,6 @@ export default function LearningPage() {
       </header>
 
       <main className="learning-container">
-        {/* CENTERED INTRO */}
 
         <section className="learning-intro">
           <span className="learning-kicker">
@@ -137,8 +130,7 @@ export default function LearningPage() {
           <h1>Ајде да читаме!</h1>
 
           <p>
-            Прво пробај самостојно, а кога ти треба
-            помош — Марија ќе ти прочита.
+            Прво пробај самостојно.
             Секоја реченица е нова победа!
           </p>
 
@@ -157,11 +149,7 @@ export default function LearningPage() {
           </button>
         </section>
 
-        {/* MAIN CONTENT */}
-
         <div className="learning-layout">
-          {/* LEFT SIDEBAR */}
-
           <aside className="learning-sidebar">
             <h2>Што ќе читаме?</h2>
 
@@ -225,8 +213,6 @@ export default function LearningPage() {
             </div>
           </aside>
 
-          {/* CENTER READING AREA */}
-
           <div className="learning-main">
             <ReadingPlayer
               story={selectedStory}
@@ -234,8 +220,6 @@ export default function LearningPage() {
               tts={tts}
             />
           </div>
-
-          {/* RIGHT SETTINGS PANEL */}
 
           <aside
             className={`learning-settings-panel ${
@@ -248,8 +232,6 @@ export default function LearningPage() {
             />
           </aside>
         </div>
-
-        {/* FOOTER */}
 
         <footer className="learning-footer">
           💚 Во ЛексиЛенд секое дете учи со свое темпо.

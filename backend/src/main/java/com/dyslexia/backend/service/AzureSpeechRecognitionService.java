@@ -1,12 +1,9 @@
-
 package com.dyslexia.backend.service;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AzureSpeechRecognitionService {
-
     private final RestClient restClient = RestClient.create();
 
     @Value("${AZURE_SPEECH_KEY}")
@@ -65,7 +61,6 @@ public class AzureSpeechRecognitionService {
                     .redirectErrorStream(true)
                     .start();
 
-            // Читај го излезот за процесот да не блокира.
             Thread outputReader = new Thread(() -> {
                 try (var stream = process.getInputStream()) {
                     stream.transferTo(java.io.OutputStream.nullOutputStream());
@@ -109,10 +104,7 @@ public class AzureSpeechRecognitionService {
 
             AzureRecognitionResponse response = restClient.post()
                     .uri(url)
-                    .header(
-                            "Ocp-Apim-Subscription-Key",
-                            speechKey
-                    )
+                    .header("Ocp-Apim-Subscription-Key", speechKey)
                     .contentType(MediaType.parseMediaType("audio/wav"))
                     .body(wavAudio)
                     .retrieve()
@@ -130,16 +122,6 @@ public class AzureSpeechRecognitionService {
             return recognizedText;
 
         } catch (RestClientResponseException e) {
-
-            System.err.println(
-                    "AZURE STT HTTP STATUS: " + e.getStatusCode()
-            );
-
-            System.err.println(
-                    "AZURE STT RESPONSE: "
-                            + e.getResponseBodyAsString()
-            );
-
             throw new IllegalStateException(
                     "Azure recognition request failed",
                     e
@@ -148,7 +130,6 @@ public class AzureSpeechRecognitionService {
         } catch (InterruptedException e) {
 
             Thread.currentThread().interrupt();
-
             throw new IllegalStateException(
                     "Speech recognition interrupted",
                     e

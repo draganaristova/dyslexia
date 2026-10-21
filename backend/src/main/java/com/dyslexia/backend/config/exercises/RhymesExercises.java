@@ -1,28 +1,17 @@
-
 package com.dyslexia.backend.config.exercises;
-
 import com.dyslexia.backend.model.AgeGroup;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class RhymesExercises {
-
     private record RhymePair(
             String word,
             String rhyme,
             String group
     ) {}
 
-    /*
-     * ==========================================
-     * 5–7 ГОДИНИ
-     * Кратки и лесни зборови
-     * ==========================================
-     */
     private static final RhymePair[] AGE_5_7 = {
-
             new RhymePair("мост", "гост", "ост"),
             new RhymePair("мир", "вир", "ир"),
             new RhymePair("слава", "глава", "ава"),
@@ -41,14 +30,7 @@ public class RhymesExercises {
             new RhymePair("ноќ", "моќ", "оќ")
     };
 
-    /*
-     * ==========================================
-     * 8–10 ГОДИНИ
-     * Познати зборови и јасни рими
-     * ==========================================
-     */
     private static final RhymePair[] AGE_8_10 = {
-
             new RhymePair("птица", "жица", "ица"),
             new RhymePair("мост", "гост", "ост"),
             new RhymePair("мир", "вир", "ир"),
@@ -71,14 +53,7 @@ public class RhymesExercises {
             new RhymePair("снег", "брег", "ег")
     };
 
-    /*
-     * ==========================================
-     * 10–15 ГОДИНИ
-     * Малку подолги, но разбирливи зборови
-     * ==========================================
-     */
     private static final RhymePair[] AGE_10_15 = {
-
             new RhymePair("птица", "жица", "ица"),
             new RhymePair("спиење", "пиење", "иење"),
             new RhymePair("младост", "радост", "адост"),
@@ -105,11 +80,6 @@ public class RhymesExercises {
             new RhymePair("гора", "зора", "ора")
     };
 
-    /*
-     * ==========================================
-     * КРЕИРАЊЕ НА ЗАДАЧА
-     * ==========================================
-     */
     public static String create(
             AgeGroup ageGroup,
             int worldNumber,
@@ -123,35 +93,18 @@ public class RhymesExercises {
             case AGE_10_15 -> AGE_10_15;
         };
 
-        int index = Math.floorMod(
-                (worldNumber - 1) * 10
-                        + (pin - 1) * 3
-                        + (task - 1),
-                bank.length
-        );
-
+        int index = Math.floorMod((worldNumber - 1) * 10 + (pin - 1) * 3 + (task - 1),  bank.length);
         RhymePair pair = bank[index];
-
         List<String> options = new ArrayList<>();
         options.add(pair.rhyme());
 
-        /*
-         * Избираме три погрешни одговори.
-         *
-         * Не дозволуваме:
-         * - ист збор двапати
-         * - збор од истата римска група
-         * - дополнителна рима со прашањето
-         */
         for (
                 int offset = 1;
                 offset < bank.length && options.size() < 4;
                 offset++
         ) {
 
-            RhymePair candidate =
-                    bank[(index + offset) % bank.length];
-
+            RhymePair candidate = bank[(index + offset) % bank.length];
             String distractor = candidate.rhyme();
 
             if (options.contains(distractor)) {
@@ -170,27 +123,12 @@ public class RhymesExercises {
         }
 
         if (options.size() != 4) {
-            throw new IllegalStateException(
-                    "Нема доволно понудени одговори за: "
-                            + pair.word()
-            );
+            throw new IllegalStateException("Нема доволно понудени одговори за: " + pair.word());
         }
 
-        /*
-         * Го менуваме редоследот на одговорите.
-         */
-        Collections.rotate(
-                options,
-                Math.floorMod(
-                        worldNumber + pin + task,
-                        options.size()
-                )
-        );
+        Collections.rotate(options, Math.floorMod(worldNumber + pin + task, options.size()));
 
-        String question =
-                "Кој збор се римува со „"
-                        + pair.word()
-                        + "“?";
+        String question = "Кој збор се римува со „" + pair.word() + "“?";
 
         return ExerciseContentUtils.basic(
                 question,
@@ -199,15 +137,6 @@ public class RhymesExercises {
         );
     }
 
-    /*
-     * ==========================================
-     * ПРОВЕРКА НА РИМА
-     * ==========================================
-     *
-     * Се споредуваат завршните букви.
-     * Ова е дополнителна заштита при
-     * изборот на погрешни одговори.
-     */
     private static boolean rhymesWith(
             String first,
             String second
@@ -220,23 +149,13 @@ public class RhymesExercises {
         first = first.toLowerCase();
         second = second.toLowerCase();
 
-        int minLength = Math.min(
-                first.length(),
-                second.length()
-        );
+        int minLength = Math.min(first.length(), second.length());
 
         if (minLength < 2) {
             return false;
         }
 
         int suffixLength = Math.min(3, minLength);
-
-        return first.substring(
-                first.length() - suffixLength
-        ).equals(
-                second.substring(
-                        second.length() - suffixLength
-                )
-        );
+        return first.substring(first.length() - suffixLength).equals(second.substring(second.length() - suffixLength));
     }
 }

@@ -6,7 +6,6 @@ import Logo from "../widgets/Logo";
 import HomeButton from "../widgets/HomeButton";
 import { API } from "../data/api";
 
-
 export default function ForgotPasswordForm() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');

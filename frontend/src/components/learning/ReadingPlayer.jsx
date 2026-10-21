@@ -1,10 +1,12 @@
-
 import React, { useEffect, useMemo, useState } from "react";
-
 import useSpeechRecognition from "../../hooks/useSpeechRecognition";
 import { evaluateReading } from "../../data/readingFeedback";
 
-export default function ReadingPlayer({ story, settings, tts }) {
+export default function ReadingPlayer({
+  story,
+  settings,
+  tts
+}) {
   const {
     listening,
     processing,
@@ -19,21 +21,36 @@ export default function ReadingPlayer({ story, settings, tts }) {
   const [hasAttempt, setHasAttempt] = useState(false);
 
   const sentences = useMemo(
-    () => (Array.isArray(story?.sentences) ? story.sentences : []),
+    () =>
+      Array.isArray(story?.sentences)
+        ? story.sentences
+        : [],
     [story?.sentences]
   );
 
-  const isWord =
-    story?.category === "words" ||
-    story?.category === "word";
+  const isWord = story?.category === "words" || story?.category === "word";
+  const isStory = story?.category === "story";
 
+  const totalWords = useMemo(() => {
+    return sentences.join(" ").trim().split(/\s+/u)
+      .filter(Boolean).length;
+  }, [sentences]);
+
+  const canPracticeAll = !isStory && totalWords > 0 && totalWords <= 12;
   const feedback = useMemo(() => {
     if (!hasAttempt || !recognizedText?.trim()) {
       return null;
     }
 
-    return evaluateReading(practiceText, recognizedText);
-  }, [hasAttempt, practiceText, recognizedText]);
+    return evaluateReading(
+      practiceText,
+      recognizedText
+    );
+  }, [
+    hasAttempt,
+    practiceText,
+    recognizedText
+  ]);
 
   useEffect(() => {
     stop();
@@ -52,11 +69,17 @@ export default function ReadingPlayer({ story, settings, tts }) {
 
   const readAll = () => {
     stop();
-    tts.speakSentences(sentences, settings.speed, 0);
+
+    tts.speakSentences(
+      sentences,
+      settings.speed,
+      0
+    );
   };
 
   const readOne = (index) => {
     stop();
+
     tts.speakSentences(
       [sentences[index]],
       settings.speed,
@@ -65,6 +88,13 @@ export default function ReadingPlayer({ story, settings, tts }) {
   };
 
   const startPractice = async (index = null) => {
+    if (
+      index === null &&
+      !canPracticeAll
+    ) {
+      return;
+    }
+
     tts.stop();
     stop();
 
@@ -73,10 +103,11 @@ export default function ReadingPlayer({ story, settings, tts }) {
         ? sentences.join(" ")
         : sentences[index];
 
+    if (!text?.trim()) return;
+
     setPracticeIndex(index);
     setPracticeText(text);
     setHasAttempt(true);
-
     await start();
   };
 
@@ -97,9 +128,11 @@ export default function ReadingPlayer({ story, settings, tts }) {
     }
 
     return (
-      <div className="reading-feedback" role="status">
+      <div
+        className="reading-feedback"
+        role="status"
+      >
         <h3>🌟 Твоето читање</h3>
-
         <p>{feedback.message}</p>
 
         <p>
@@ -116,27 +149,29 @@ export default function ReadingPlayer({ story, settings, tts }) {
 
         {feedback.practiceWords.length > 0 && (
           <div>
-            <p>Ајде да ги вежбаме овие зборови:</p>
+            <p>
+              Ајде да ги вежбаме овие зборови:
+            </p>
 
             <div className="reading-practice-words">
-              {[...new Set(feedback.practiceWords)].map(
-                (word) => (
-                  <button
-                    key={word}
-                    type="button"
-                    disabled={tts.speaking}
-                    onClick={() =>
-                      tts.speakSentences(
-                        [word],
-                        settings.speed,
-                        0
-                      )
-                    }
-                  >
-                    🔊 {word}
-                  </button>
-                )
-              )}
+              {[
+                ...new Set(feedback.practiceWords)
+              ].map((word) => (
+                <button
+                  key={word}
+                  type="button"
+                  disabled={tts.speaking}
+                  onClick={() =>
+                    tts.speakSentences(
+                      [word],
+                      settings.speed,
+                      0
+                    )
+                  }
+                >
+                  🔊 {word}
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -175,32 +210,40 @@ export default function ReadingPlayer({ story, settings, tts }) {
       </div>
 
       <div className="reading-practice-hint">
-        <strong>🌱 Читај со свое темпо!</strong>
-        <br></br>
+        <strong>
+          🌱 Читај со свое темпо!
+        </strong>
+
+        <br />
+
         <span>
-          Притисни 🎤 до реченицата што сакаш
-          да ја прочиташ. 
+          Притисни 🎤 до реченицата или
+          зборот што сакаш да го прочиташ.
           Ако ти треба помош, притисни 🔊.
         </span>
       </div>
 
       <div className="reading-actions">
-        <button
-          type="button"
-          className="reading-primary-button"
-          onClick={() => startPractice(null)}
-          disabled={
-            listening ||
-            processing ||
-            !sentences.length
-          }
-        >
-          {listening
-            ? "🎙️ Те слушам..."
-            : processing
-            ? "✨ Го проверувам читањето..."
-            : "🎤 Читај го целиот текст"}
-        </button>
+        {canPracticeAll && (
+          <button
+            type="button"
+            className="reading-primary-button"
+            onClick={() => startPractice(null)}
+            disabled={
+              listening ||
+              processing ||
+              !sentences.length
+            }
+          >
+            {listening
+              ? "🎙️ Те слушам..."
+              : processing
+              ? "✨ Го проверувам читањето..."
+              : isWord
+              ? "🎤 Изговори ги зборовите"
+              : "🎤 Читај го целиот текст"}
+          </button>
+        )}
 
         <button
           type="button"
@@ -234,25 +277,35 @@ export default function ReadingPlayer({ story, settings, tts }) {
       </div>
 
       {listening && (
-        <p className="reading-listening" role="status">
+        <p
+          className="reading-listening"
+          role="status"
+        >
           🎙️ Те слушам! Читај полека.
-          Имаш време да размислиш пред секој збор. 💚
+          Имаш време да размислиш
+          пред секој збор. 💚
         </p>
       )}
 
       {processing && (
-        <p className="reading-listening" role="status">
+        <p
+          className="reading-listening"
+          role="status"
+        >
           ✨ Го проверувам твоето читање...
         </p>
       )}
 
       <div
         className={`reading-text reading-bg-${settings.background} ${
-          settings.dyslexiaFont ? "reading-dyslexia" : ""
+          settings.dyslexiaFont
+            ? "reading-dyslexia"
+            : ""
         }`}
         style={{
           fontSize: `${settings.fontSize}px`,
-          letterSpacing: `${settings.letterSpacing}px`
+          letterSpacing:
+            `${settings.letterSpacing}px`
         }}
       >
         {sentences.map((sentence, index) => {
@@ -263,16 +316,22 @@ export default function ReadingPlayer({ story, settings, tts }) {
 
           const micActive =
             listening &&
-            (practiceIndex === null ||
-              practiceIndex === index);
+            (
+              practiceIndex === null ||
+              practiceIndex === index
+            );
 
           return (
             <div
               key={`${story.id}-${index}`}
               className={`reading-sentence ${
-                ttsActive ? "reading-sentence-active" : ""
+                ttsActive
+                  ? "reading-sentence-active"
+                  : ""
               } ${
-                micActive ? "reading-sentence-listening" : ""
+                micActive
+                  ? "reading-sentence-listening"
+                  : ""
               }`}
             >
               <span className="reading-sentence-text">
@@ -283,10 +342,21 @@ export default function ReadingPlayer({ story, settings, tts }) {
                 <button
                   type="button"
                   className="reading-sentence-audio"
-                  title="Прочитај самостојно"
-                  aria-label={`Читај самостојно: ${sentence}`}
-                  disabled={listening || processing}
-                  onClick={() => startPractice(index)}
+                  title={
+                    isWord
+                      ? "Изговори го зборот"
+                      : "Прочитај самостојно"
+                  }
+                  aria-label={
+                    `Читај самостојно: ${sentence}`
+                  }
+                  disabled={
+                    listening ||
+                    processing
+                  }
+                  onClick={() =>
+                    startPractice(index)
+                  }
                 >
                   🎤
                 </button>
@@ -297,8 +367,13 @@ export default function ReadingPlayer({ story, settings, tts }) {
                   title="Слушај го изговорот"
                   aria-label={`Слушај: ${sentence}`}
                   aria-pressed={ttsActive}
-                  disabled={listening || processing}
-                  onClick={() => readOne(index)}
+                  disabled={
+                    listening ||
+                    processing
+                  }
+                  onClick={() =>
+                    readOne(index)
+                  }
                 >
                   🔊
                 </button>
@@ -310,18 +385,22 @@ export default function ReadingPlayer({ story, settings, tts }) {
         })}
       </div>
 
-      {practiceIndex === null && (
-        <div className="reading-full-feedback">
-          {renderFeedback(null)}
-        </div>
-      )}
+      {canPracticeAll &&
+        practiceIndex === null && (
+          <div className="reading-full-feedback">
+            {renderFeedback(null)}
+          </div>
+        )}
 
       <div className="reading-message">
         ⭐ Нема брзање. Секој обид е успех!
       </div>
 
       {(error || tts.error) && (
-        <p className="reading-warning" role="alert">
+        <p
+          className="reading-warning"
+          role="alert"
+        >
           {error || tts.error}
         </p>
       )}

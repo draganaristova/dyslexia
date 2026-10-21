@@ -1,6 +1,4 @@
-
 import React from "react";
-
 export default function ReadingSettings({
   settings,
   setSettings

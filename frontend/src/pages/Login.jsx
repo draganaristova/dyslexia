@@ -8,7 +8,6 @@ import { API } from "../data/api";
 
 export default function LoginForm() {
     const navigate = useNavigate();
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);

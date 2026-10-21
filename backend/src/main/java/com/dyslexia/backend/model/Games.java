@@ -1,5 +1,4 @@
 package com.dyslexia.backend.model;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -9,17 +8,11 @@ public class Games {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String color;
-
     private String imageUrl;
-
     private Integer orderIndex;
-
     private Integer worldNumber;
-
     private Integer totalLevels = 3;
 
     public Games() {

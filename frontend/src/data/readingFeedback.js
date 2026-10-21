@@ -1,4 +1,3 @@
-
 function tokenize(text) {
   return String(text || "")
     .toLocaleLowerCase("mk-MK")
@@ -60,13 +59,11 @@ export function evaluateReading(expected, recognized) {
   let message;
 
   if (accuracy === 100 && spokenWords.length === m) {
-    message = "Браво! Ги препознав сите зборови! 🌟";
+    message = "Браво! Ги препозна сите зборови! 🌟";
   } else if (accuracy >= 70) {
-    message =
-      "Одличен обид! Ајде да ги вежбаме и останатите зборови. 💚";
+    message = "Одличен обид! Ајде да ги вежбаме и останатите зборови. 💚";
   } else {
-    message =
-      "Убаво што се обиде! Можеме полека да пробаме повторно. 🌱";
+    message = "Убаво што се обиде! Можеме полека да пробаме повторно. 🌱";
   }
 
   return {

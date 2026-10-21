@@ -1,10 +1,9 @@
-
 export const VIDEO_BY_TYPE = {
     CROSSED_MOVEMENTS: "crossed-movements.mp4",
-    BALANCE_LEFT: "integration-1.mp4",
-    BALANCE_RIGHT: "integration-2.mp4",
+    BALANCE_LEFT: "balance-left.mp4",
+    BALANCE_RIGHT: "balance-right.mp4",
     FOLLOW_OBJECT: "follow-object.mp4",
-    LAZY_EIGHT: "lazy-eight.mp4"
+    LAZY_EIGHT: "thinking-cap.mp4"
 };
 
 export function normalizeGender(value) {

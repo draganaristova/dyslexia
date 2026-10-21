@@ -1,8 +1,3 @@
-
-/* ==========================================
-   LEXILAND - LEARNING PAGE
-========================================== */
-
 body:has(.learning-page),
 #root:has(.learning-page) {
     background: #f7f9ff !important;
@@ -28,10 +23,6 @@ body:has(.learning-page),
     overflow-x: clip;
 }
 
-/* ==========================================
-   HEADER
-========================================== */
-
 .learning-page .learning-site-header {
     width: min(1640px, 94%);
     max-width: 1640px;
@@ -52,10 +43,6 @@ body:has(.learning-page),
     gap: 14px;
 }
 
-/* ==========================================
-   MAIN CONTAINER
-========================================== */
-
 .learning-page .learning-container {
     width: min(1640px, 94%);
     max-width: 1640px;
@@ -63,10 +50,6 @@ body:has(.learning-page),
     padding: 30px 0 20px;
     background: transparent;
 }
-
-/* ==========================================
-   INTRO
-========================================== */
 
 .learning-page .learning-intro {
     width: 100%;
@@ -123,10 +106,6 @@ body:has(.learning-page),
     text-align: center;
 }
 
-/* ==========================================
-   SETTINGS TOGGLE
-========================================== */
-
 .learning-page .learning-settings-toggle {
     display: none;
     align-self: center;
@@ -150,10 +129,6 @@ body:has(.learning-page),
     transform: translateY(-2px);
 }
 
-/* ==========================================
-   THREE COLUMN LAYOUT
-========================================== */
-
 .learning-page .learning-layout {
     display: grid;
     grid-template-columns:
@@ -173,10 +148,6 @@ body:has(.learning-page),
     border-radius: 26px;
     box-shadow: 0 10px 35px rgba(65, 86, 132, 0.045);
 }
-
-/* ==========================================
-   LEFT SIDEBAR
-========================================== */
 
 .learning-page .learning-sidebar {
     padding: 24px 18px;
@@ -224,10 +195,6 @@ body:has(.learning-page),
     border-color: #d0dfff;
     color: #345fb5;
 }
-
-/* ==========================================
-   STORY LIST
-========================================== */
 
 .learning-page .learning-story-list {
     display: flex;
@@ -309,10 +276,6 @@ body:has(.learning-page),
     text-align: center;
 }
 
-/* ==========================================
-   CENTER COLUMN
-========================================== */
-
 .learning-page .learning-main {
     min-width: 0;
 }
@@ -320,10 +283,6 @@ body:has(.learning-page),
 .learning-page .reading-player {
     padding: 34px 34px 30px;
 }
-
-/* ==========================================
-   READING PLAYER HEADER
-========================================== */
 
 .learning-page .reading-player-heading {
     display: flex;
@@ -370,10 +329,6 @@ body:has(.learning-page),
     font-weight: 800;
 }
 
-/* ==========================================
-   READING ACTIONS
-========================================== */
-
 .learning-page .reading-actions {
     display: flex;
     align-items: center;
@@ -414,10 +369,6 @@ body:has(.learning-page),
     color: #c17e89;
 }
 
-/* ==========================================
-   READING TEXT
-========================================== */
-
 .learning-page .reading-text {
     padding: 24px;
     border-radius: 20px;
@@ -448,10 +399,6 @@ body:has(.learning-page),
         "Comic Sans MS",
         sans-serif;
 }
-
-/* ==========================================
-   READING SENTENCES
-========================================== */
 
 .learning-page .reading-sentence {
     display: grid;
@@ -597,10 +544,6 @@ body:has(.learning-page),
     cursor: not-allowed;
 }
 
-/* ==========================================
-   FULL TEXT FEEDBACK
-========================================== */
-
 .learning-page .reading-full-feedback {
     margin-top: 16px;
 }
@@ -613,10 +556,6 @@ body:has(.learning-page),
     color: #234734;
     line-height: 1.7;
 }
-
-/* ==========================================
-   READING MESSAGES
-========================================== */
 
 .learning-page .reading-message {
     margin-top: 22px;
@@ -648,10 +587,6 @@ body:has(.learning-page),
     text-align: center;
     font-size: 17px;
 }
-
-/* ==========================================
-   RIGHT SETTINGS PANEL
-========================================== */
 
 .learning-page .learning-settings-panel {
     padding: 24px 22px;
@@ -721,10 +656,6 @@ body:has(.learning-page),
     cursor: pointer;
 }
 
-/* ==========================================
-   FOOTER
-========================================== */
-
 .learning-page .learning-footer {
     margin-top: 35px;
     padding: 18px;
@@ -732,10 +663,6 @@ body:has(.learning-page),
     font-size: 14px;
     text-align: center;
 }
-
-/* ==========================================
-   TABLET
-========================================== */
 
 @media (max-width: 1150px) {
     .learning-page .learning-layout {
@@ -748,10 +675,6 @@ body:has(.learning-page),
         grid-column: 1 / -1;
     }
 }
-
-/* ==========================================
-   MOBILE
-========================================== */
 
 @media (max-width: 740px) {
     .learning-page .learning-site-header {
@@ -859,10 +782,6 @@ body:has(.learning-page),
         display: block;
     }
 }
-
-/* ==========================================
-   ACCESSIBILITY
-========================================== */
 
 .learning-page button:focus-visible,
 .learning-page input:focus-visible,

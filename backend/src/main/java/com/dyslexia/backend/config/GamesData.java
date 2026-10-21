@@ -1,21 +1,16 @@
 package com.dyslexia.backend.config;
-
 import com.dyslexia.backend.model.Games;
 import com.dyslexia.backend.repository.GameRepository;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Component
 @Order(1)
 public class GamesData implements CommandLineRunner {
-
     private final GameRepository gameRepository;
-
     public GamesData(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
@@ -51,25 +46,8 @@ public class GamesData implements CommandLineRunner {
                 "/games/game6.png"
         };
 
-        /*
-         * ==========================================================
-         * CREATE ALL 6 WORLDS
-         * ==========================================================
-         *
-         * World 1 -> games 1-6
-         * World 2 -> games 1-6
-         * ...
-         * World 6 -> games 1-6
-         *
-         * Вкупно:
-         *
-         * 6 worlds x 6 games = 36 game records
-         */
-
         for (int world = 1; world <= 6; world++) {
-
             for (int orderIndex = 1; orderIndex <= 6; orderIndex++) {
-
                 createOrUpdateGame(
                         world,
                         orderIndex,
@@ -90,36 +68,10 @@ public class GamesData implements CommandLineRunner {
             String imageUrl
     ) {
 
-        /*
-         * Наоѓаме игра само во конкретниот свет.
-         *
-         * Пример:
-         *
-         * World 1 + order 1 = Memory World 1
-         * World 2 + order 1 = Memory World 2
-         *
-         * Не ги мешаме.
-         */
-
-        List<Games> games =
-                gameRepository
-                        .findByWorldNumberOrderByOrderIndexAsc(
-                                worldNumber
-                        );
-
-        Games game =
-                games.stream()
-                        .filter(g ->
-                                g.getOrderIndex() != null &&
-                                g.getOrderIndex() == orderIndex
-                        )
-                        .findFirst()
-                        .orElse(null);
-
+        List<Games> games = gameRepository.findByWorldNumberOrderByOrderIndexAsc(worldNumber);
+        Games game = games.stream().filter(g -> g.getOrderIndex() != null && g.getOrderIndex() == orderIndex).findFirst().orElse(null);
         if (game == null) {
-
             game = new Games();
-
             game.setWorldNumber(worldNumber);
             game.setOrderIndex(orderIndex);
         }
@@ -130,7 +82,6 @@ public class GamesData implements CommandLineRunner {
         game.setWorldNumber(worldNumber);
         game.setOrderIndex(orderIndex);
         game.setTotalLevels(3);
-
         gameRepository.save(game);
     }
 }

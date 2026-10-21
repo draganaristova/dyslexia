@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import RelaxationTimer from "./RelaxationTimer";
 import { getExerciseVideo } from "../../data/relaxationVideos";
@@ -51,7 +50,6 @@ export default function RelaxationExercise({
                     />
                 </div>
 
-                {/* VIDEO AND TIMER IN THE SAME ROW */}
                 <div className="relaxation-video-stage">
 
                     <div className="exercise-animation exercise-video-container">

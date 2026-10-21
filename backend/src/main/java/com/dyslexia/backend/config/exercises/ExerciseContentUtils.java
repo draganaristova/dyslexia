@@ -1,11 +1,8 @@
-
 package com.dyslexia.backend.config.exercises;
-
 import com.dyslexia.backend.model.AgeGroup;
 import java.util.Locale;
 
 public class ExerciseContentUtils {
-
     public static String basic(
             String question,
             String[] options,
@@ -51,11 +48,9 @@ public class ExerciseContentUtils {
     ) {
         StringBuilder json = new StringBuilder();
 
-        json.append("{\"question\":")
-                .append(quote(question));
+        json.append("{\"question\":").append(quote(question));
 
-        json.append(",\"answer\":")
-                .append(quote(answer));
+        json.append(",\"answer\":").append(quote(answer));
 
         json.append(",\"cards\":[");
 
@@ -66,17 +61,13 @@ public class ExerciseContentUtils {
 
             String[] card = cards[i];
 
-            json.append("{\"id\":")
-                    .append(quote(card.length > 0 ? card[0] : ""));
+            json.append("{\"id\":").append(quote(card.length > 0 ? card[0] : ""));
 
-            json.append(",\"pairId\":")
-                    .append(quote(card.length > 1 ? card[1] : ""));
+            json.append(",\"pairId\":").append(quote(card.length > 1 ? card[1] : ""));
 
-            json.append(",\"image\":")
-                    .append(quote(card.length > 2 ? card[2] : ""));
+            json.append(",\"image\":").append(quote(card.length > 2 ? card[2] : ""));
 
-            json.append(",\"label\":")
-                    .append(quote(card.length > 3 ? card[3] : ""));
+            json.append(",\"label\":").append(quote(card.length > 3 ? card[3] : ""));
 
             json.append("}");
         }
@@ -85,7 +76,6 @@ public class ExerciseContentUtils {
         return json.toString();
     }
 
-    // Зборови за 5–7 години
     private static final String[] AGE_5_7_WORDS = {
             "дом", "сон", "мак", "рак",
             "море", "маса", "мама", "тато",
@@ -97,7 +87,6 @@ public class ExerciseContentUtils {
             "другар", "игра", "планина", "река"
     };
 
-    // Кратки, познати зборови за 8–10 години
     private static final String[] AGE_8_10_WORDS = {
             "кукла", "зелка", "зајак", "топка",
             "мачка", "куче", "лиса", "мече",
@@ -109,7 +98,6 @@ public class ExerciseContentUtils {
             "море", "шума", "цвет", "ракета"
     };
 
-    // Слична тежина за 10–15 години
     private static final String[] AGE_10_15_WORDS = {
             "кукла", "зајак", "желка", "лисица",
             "верверица", "мечка", "коњ", "тигар",
@@ -121,7 +109,6 @@ public class ExerciseContentUtils {
             "пеперутка", "виножито", "ракета", "авион"
     };
 
-    // Посебни листи за играта со слогови
     private static final String[] SYLLABLES_5_7 = {
             "дом", "сон", "мак", "рак",
             "мама", "тато", "вода", "маса",
@@ -165,14 +152,7 @@ public class ExerciseContentUtils {
             int task
     ) {
         String[] words = wordsForAge(ageGroup);
-
-        int index = Math.floorMod(
-                (worldNumber - 1) * 10
-                        + (pin - 1) * 3
-                        + (task - 1),
-                words.length
-        );
-
+        int index = Math.floorMod((worldNumber - 1) * 10 + (pin - 1) * 3 + (task - 1), words.length);
         return words[index];
     }
 
@@ -188,13 +168,7 @@ public class ExerciseContentUtils {
             case AGE_10_15 -> SYLLABLES_10_15;
         };
 
-        int index = Math.floorMod(
-                (worldNumber - 1) * 10
-                        + (pin - 1) * 3
-                        + (task - 1),
-                words.length
-        );
-
+        int index = Math.floorMod((worldNumber - 1) * 10 + (pin - 1) * 3 + (task - 1), words.length);
         return words[index];
     }
 
@@ -202,9 +176,7 @@ public class ExerciseContentUtils {
         if (word == null || word.isEmpty()) {
             return "";
         }
-
-        return String.valueOf(word.charAt(0))
-                .toUpperCase(Locale.ROOT);
+        return String.valueOf(word.charAt(0)).toUpperCase(Locale.ROOT);
     }
 
     public static String lastLetter(String word) {
@@ -212,9 +184,7 @@ public class ExerciseContentUtils {
             return "";
         }
 
-        return String.valueOf(
-                word.charAt(word.length() - 1)
-        ).toUpperCase(Locale.ROOT);
+        return String.valueOf(word.charAt(word.length() - 1)).toUpperCase(Locale.ROOT);
     }
 
     public static int countVowels(String word) {
@@ -223,13 +193,11 @@ public class ExerciseContentUtils {
         }
 
         int count = 0;
-
         for (char c : word.toLowerCase(Locale.ROOT).toCharArray()) {
             if ("аеиоу".indexOf(c) >= 0) {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -237,7 +205,6 @@ public class ExerciseContentUtils {
         if (word == null) {
             return 0;
         }
-
         return word.replace(" ", "").length();
     }
 

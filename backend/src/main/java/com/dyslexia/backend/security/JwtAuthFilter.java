@@ -1,19 +1,15 @@
 package com.dyslexia.backend.security;
-
 import com.dyslexia.backend.model.User;
 import com.dyslexia.backend.repository.UserRepository;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -40,13 +36,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        System.out.println("========== JWT FILTER ==========");
-        System.out.println("REQUEST: " + request.getMethod() + " " + request.getRequestURI());
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
             System.out.println("JWT: NO VALID AUTH HEADER");
-
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,52 +48,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
 
             Long userId = jwtUtil.getUserIdFromToken(token);
-
             System.out.println("JWT USER ID: " + userId);
-
-            User user = userRepository
-                    .findById(userId)
-                    .orElse(null);
+            User user = userRepository.findById(userId).orElse(null);
 
             if (user == null) {
 
                 System.out.println("JWT: USER NOT FOUND");
-
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             user,
                             null,
-                            List.of(
-                                    new SimpleGrantedAuthority("ROLE_USER")
-                            )
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
                     );
 
-            SecurityContextHolder
-                    .getContext()
-                    .setAuthentication(authentication);
-
-            System.out.println("JWT RESULT: AUTHENTICATION SUCCESS");
-            System.out.println(
-                    "JWT RESULT: IS AUTHENTICATED = " +
-                    authentication.isAuthenticated()
-            );
-            System.out.println(
-                    "JWT AUTHORITIES = " +
-                    authentication.getAuthorities()
-            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
 
             System.out.println("JWT RESULT: AUTHENTICATION FAILED");
             System.out.println("JWT ERROR: " + e.getMessage());
-
             SecurityContextHolder.clearContext();
         }
-
         filterChain.doFilter(request, response);
     }
 }

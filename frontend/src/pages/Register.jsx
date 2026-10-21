@@ -8,7 +8,6 @@ import { API } from "../data/api";
 
 export default function RegisterForm() {
     const navigate = useNavigate();
-
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [age, setAge] = useState('');
@@ -18,7 +17,6 @@ export default function RegisterForm() {
     const [gender, setGender] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
-
     const validateForm = () => {
         let formErrors = {};
 
@@ -26,7 +24,6 @@ export default function RegisterForm() {
         if (!surname) { formErrors.surname = 'Полето е задолжително'; }
         if (!age) { formErrors.age = 'Полето е задолжително'; }
         if (!gender) { formErrors.gender = 'Изберете пол'; }
-
         if (!email) {
             formErrors.email = 'Полето е задолжително';
         } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -45,7 +42,6 @@ export default function RegisterForm() {
         } else if (!hasUppercase) {
             formErrors.password = 'Лозинката мора да содржи голема буква';
         }
-
         if (!repeatPass) {
             formErrors.repeatPass = 'Полето е задолжително';
         } else if (repeatPass !== password) {

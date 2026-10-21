@@ -1,24 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "../styles/Progress.css";
-
 import ProfileButton from "../widgets/ProfileButton";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
-
 import { API } from "../data/api";
 
 const TOTAL_TASKS = 10;
-
-
-/*
- * ==================================================
- * GAME DATA
- * ==================================================
- */
-
 const gameData = {
 
     MEMORY: {
@@ -71,13 +60,6 @@ const gameData = {
 
 };
 
-
-/*
- * ==================================================
- * COMPONENT
- * ==================================================
- */
-
 function Progress() {
 
     const navigate = useNavigate();
@@ -93,12 +75,6 @@ function Progress() {
         "детето";
 
 
-    /*
-     * ==================================================
-     * STATE
-     * ==================================================
-     */
-
     const [progress, setProgress] =
         useState([]);
 
@@ -111,12 +87,6 @@ function Progress() {
     const [selectedReview, setSelectedReview] =
         useState(null);
 
-
-    /*
-     * ==================================================
-     * LOAD PROGRESS
-     * ==================================================
-     */
 
     useEffect(() => {
 
@@ -145,13 +115,6 @@ function Progress() {
 
                 };
 
-
-                /*
-                 * ------------------------------------------
-                 * TASK PROGRESS
-                 * ------------------------------------------
-                 */
-
                 const progressResponse =
                     await fetch(
                         `${API}/exercise-progress/user/${userId}`,
@@ -161,12 +124,6 @@ function Progress() {
                         }
                     );
 
-
-                /*
-                 * ------------------------------------------
-                 * SUMMARY
-                 * ------------------------------------------
-                 */
 
                 const summaryResponse =
                     await fetch(
@@ -178,11 +135,6 @@ function Progress() {
                     );
 
 
-                /*
-                 * ------------------------------------------
-                 * AUTH
-                 * ------------------------------------------
-                 */
 
                 if (
 
@@ -202,36 +154,16 @@ function Progress() {
                     return;
                 }
 
-
-                /*
-                 * ------------------------------------------
-                 * READ PROGRESS
-                 * ------------------------------------------
-                 */
-
                 const progressData =
                     progressResponse.ok
                         ? await progressResponse.json()
                         : [];
-
-
-                /*
-                 * ------------------------------------------
-                 * READ SUMMARY
-                 * ------------------------------------------
-                 */
 
                 const summaryData =
                     summaryResponse.ok
                         ? await summaryResponse.json()
                         : [];
 
-
-                /*
-                 * ------------------------------------------
-                 * NORMALIZE
-                 * ------------------------------------------
-                 */
 
                 const normalizedProgress =
                     Array.isArray(progressData)
@@ -252,37 +184,6 @@ function Progress() {
 
                 setSummary(
                     normalizedSummary
-                );
-
-
-                /*
-                 * ------------------------------------------
-                 * DEBUG
-                 * ------------------------------------------
-                 */
-
-                console.log(
-                    "================================="
-                );
-
-                console.log(
-                    "PROGRESS FROM BACKEND:"
-                );
-
-                console.log(
-                    normalizedProgress
-                );
-
-                console.log(
-                    "SUMMARY FROM BACKEND:"
-                );
-
-                console.log(
-                    normalizedSummary
-                );
-
-                console.log(
-                    "================================="
                 );
 
 
@@ -313,29 +214,6 @@ function Progress() {
         token,
         navigate
     ]);
-
-
-    /*
-     * ==================================================
-     * NORMALIZE ATTEMPT
-     * ==================================================
-     *
-     * Ова е многу важно.
-     *
-     * Backend може да врати:
-     *
-     * 1. attemptHistory
-     *
-     * или:
-     *
-     * 2. директно:
-     *    question
-     *    selectedAnswer
-     *    correctAnswer
-     *    correct
-     *
-     * Овој код ги поддржува и двата случаи.
-     */
 
     const normalizeAttempt = (
         attempt,
@@ -398,20 +276,10 @@ function Progress() {
     };
 
 
-    /*
-     * ==================================================
-     * GET ATTEMPTS FROM TASK
-     * ==================================================
-     */
 
     const getTaskAttempts = (task) => {
 
-        /*
-         * ------------------------------------------
-         * CASE 1
-         * Backend враќа attemptHistory
-         * ------------------------------------------
-         */
+
 
         if (
             Array.isArray(
@@ -433,13 +301,6 @@ function Progress() {
         }
 
 
-        /*
-         * ------------------------------------------
-         * CASE 2
-         * Backend враќа attempts како ARRAY
-         * ------------------------------------------
-         */
-
         if (
             Array.isArray(
                 task.attempts
@@ -458,19 +319,6 @@ function Progress() {
                 .filter(Boolean);
 
         }
-
-
-        /*
-         * ------------------------------------------
-         * CASE 3
-         * Backend враќа еден директен запис
-         *
-         * question
-         * selectedAnswer
-         * correctAnswer
-         * correct
-         * ------------------------------------------
-         */
 
         if (
 
@@ -495,33 +343,14 @@ function Progress() {
         }
 
 
-        /*
-         * ------------------------------------------
-         * NOTHING
-         * ------------------------------------------
-         */
-
         return [];
 
     };
 
 
-    /*
-     * ==================================================
-     * CREATE ADVENTURES
-     * ==================================================
-     */
-
     const adventures = useMemo(() => {
 
         const grouped = {};
-
-
-        /*
-         * ==================================================
-         * GROUP PROGRESS BY ADVENTURE
-         * ==================================================
-         */
 
         progress.forEach((item) => {
 
@@ -554,10 +383,6 @@ function Progress() {
             grouped[key].tasks.push(item);
 
 
-            /*
-             * Ако backend има attempts како број
-             */
-
             if (
                 typeof item.attempts === "number"
             ) {
@@ -566,10 +391,6 @@ function Progress() {
                     item.attempts;
 
             }
-
-            /*
-             * Ако има attemptHistory
-             */
 
             else if (
                 Array.isArray(
@@ -582,10 +403,6 @@ function Progress() {
 
             }
 
-            /*
-             * Инаку еден запис = еден обид
-             */
-
             else {
 
                 grouped[key].attempts += 1;
@@ -594,29 +411,13 @@ function Progress() {
 
         });
 
-
-        /*
-         * ==================================================
-         * CREATE FROM SUMMARY
-         * ==================================================
-         */
-
         const result =
             summary.map((item) => {
 
-                const key =
-                    `${item.gamesId}-${item.gamesType}-${item.pinNumber}`;
+                const key = `${item.gamesId}-${item.gamesType}-${item.pinNumber}`;
 
 
-                const group =
-                    grouped[key];
-
-
-                /*
-                 * ------------------------------------------
-                 * ALL ATTEMPTS
-                 * ------------------------------------------
-                 */
+                const group = grouped[key];
 
                 const allAttempts =
                     group?.tasks
@@ -625,12 +426,6 @@ function Progress() {
                         )
                         || [];
 
-
-                /*
-                 * ------------------------------------------
-                 * WRONG ATTEMPTS
-                 * ------------------------------------------
-                 */
 
                 const wrongAnswers =
                     allAttempts
@@ -670,22 +465,11 @@ function Progress() {
                         });
 
 
-                /*
-                 * ------------------------------------------
-                 * COMPLETED TASKS
-                 * ------------------------------------------
-                 */
-
                 let completedTasks =
                     Number(
                         item.completedTasks || 0
                     );
 
-
-                /*
-                 * Ако summary нема completedTasks,
-                 * пресметај од progress.
-                 */
 
                 if (
                     completedTasks === 0 &&
@@ -714,24 +498,12 @@ function Progress() {
                 }
 
 
-                /*
-                 * ------------------------------------------
-                 * TOTAL TASKS
-                 * ------------------------------------------
-                 */
-
                 const totalTasks =
                     Number(
                         item.totalTasks ||
                         TOTAL_TASKS
                     );
 
-
-                /*
-                 * ------------------------------------------
-                 * SCORE
-                 * ------------------------------------------
-                 */
 
                 const score =
                     Number(
@@ -740,47 +512,22 @@ function Progress() {
 
 
                 return {
-
                     id: key,
-
-                    gamesId:
-                        item.gamesId,
-
-                    gamesType:
-                        item.gamesType,
-
-                    pinNumber:
-                        item.pinNumber,
-
+                    gamesId: item.gamesId,
+                    gamesType: item.gamesType,
+                    pinNumber: item.pinNumber,
                     completedTasks,
-
                     totalTasks,
-
                     score,
-
-                    passed:
-                        item.passed === true,
-
-                    completed:
-                        item.completed === true,
-
-                    attempts:
-                        group?.attempts || 0,
-
+                    passed: item.passed === true,
+                    completed: item.completed === true,
+                    attempts: group?.attempts || 0,
                     wrongAnswers,
-
                     allAttempts
-
                 };
 
             });
 
-
-        /*
-         * ==================================================
-         * ADD GROUPS NOT PRESENT IN SUMMARY
-         * ==================================================
-         */
 
         Object.values(grouped)
             .forEach((group) => {
@@ -809,12 +556,6 @@ function Progress() {
                 }
 
 
-                /*
-                 * ------------------------------------------
-                 * UNIQUE COMPLETED TASKS
-                 * ------------------------------------------
-                 */
-
                 const uniqueTaskNumbers =
                     new Set(
 
@@ -831,12 +572,6 @@ function Progress() {
                     );
 
 
-                /*
-                 * ------------------------------------------
-                 * SCORE
-                 * ------------------------------------------
-                 */
-
                 const score =
                     group.tasks.filter(
                         (task) =>
@@ -845,22 +580,10 @@ function Progress() {
                     ).length;
 
 
-                /*
-                 * ------------------------------------------
-                 * COMPLETED
-                 * ------------------------------------------
-                 */
-
                 const completed =
                     uniqueTaskNumbers.size >=
                     TOTAL_TASKS;
 
-
-                /*
-                 * ------------------------------------------
-                 * ALL ATTEMPTS
-                 * ------------------------------------------
-                 */
 
                 const allAttempts =
                     group.tasks
@@ -869,11 +592,6 @@ function Progress() {
                         );
 
 
-                /*
-                 * ------------------------------------------
-                 * WRONG
-                 * ------------------------------------------
-                 */
 
                 const wrongAnswers =
                     allAttempts
@@ -913,57 +631,22 @@ function Progress() {
                         });
 
 
-                /*
-                 * ------------------------------------------
-                 * ADD
-                 * ------------------------------------------
-                 */
-
                 result.push({
-
-                    id:
-                        `${group.gamesId}-${group.gamesType}-${group.pinNumber}`,
-
-                    gamesId:
-                        group.gamesId,
-
-                    gamesType:
-                        group.gamesType,
-
-                    pinNumber:
-                        group.pinNumber,
-
-                    completedTasks:
-                        uniqueTaskNumbers.size,
-
-                    totalTasks:
-                        TOTAL_TASKS,
-
+                    id: `${group.gamesId}-${group.gamesType}-${group.pinNumber}`,
+                    gamesId: group.gamesId,
+                    gamesType: group.gamesType,
+                    pinNumber: group.pinNumber,
+                    completedTasks: uniqueTaskNumbers.size,
+                    totalTasks: TOTAL_TASKS,
                     score,
-
-                    passed:
-                        completed &&
-                        score >= 8,
-
+                    passed: completed && score >= 8,
                     completed,
-
-                    attempts:
-                        group.attempts,
-
+                    attempts: group.attempts,
                     wrongAnswers,
-
                     allAttempts
-
                 });
-
             });
 
-
-        /*
-         * ==================================================
-         * SORT
-         * ==================================================
-         */
 
         return result.sort(
             (a, b) =>
@@ -977,12 +660,6 @@ function Progress() {
 
     }, [progress, summary]);
 
-
-    /*
-     * ==================================================
-     * SUMMARY NUMBERS
-     * ==================================================
-     */
 
     const completedGames =
         adventures.filter(
@@ -1025,12 +702,6 @@ function Progress() {
             : 0;
 
 
-    /*
-     * ==================================================
-     * OPEN REVIEW
-     * ==================================================
-     */
-
     const openReview = (item) => {
 
         console.log(
@@ -1043,12 +714,6 @@ function Progress() {
     };
 
 
-    /*
-     * ==================================================
-     * CLOSE REVIEW
-     * ==================================================
-     */
-
     const closeReview = () => {
 
         setSelectedReview(null);
@@ -1056,91 +721,49 @@ function Progress() {
     };
 
 
-    /*
-     * ==================================================
-     * LOADING
-     * ==================================================
-     */
-
     if (loading) {
 
         return (
-
             <div className="progress-page">
-
                 <header className="home-header">
-
                     <Logo />
-
                     <div className="nav-icons-row">
-
                         <HomeButton />
-
                         <LogoutButton />
-
                         <ProfileButton />
-
                     </div>
-
                 </header>
 
-
                 <div className="progress-loading">
-
                     <div className="loading-stars">
                         ✨
                     </div>
-
                     <h2>
                         Го собираме твојот напредок...
                     </h2>
-
                     <p>
                         Само момент 😊
                     </p>
-
                 </div>
-
             </div>
-
         );
 
     }
 
-
-    /*
-     * ==================================================
-     * MAIN PAGE
-     * ==================================================
-     */
-
     return (
 
         <div className="progress-page">
-
             <header className="home-header">
-
                 <Logo />
-
                 <div className="nav-icons-row">
-
                     <HomeButton />
-
                     <LogoutButton />
-
                     <ProfileButton />
-
                 </div>
-
             </header>
-
 
             <main className="progress-main">
 
-
-                {/* ==========================================
-                    HERO
-                ========================================== */}
 
                 <section className="progress-hero">
 
@@ -1172,11 +795,6 @@ function Progress() {
                     </div>
 
                 </section>
-
-
-                {/* ==========================================
-                    SUMMARY
-                ========================================== */}
 
                 <section className="progress-summary">
 
@@ -1244,11 +862,6 @@ function Progress() {
 
                 </section>
 
-
-                {/* ==========================================
-                    TITLE
-                ========================================== */}
-
                 <div className="adventures-title">
 
                     <div>
@@ -1269,11 +882,6 @@ function Progress() {
                     </div>
 
                 </div>
-
-
-                {/* ==========================================
-                    EMPTY
-                ========================================== */}
 
                 {adventures.length === 0 ? (
 
@@ -1309,12 +917,6 @@ function Progress() {
                                 gameData[
                                     item.gamesType
                                 ];
-
-
-                            /*
-                             * Ако gamesType не постои
-                             * во gameData, прескокни.
-                             */
 
                             if (!game) {
                                 return null;
@@ -1382,12 +984,6 @@ function Progress() {
                                     }
                                     key={item.id}
                                 >
-
-
-                                    {/* ======================================
-                                        CARD TOP
-                                    ====================================== */}
-
                                     <div className="adventure-card-top">
 
                                         <div className="adventure-number">
@@ -1411,11 +1007,6 @@ function Progress() {
 
                                     </div>
 
-
-                                    {/* ======================================
-                                        TITLE
-                                    ====================================== */}
-
                                     <div className="adventure-card-title">
 
                                         <h3>
@@ -1428,10 +1019,6 @@ function Progress() {
 
                                     </div>
 
-
-                                    {/* ======================================
-                                        SCORE
-                                    ====================================== */}
 
                                     <div className="adventure-score">
 
@@ -1499,11 +1086,6 @@ function Progress() {
 
                                     </div>
 
-
-                                    {/* ======================================
-                                        STATUS
-                                    ====================================== */}
-
                                     <div className="adventure-status">
 
                                         <div>
@@ -1560,11 +1142,6 @@ function Progress() {
 
                                     </div>
 
-
-                                    {/* ======================================
-                                        BOTTOM
-                                    ====================================== */}
-
                                     <div className="adventure-bottom">
 
                                         <span className="mistakes">
@@ -1614,11 +1191,6 @@ function Progress() {
 
             </main>
 
-
-            {/* ==================================================
-                REVIEW MODAL
-            ================================================== */}
-
             {selectedReview && (
 
                 <div
@@ -1634,10 +1206,6 @@ function Progress() {
                     >
 
 
-                        {/* ==========================================
-                            CLOSE
-                        ========================================== */}
-
                         <button
                             className="review-close"
                             onClick={closeReview}
@@ -1645,10 +1213,6 @@ function Progress() {
                             ×
                         </button>
 
-
-                        {/* ==========================================
-                            HEADER
-                        ========================================== */}
 
                         <div className="review-heading">
 
@@ -1682,11 +1246,6 @@ function Progress() {
 
                         </div>
 
-
-                        {/* ==========================================
-                            RESULT
-                        ========================================== */}
-
                         <div className="review-result">
 
                             <div>
@@ -1697,13 +1256,7 @@ function Progress() {
 
                                 <strong>
                                     {
-                                        Math.min(
-                                            TOTAL_TASKS,
-                                            Number(
-                                                selectedReview.score ||
-                                                0
-                                            )
-                                        )
+                                        Math.min(TOTAL_TASKS, Number(selectedReview.score || 0))
                                     }/10
                                 </strong>
 
@@ -1718,20 +1271,13 @@ function Progress() {
 
                                 <strong>
                                     {
-                                        selectedReview
-                                            .wrongAnswers
-                                            ?.length || 0
+                                        selectedReview.wrongAnswers ?.length || 0
                                     }
                                 </strong>
 
                             </div>
 
                         </div>
-
-
-                        {/* ==================================================
-                            WRONG ANSWERS / ATTEMPTS
-                        ================================================== */}
 
                         {
                             selectedReview.wrongAnswers &&
@@ -1763,9 +1309,6 @@ function Progress() {
                                                             }
                                                         >
 
-
-                                                            {/* NUMBER */}
-
                                                             <div className="mistake-number">
 
                                                                 {wrong.taskNumber}
@@ -1773,12 +1316,8 @@ function Progress() {
                                                             </div>
 
 
-                                                            {/* CONTENT */}
-
                                                             <div className="mistake-content">
 
-
-                                                                {/* QUESTION */}
 
                                                                 <strong className="mistake-question">
 
@@ -1788,9 +1327,6 @@ function Progress() {
                                                                     }
 
                                                                 </strong>
-
-
-                                                                {/* ATTEMPT */}
 
                                                                 {
                                                                     wrong.attemptNumber && (
@@ -1813,9 +1349,6 @@ function Progress() {
 
                                                                     )
                                                                 }
-
-
-                                                                {/* DATE */}
 
                                                                 {
                                                                     wrong.attemptedAt && (
@@ -1844,9 +1377,6 @@ function Progress() {
                                                                     )
                                                                 }
 
-
-                                                                {/* USER ANSWER */}
-
                                                                 <div className="answer-box your-answer">
 
                                                                     <span>
@@ -1871,9 +1401,6 @@ function Progress() {
                                                                     </div>
 
                                                                 </div>
-
-
-                                                                {/* CORRECT ANSWER */}
 
                                                                 <div className="answer-box right-answer">
 
@@ -1963,11 +1490,6 @@ function Progress() {
 
                                 )
                         }
-
-
-                        {/* ==================================================
-                            CLOSE BUTTON
-                        ================================================== */}
 
                         <button
                             className="review-close-button"

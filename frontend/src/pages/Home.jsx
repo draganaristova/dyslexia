@@ -8,25 +8,15 @@ import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
 
 function Home() {
-
     const navigate = useNavigate();
-
-    const [isLoggedIn, setIsLoggedIn] = useState(
-        !!localStorage.getItem("token")
-    );
-
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
     return (
         <div className="home">
-
             <header className="home-header">
-
                 <Logo />
-
                 <div className="nav-icons-row">
-
                     <HomeButton />
-
                     {isLoggedIn && (
                         <>
                             <LogoutButton />
@@ -38,9 +28,7 @@ function Home() {
 
             </header>
 
-
             <section className="center">
-
                 <div className="left-side">
 
                     <h1>
@@ -86,24 +74,18 @@ function Home() {
 
 
                 <div className="right-side">
-
                     <div className="kids-frame">
-
                         <img
                             src={kids}
                             className="kids"
                             alt="Деца читаат книга"
                         />
-
                     </div>
-
                 </div>
-
             </section>
 
 
             <section className="cards">
-
                 <Link
                     to="/gameselection"
                     className="card card-yellow clickable-card"

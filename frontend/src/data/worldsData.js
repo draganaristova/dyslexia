@@ -43,13 +43,8 @@ export const worldsData = {
         name: "Патека на брзината",
         img: game1,
         color: "coral",
-
-        // На почеток нема завршени мисии.
         pinsDone: 0,
-
         status: "unlocked",
-
-        // 6 игри од backend
         typeOrder: [
             0, // RECOGNIZE_SOUND
             1, // MEMORY
@@ -73,10 +68,8 @@ export const worldsData = {
         name: "Планина на авантурите",
         img: game2,
         color: "green",
-
         pinsDone: 0,
         status: "locked",
-
         typeOrder: [
             0,
             1,
@@ -100,10 +93,8 @@ export const worldsData = {
         name: "Селото на зборовите",
         img: game3,
         color: "blue",
-
         pinsDone: 0,
         status: "locked",
-
         typeOrder: [
             0,
             1,
@@ -127,10 +118,8 @@ export const worldsData = {
         name: "Галаксија на буквите",
         img: game4,
         color: "purple",
-
         pinsDone: 0,
         status: "locked",
-
         typeOrder: [
             0,
             1,
@@ -154,10 +143,8 @@ export const worldsData = {
         name: "Кралство на приказните",
         img: game5,
         color: "pink",
-
         pinsDone: 0,
         status: "locked",
-
         typeOrder: [
             0,
             1,
@@ -181,10 +168,8 @@ export const worldsData = {
         name: "Стаза на шампионите",
         img: game6,
         color: "gold",
-
         pinsDone: 0,
         status: "locked",
-
         typeOrder: [
             0,
             1,

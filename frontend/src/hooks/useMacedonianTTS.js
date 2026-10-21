@@ -1,4 +1,3 @@
-
 import {
   useCallback,
   useEffect,
@@ -52,8 +51,6 @@ export default function useMacedonianTTS() {
     setError("");
   }, [cleanup]);
 
-  // startIndex е позицијата во оригиналниот текст.
-  // За една реченица се користи нејзиниот вистински индекс.
   const speakSentences = useCallback(
     async (sentences, rate = 1, startIndex = 0) => {
       if (

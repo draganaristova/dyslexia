@@ -1,18 +1,13 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "../styles/RelaxationPage.css";
-
 import relaxationExercises from "../data/relaxationExercises";
 import { normalizeGender } from "../data/relaxationVideos";
 import { API } from "../data/api";
-
 import RelaxationIntro from "../components/relaxation/RelaxationIntro";
 import RelaxationCountdown from "../components/relaxation/RelaxationCountdown";
 import RelaxationExercise from "../components/relaxation/RelaxationExercise";
 import RelaxationFinished from "../components/relaxation/RelaxationFinished";
-
 import ProfileButton from "../widgets/ProfileButton";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
@@ -25,25 +20,16 @@ const START_COUNTDOWN = 15;
 export default function RelaxationPage() {
 
     const navigate = useNavigate();
-
     const [profile, setProfile] = useState(null);
     const [profileLoading, setProfileLoading] = useState(true);
     const [profileError, setProfileError] = useState("");
-
     const [phase, setPhase] = useState("intro");
     const [countdown, setCountdown] = useState(START_COUNTDOWN);
     const [currentExercise, setCurrentExercise] = useState(0);
     const [timeLeft, setTimeLeft] = useState(EXERCISE_DURATION);
-
-    // SAME EXERCISES FOR ALL AGES
     const exercises = relaxationExercises;
-
     const exercise = exercises[currentExercise];
-
-    // GENDER SELECTS VIDEO FOLDER
     const gender = normalizeGender(profile?.gender);
-
-    // SESSION PROGRESS
     const sessionProgress =
         phase === "finished"
             ? 100
@@ -65,7 +51,7 @@ export default function RelaxationPage() {
                 )
                 : 0;
 
-    // LOAD PROFILE
+ 
     useEffect(() => {
 
         const userId = localStorage.getItem("userId");
@@ -77,7 +63,6 @@ export default function RelaxationPage() {
         }
 
         const controller = new AbortController();
-
         async function loadProfile() {
 
             try {
@@ -136,7 +121,6 @@ export default function RelaxationPage() {
 
     }, [navigate]);
 
-    // INITIAL COUNTDOWN
     useEffect(() => {
 
         if (phase !== "countdown") return;
@@ -158,7 +142,6 @@ export default function RelaxationPage() {
 
     }, [phase, countdown]);
 
-    // EXERCISE TIMER
     useEffect(() => {
 
         if (phase !== "exercise" || !exercise) return;
@@ -197,7 +180,6 @@ export default function RelaxationPage() {
         exercise
     ]);
 
-    // TRANSITION TIMER
     useEffect(() => {
 
         if (phase !== "transition") return;
@@ -218,7 +200,6 @@ export default function RelaxationPage() {
 
     }, [phase, timeLeft]);
 
-    // START OR RESTART
     const startRelaxation = () => {
 
         setCurrentExercise(0);
@@ -232,7 +213,6 @@ export default function RelaxationPage() {
         navigate(-1);
     };
 
-    // HEADER
     const renderHeader = () => (
         <header className="relaxation-header-main">
 

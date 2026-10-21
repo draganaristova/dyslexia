@@ -1,14 +1,10 @@
-
 package com.dyslexia.backend.config.exercises;
-
 import com.dyslexia.backend.model.AgeGroup;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MemoryExercises {
-
     private record MemoryItem(
             String word,
             String image
@@ -22,7 +18,6 @@ public class MemoryExercises {
     ) {
 
         MemoryItem[] bank = bankForAge(ageGroup);
-
         int numberOfPairs;
 
         if (pin <= 1) {
@@ -45,15 +40,10 @@ public class MemoryExercises {
         int cardId = 1;
 
         for (int i = 0; i < numberOfPairs; i++) {
-
-            MemoryItem item =
-                    bank[(start + i) % bank.length];
-
+            MemoryItem item = bank[(start + i) % bank.length];
             String pairId = "pair-" + (i + 1);
 
             if (ageGroup == AgeGroup.AGE_5_7) {
-
-                // Слика -> слика
                 cards.add(new String[]{
                         String.valueOf(cardId++),
                         pairId,
@@ -69,8 +59,6 @@ public class MemoryExercises {
                 });
 
             } else if (ageGroup == AgeGroup.AGE_8_10) {
-
-                // Слика -> збор
                 cards.add(new String[]{
                         String.valueOf(cardId++),
                         pairId,
@@ -104,13 +92,8 @@ public class MemoryExercises {
             }
         }
 
-        Collections.rotate(
-                cards,
-                (worldNumber + pin + task) % cards.size()
-        );
-
+        Collections.rotate(cards, (worldNumber + pin + task) % cards.size());
         String question = getQuestion(ageGroup, pin);
-
         return ExerciseContentUtils.memory(
                 question,
                 "Пронајди ги сите парови.",

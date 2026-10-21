@@ -1,5 +1,4 @@
 package com.dyslexia.backend.model;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -35,9 +34,7 @@ public class User {
     private Integer letterSpacing = 0;
     private Boolean readAloud = false;
     private String theme = "cream";
-
     private Boolean hasTakenDyslexiaTest = false;
-
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public User(){
@@ -163,6 +160,5 @@ public class User {
     public void setHasTakenDyslexiaTest(Boolean hasTakenDyslexiaTest) {
         this.hasTakenDyslexiaTest = hasTakenDyslexiaTest;
     }
-
 
 }

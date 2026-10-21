@@ -1,14 +1,9 @@
 package com.dyslexia.backend.model;
-
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "exercises",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_exercise_definition",
-                        columnNames = {
+@Table(name = "exercises",uniqueConstraints = {
+                @UniqueConstraint(name = "uk_exercise_definition", columnNames = {
                                 "games_id",
                                 "games_type",
                                 "age_group",

@@ -1,14 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "../styles/ProfilePage.css";
-
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
-
 import { API } from "../data/api";
-
 
 const THEMES = {
     cream: "#f1eab0",
@@ -16,7 +12,6 @@ const THEMES = {
     blue: "#dcecf3",
     green: "#dcebd1"
 };
-
 
 const MISSIONS = [
     {
@@ -51,7 +46,6 @@ const MISSIONS = [
     }
 ];
 
-
 const LEVELS = {
     1: {
         title: "Мал истражувач",
@@ -70,13 +64,6 @@ const LEVELS = {
     }
 };
 
-
-/*
- * Backend логиката:
- * <= 7  -> Level 1
- * <= 10 -> Level 2
- * > 10  -> Level 3
- */
 function levelFromAge(age) {
     const numericAge = Number(age);
 
@@ -135,17 +122,13 @@ function calculateStreak(items) {
 
 export default function ProfilePage() {
     const navigate = useNavigate();
-
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-
     const [items, setItems] = useState([]);
     const [summaries, setSummaries] = useState([]);
     const [user, setUser] = useState(null);
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
     const [fontSize, setFontSize] = useState(16);
     const [letterSpacing, setLetterSpacing] = useState(0);
     const [theme, setTheme] = useState(
@@ -153,19 +136,10 @@ export default function ProfilePage() {
     );
 
     const settingsLoaded = useRef(false);
-
-
     const authHeaders = useMemo(() => ({
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
     }), [token]);
-
-
-    /*
-     * =========================
-     * LOAD PROFILE + PROGRESS
-     * =========================
-     */
 
     useEffect(() => {
         if (!userId || !token) {
@@ -231,61 +205,20 @@ export default function ProfilePage() {
                 }
 
 
-                const profileData =
-                    await profileRes.json();
-
-
-                const progressData =
-                    progressRes.ok
-                        ? await progressRes.json()
-                        : [];
-
-
-                const summaryData =
-                    summaryRes.ok
-                        ? await summaryRes.json()
-                        : [];
-
-
+                const profileData = await profileRes.json();
+                const progressData = progressRes.ok ? await progressRes.json() : [];
+                const summaryData = summaryRes.ok ? await summaryRes.json() : [];
                 setUser(profileData);
-
-                setItems(
-                    Array.isArray(progressData)
-                        ? progressData
-                        : []
-                );
-
-                setSummaries(
-                    Array.isArray(summaryData)
-                        ? summaryData
-                        : []
-                );
-
-
-                setFontSize(
-                    Number(profileData.fontSize ?? 16)
-                );
-
-                setLetterSpacing(
-                    Number(profileData.letterSpacing ?? 0)
-                );
-
-                setTheme(
-                    profileData.theme || "cream"
-                );
-
+                setItems(Array.isArray(progressData) ? progressData : []);
+                setSummaries(Array.isArray(summaryData) ? summaryData : []);
+                setFontSize(Number(profileData.fontSize ?? 16));
+                setLetterSpacing(Number(profileData.letterSpacing ?? 0));
+                setTheme(profileData.theme || "cream");
                 settingsLoaded.current = true;
 
             } catch (err) {
-                console.error(
-                    "Profile loading error:",
-                    err
-                );
-
-                setError(
-                    err.message ||
-                    "Грешка при вчитување."
-                );
+                console.error("Profile loading error:", err);
+                setError(err.message || "Грешка при вчитување.");
 
             } finally {
                 setLoading(false);
@@ -297,23 +230,12 @@ export default function ProfilePage() {
 
     }, [userId, token, navigate, authHeaders]);
 
-
-    /*
-     * =========================
-     * SAVE SETTINGS
-     * =========================
-     */
-
     useEffect(() => {
         if (!settingsLoaded.current || !userId || !token) {
             return;
         }
 
-        localStorage.setItem(
-            "profileTheme",
-            theme
-        );
-
+        localStorage.setItem("profileTheme", theme);
         const timer = setTimeout(() => {
             fetch(
                 `${API}/profile/${userId}/settings`,
@@ -347,18 +269,10 @@ export default function ProfilePage() {
     ]);
 
 
-    /*
-     * =========================
-     * SCREEN BACKGROUND
-     * =========================
-     */
-
     useEffect(() => {
-        const color =
-            THEMES[theme] || THEMES.cream;
+        const color = THEMES[theme] || THEMES.cream;
 
-        const root =
-            document.getElementById("root");
+        const root = document.getElementById("root");
 
         const previous = {
             html: document.documentElement.style.background,
@@ -368,58 +282,30 @@ export default function ProfilePage() {
                 : ""
         };
 
-
-        document.documentElement.style.background =
-            color;
-
-        document.body.style.background =
-            color;
+        document.documentElement.style.background = color;
+        document.body.style.background = color;
 
         if (root) {
-            root.style.background =
-                color;
+            root.style.background = color;
         }
 
-
         return () => {
-            document.documentElement.style.background =
-                previous.html;
-
-            document.body.style.background =
-                previous.body;
-
+            document.documentElement.style.background = previous.html;
+            document.body.style.background = previous.body;
             if (root) {
-                root.style.background =
-                    previous.root;
+                root.style.background = previous.root;
             }
         };
     }, [theme]);
 
 
-    /*
-     * =========================
-     * CURRENT LEVEL
-     * =========================
-     */
-
     const level = levelFromAge(user?.age);
 
-    const levelInfo =
-        LEVELS[level];
-
-
-    /*
-     * =========================
-     * CURRENT LEVEL MISSIONS
-     * =========================
-     */
+    const levelInfo = LEVELS[level];
 
     const missionData = useMemo(() => {
         return MISSIONS.map((mission) => {
-            /*
-             * summary endpoint користи pinNumber
-             * како ниво/мисија.
-             */
+         
             const summary =
                 summaries.find(
                     (item) =>
@@ -448,13 +334,6 @@ export default function ProfilePage() {
         });
     }, [summaries, level]);
 
-
-    /*
-     * =========================
-     * STATISTICS
-     * =========================
-     */
-
     const stats = useMemo(() => {
 
         const passedMissions =
@@ -464,38 +343,11 @@ export default function ProfilePage() {
             ).length;
 
 
-        const totalTasks =
-            items.length;
-
-
-        const correctTasks =
-            items.filter(
-                (item) =>
-                    item.correct === true
-            ).length;
-
-
-        const accuracy =
-            totalTasks > 0
-                ? Math.round(
-                    (correctTasks / totalTasks) * 100
-                )
-                : 0;
-
-
-        const perfectGame =
-            missionData.some(
-                (mission) =>
-                    mission.tasks >= 10 &&
-                    mission.score >= 10
-            );
-
-
-        const currentLevelProgress =
-            Math.round(
-                (passedMissions / MISSIONS.length) * 100
-            );
-
+        const totalTasks = items.length;
+        const correctTasks = items.filter((item) => item.correct === true).length;
+        const accuracy = totalTasks > 0 ? Math.round((correctTasks / totalTasks) * 100) : 0;
+        const perfectGame = missionData.some((mission) => mission.tasks >= 10 && mission.score >= 10);
+        const currentLevelProgress = Math.round((passedMissions / MISSIONS.length) * 100);
 
         return {
             missionData,
@@ -510,12 +362,6 @@ export default function ProfilePage() {
 
     }, [items, missionData]);
 
-
-    /*
-     * =========================
-     * BADGES
-     * =========================
-     */
 
     const badges = [
         {
@@ -561,41 +407,16 @@ export default function ProfilePage() {
         }
     ];
 
-
-    /*
-     * =========================
-     * USER NAME
-     * =========================
-     */
-
     const fullName = user
         ? `${user.name || ""} ${user.surname || ""}`.trim()
         : localStorage.getItem("userName") || "Играч";
 
-
-    /*
-     * =========================
-     * PAGE STYLE
-     * =========================
-     */
-
     const pageStyle = {
-        background:
-            THEMES[theme] || THEMES.cream,
-
-        fontSize:
-            `${fontSize}px`,
-
-        letterSpacing:
-            `${letterSpacing}px`
+        background: THEMES[theme] || THEMES.cream,
+        fontSize: `${fontSize}px`,
+        letterSpacing: `${letterSpacing}px`
     };
 
-
-    /*
-     * =========================
-     * LOADING
-     * =========================
-     */
 
     if (loading) {
         return (
@@ -621,12 +442,6 @@ export default function ProfilePage() {
         );
     }
 
-
-    /*
-     * =========================
-     * ERROR
-     * =========================
-     */
 
     if (error) {
         return (
@@ -669,10 +484,6 @@ export default function ProfilePage() {
             style={pageStyle}
         >
 
-            {/* =========================
-                HEADER
-            ========================= */}
-
             <header className="profile-header">
                 <Logo />
 
@@ -684,11 +495,6 @@ export default function ProfilePage() {
 
 
             <div className="profile-content">
-
-                {/* =========================
-                    HERO
-                ========================= */}
-
                 <section
                     className={`profile-hero hero-level-${level}`}
                 >
@@ -754,11 +560,6 @@ export default function ProfilePage() {
 
                 </section>
 
-
-                {/* =========================
-                    STAT TILES
-                ========================= */}
-
                 <section className="stat-tiles">
 
                     <div className="stat-tile tile-green">
@@ -821,11 +622,6 @@ export default function ProfilePage() {
                     </div>
 
                 </section>
-
-
-                {/* =========================
-                    MISSIONS
-                ========================= */}
 
                 <section className="profile-card">
 
@@ -919,11 +715,6 @@ export default function ProfilePage() {
 
                 </section>
 
-
-                {/* =========================
-                    BADGES
-                ========================= */}
-
                 <section className="profile-card">
 
                     <h2>
@@ -963,10 +754,6 @@ export default function ProfilePage() {
                 </section>
 
 
-                {/* =========================
-                    SETTINGS
-                ========================= */}
-
                 <section className="profile-card">
 
                     <h2>
@@ -976,9 +763,6 @@ export default function ProfilePage() {
                     <p className="profile-card-sub">
                         Прилагоди го екранот за полесно читање.
                     </p>
-
-
-                    {/* FONT SIZE */}
 
                     <div className="profile-setting-row profile-setting-column">
 
@@ -1001,9 +785,6 @@ export default function ProfilePage() {
 
                     </div>
 
-
-                    {/* LETTER SPACING */}
-
                     <div className="profile-setting-row profile-setting-column">
 
                         <strong>
@@ -1024,9 +805,6 @@ export default function ProfilePage() {
                         />
 
                     </div>
-
-
-                    {/* THEME */}
 
                     <div className="profile-setting-row profile-setting-column">
 

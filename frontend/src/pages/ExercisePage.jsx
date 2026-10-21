@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/ExercisePage.css";
-
 import Logo from "../widgets/Logo";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
@@ -9,21 +8,12 @@ import ProfileButton from "../widgets/ProfileButton";
 import { API } from "../data/api";
 
 const TOTAL_TASKS = 10;
-
 const NORMAL_TIME = 30;
-
 const MEMORY_TIME_BY_LEVEL = {
     1: 30,
     2: 30,
     3: 50,
 };
-
-
-/*
- * ==================================================
- * SHUFFLE
- * ==================================================
- */
 
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -40,13 +30,6 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-
-/*
- * ==================================================
- * COMPONENT
- * ==================================================
- */
-
 export default function ExercisePage() {
 
     const navigate = useNavigate();
@@ -59,191 +42,49 @@ export default function ExercisePage() {
     } = useParams();
 
 
-    /*
-     * ==================================================
-     * AUTH
-     * ==================================================
-     */
-
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-
-
-    /*
-     * ==================================================
-     * GENERAL STATE
-     * ==================================================
-     */
-
     const [exercise, setExercise] = useState(null);
     const [content, setContent] = useState(null);
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
     const [currentTask, setCurrentTask] = useState(1);
     const [score, setScore] = useState(0);
-
     const [finalScore, setFinalScore] = useState(null);
-
     const [wrongAnswers, setWrongAnswers] = useState([]);
-
     const [selectedAnswer, setSelectedAnswer] = useState(null);
-
     const [answered, setAnswered] = useState(false);
     const [finished, setFinished] = useState(false);
     const [saving, setSaving] = useState(false);
-
-
-    /*
-     * ==================================================
-     * MISSING LETTER
-     * ==================================================
-     */
-
-    const [
-        missingLetterCompleted,
-        setMissingLetterCompleted,
-    ] = useState(false);
-
-
-    /*
-     * ==================================================
-     * RHYMES
-     * ==================================================
-     */
-
-    const [
-        rhymeFeedback,
-        setRhymeFeedback,
-    ] = useState(null);
-
+    const [missingLetterCompleted, setMissingLetterCompleted,] = useState(false);
+    const [rhymeFeedback, setRhymeFeedback,] = useState(null);
     const rhymeTimeoutRef = useRef(null);
-
-
-    /*
-     * ==================================================
-     * SYLLABLES
-     * ==================================================
-     */
-
-    const [
-        syllableFeedback,
-        setSyllableFeedback,
-    ] = useState(null);
-
+    const [syllableFeedback, setSyllableFeedback,] = useState(null);
     const syllableTimeoutRef = useRef(null);
-
-
-    /*
-     * ==================================================
-     * SOUND MANIPULATION
-     * ==================================================
-     */
-
-    const [
-        soundFeedback,
-        setSoundFeedback,
-    ] = useState(null);
-
+    const [soundFeedback, setSoundFeedback,] = useState(null);
     const soundTimeoutRef = useRef(null);
-
-
-    /*
-     * ==================================================
-     * TIMER
-     * ==================================================
-     */
-
-    const [timeLeft, setTimeLeft] =
-        useState(NORMAL_TIME);
-
+    const [timeLeft, setTimeLeft] = useState(NORMAL_TIME);
     const timerRef = useRef(null);
     const timeoutHandledRef = useRef(false);
-
-
-    /*
-     * ==================================================
-     * MEMORY
-     * ==================================================
-     */
-
-    const [memoryCards, setMemoryCards] =
-        useState([]);
-
-    const [flippedCards, setFlippedCards] =
-        useState([]);
-
-    const [matchedPairs, setMatchedPairs] =
-        useState([]);
-
-    const [memoryBusy, setMemoryBusy] =
-        useState(false);
-
-
-    /*
-     * ==================================================
-     * WORD BUILDING
-     * ==================================================
-     */
-
-    const [wordLetters, setWordLetters] =
-        useState([]);
-
-    const [
-        selectedLetterIndexes,
-        setSelectedLetterIndexes,
-    ] = useState([]);
-
-
-    /*
-     * ==================================================
-     * GAME TYPES
-     * ==================================================
-     */
-
-    const isMemoryGame =
-        gamesType === "MEMORY";
-
-    const isWordBuildingGame =
-        gamesType === "WORD_BUILDING";
-
-    const isMissingLetterGame =
-        gamesType === "MISSING_LETTER";
-
-    const isRhymesGame =
-        gamesType === "RHYMES";
-
-    const isSyllablesGame =
-        gamesType === "SYLLABLES";
-
-    const isSoundManipulationGame =
-        gamesType === "SOUND_MANIPULATION";
-
-
-    /*
-     * ==================================================
-     * MEMORY TIME
-     * ==================================================
-     */
+    const [memoryCards, setMemoryCards] = useState([]);
+    const [flippedCards, setFlippedCards] = useState([]);
+    const [matchedPairs, setMatchedPairs] = useState([]);
+    const [memoryBusy, setMemoryBusy] = useState(false);
+    const [wordLetters, setWordLetters] = useState([]);
+    const [selectedLetterIndexes, setSelectedLetterIndexes,] = useState([]);
+    const isMemoryGame = gamesType === "MEMORY";
+    const isWordBuildingGame = gamesType === "WORD_BUILDING";
+    const isMissingLetterGame = gamesType === "MISSING_LETTER";
+    const isRhymesGame = gamesType === "RHYMES";
+    const isSyllablesGame = gamesType === "SYLLABLES";
+    const isSoundManipulationGame = gamesType === "SOUND_MANIPULATION";
 
     const getMemoryTime = () => {
+        const level = Number(pinNumber) || 1;
 
-        const level =
-            Number(pinNumber) || 1;
-
-        return (
-            MEMORY_TIME_BY_LEVEL[level] ||
-            MEMORY_TIME_BY_LEVEL[1]
-        );
+        return (MEMORY_TIME_BY_LEVEL[level] || MEMORY_TIME_BY_LEVEL[1]);
     };
 
-
-    /*
-     * ==================================================
-     * LOAD EXERCISE
-     * ==================================================
-     */
 
     useEffect(() => {
 
@@ -256,72 +97,36 @@ export default function ExercisePage() {
 
                 setLoading(true);
                 setError("");
-
                 setExercise(null);
                 setContent(null);
-
                 setSelectedAnswer(null);
                 setAnswered(false);
 
-
-                /*
-                 * MISSING LETTER RESET
-                 */
-
                 setMissingLetterCompleted(false);
-
-
-                /*
-                 * RHYMES RESET
-                 */
 
                 setRhymeFeedback(null);
 
                 if (rhymeTimeoutRef.current) {
 
-                    clearTimeout(
-                        rhymeTimeoutRef.current
-                    );
-
+                    clearTimeout(rhymeTimeoutRef.current);
                     rhymeTimeoutRef.current = null;
                 }
-
-
-                /*
-                 * SYLLABLES RESET
-                 */
 
                 setSyllableFeedback(null);
 
                 if (syllableTimeoutRef.current) {
 
-                    clearTimeout(
-                        syllableTimeoutRef.current
-                    );
-
+                    clearTimeout(syllableTimeoutRef.current);
                     syllableTimeoutRef.current = null;
                 }
-
-
-                /*
-                 * SOUND MANIPULATION RESET
-                 */
 
                 setSoundFeedback(null);
 
                 if (soundTimeoutRef.current) {
 
-                    clearTimeout(
-                        soundTimeoutRef.current
-                    );
-
+                    clearTimeout(soundTimeoutRef.current);
                     soundTimeoutRef.current = null;
                 }
-
-
-                /*
-                 * MEMORY RESET
-                 */
 
                 setFlippedCards([]);
                 setMatchedPairs([]);
@@ -329,24 +134,10 @@ export default function ExercisePage() {
                 setMemoryBusy(false);
 
 
-                /*
-                 * WORD BUILDING RESET
-                 */
-
                 setWordLetters([]);
                 setSelectedLetterIndexes([]);
 
                 timeoutHandledRef.current = false;
-
-
-                /*
-                 * ==================================================
-                 * CORRECT API URL
-                 *
-                 * Backend сам го одредува ageGroup
-                 * преку возраста на корисникот.
-                 * ==================================================
-                 */
 
                 const url =
                     `${API}/exercises/` +
@@ -357,11 +148,7 @@ export default function ExercisePage() {
                     `?userId=${userId}`;
 
 
-                console.log(
-                    "Loading exercise:",
-                    url
-                );
-
+                console.log("Loading exercise:", url);
 
                 const response =
                     await fetch(
@@ -379,31 +166,21 @@ export default function ExercisePage() {
 
                 if (!response.ok) {
 
-                    const responseText =
-                        await response.text();
-
+                    const responseText = await response.text();
+ 
                     throw new Error(
                         responseText ||
                         `HTTP ${response.status}`
                     );
                 }
 
-
-                const data =
-                    await response.json();
-
+                const data = await response.json();
 
                 if (cancelled) {
                     return;
                 }
 
-
                 setExercise(data);
-
-
-                /*
-                 * PARSE CONTENT
-                 */
 
                 let parsedContent = {};
 
@@ -420,14 +197,8 @@ export default function ExercisePage() {
 
                 } catch (parseError) {
 
-                    console.error(
-                        "Content parse error:",
-                        parseError
-                    );
-
-                    throw new Error(
-                        "Содржината на задачата не може да се прочита."
-                    );
+                    console.error("Content parse error:", parseError);
+                    throw new Error("Содржината на задачата не може да се прочита.");
                 }
 
                 setContent(parsedContent);
@@ -436,21 +207,8 @@ export default function ExercisePage() {
                 console.log("LEVEL:", data.levelNumber);
                 console.log("WORLD:", data.worldNumber);
                 console.log("CONTENT:", parsedContent);
-                
 
-                /*
-                 * LEVEL
-                 */
-
-                const level =
-                    Number(data.levelNumber) ||
-                    Number(pinNumber) ||
-                    1;
-
-
-                /*
-                 * TASK TIME
-                 */
+                const level = Number(data.levelNumber) || Number(pinNumber) || 1;
 
                 const taskTime =
                     data.gamesType === "MEMORY"
@@ -465,30 +223,12 @@ export default function ExercisePage() {
 
                 setTimeLeft(taskTime);
 
-
-                /*
-                 * MEMORY
-                 */
-
                 if (
-                    data.gamesType ===
-                        "MEMORY" &&
-                    Array.isArray(
-                        parsedContent.cards
-                    )
+                    data.gamesType === "MEMORY" && Array.isArray(parsedContent.cards)
                 ) {
 
-                    setMemoryCards(
-                        shuffleArray(
-                            parsedContent.cards
-                        )
-                    );
+                    setMemoryCards(shuffleArray(parsedContent.cards));
                 }
-
-
-                /*
-                 * WORD BUILDING
-                 */
 
                 if (
                     data.gamesType ===
@@ -498,26 +238,15 @@ export default function ExercisePage() {
                     )
                 ) {
 
-                    setWordLetters(
-                        shuffleArray(
-                            parsedContent.letters
-                        )
-                    );
+                    setWordLetters(shuffleArray(parsedContent.letters));
                 }
 
             } catch (err) {
 
                 if (!cancelled) {
 
-                    console.error(
-                        "Load exercise error:",
-                        err
-                    );
-
-                    setError(
-                        err.message ||
-                        "Не можеше да се вчита задачата."
-                    );
+                    console.error("Load exercise error:", err);
+                    setError(err.message || "Не можеше да се вчита задачата.");
                 }
 
             } finally {
@@ -528,9 +257,7 @@ export default function ExercisePage() {
             }
         };
 
-
         loadExercise();
-
 
         return () => {
 
@@ -539,40 +266,28 @@ export default function ExercisePage() {
 
             if (timerRef.current) {
 
-                clearInterval(
-                    timerRef.current
-                );
-
+                clearInterval(timerRef.current);
                 timerRef.current = null;
             }
 
 
             if (rhymeTimeoutRef.current) {
 
-                clearTimeout(
-                    rhymeTimeoutRef.current
-                );
-
+                clearTimeout(rhymeTimeoutRef.current);
                 rhymeTimeoutRef.current = null;
             }
 
 
             if (syllableTimeoutRef.current) {
 
-                clearTimeout(
-                    syllableTimeoutRef.current
-                );
-
+                clearTimeout(syllableTimeoutRef.current);
                 syllableTimeoutRef.current = null;
             }
 
 
             if (soundTimeoutRef.current) {
 
-                clearTimeout(
-                    soundTimeoutRef.current
-                );
-
+                clearTimeout(soundTimeoutRef.current);
                 soundTimeoutRef.current = null;
             }
         };
@@ -585,13 +300,6 @@ export default function ExercisePage() {
         userId,
         token,
     ]);
-
-
-    /*
-     * ==================================================
-     * SAVE TASK PROGRESS
-     * ==================================================
-     */
 
     const saveTaskProgress = async ({
         correct,
@@ -607,56 +315,27 @@ export default function ExercisePage() {
         try {
 
             setSaving(true);
-
-
-            let correctAnswer =
-                content?.answer || "";
-
+            let correctAnswer = content?.answer || "";
 
             if (
-                gamesType === "MEMORY" &&
-                !correctAnswer
+                gamesType === "MEMORY" && !correctAnswer
             ) {
-
-                correctAnswer =
-                    "Сите парови";
+                correctAnswer = "Сите парови";
             }
 
 
             const payload = {
 
-                userId:
-                    Number(userId),
-
-                exerciseId:
-                    exercise.id,
-
-                taskNumber:
-                    currentTask,
-
-                question:
-                    content?.question || "",
-
-                selectedAnswer:
-                    selected ||
-                    (
-                        timedOut
-                            ? "Времето истече"
-                            : ""
-                    ),
-
+                userId: Number(userId),
+                exerciseId: exercise.id,
+                taskNumber: currentTask,
+                question: content?.question || "",
+                selectedAnswer: selected || (timedOut ? "Времето истече" : ""),
                 correctAnswer,
-
-                score:
-                    correct ? 1 : 0,
-
-                correct:
-                    Boolean(correct),
-
+                score: correct ? 1 : 0,
+                correct: Boolean(correct),
                 completed: true,
-
-                timedOut:
-                    Boolean(timedOut),
+                timedOut: Boolean(timedOut),
             };
 
 
@@ -678,33 +357,20 @@ export default function ExercisePage() {
                                 : {}),
                         },
 
-                        body:
-                            JSON.stringify(
-                                payload
-                            ),
+                        body: JSON.stringify(payload),
                     }
                 );
 
 
             if (!response.ok) {
 
-                const text =
-                    await response.text();
-
-                throw new Error(
-                    text ||
-                    `HTTP ${response.status}`
+                const text = await response.text();
+                throw new Error(text || `HTTP ${response.status}`
                 );
             }
 
-
-            const savedData =
-                await response.json();
-
-            console.log(
-                "Progress saved:",
-                savedData
-            );
+            const savedData = await response.json();
+            console.log("Progress saved:", savedData); 
 
         } catch (err) {
 
@@ -714,17 +380,10 @@ export default function ExercisePage() {
             );
 
         } finally {
-
             setSaving(false);
         }
     };
 
-
-    /*
-     * ==================================================
-     * FINISH TASK
-     * ==================================================
-     */
 
     const finishTask = async ({
         correct,
@@ -738,32 +397,19 @@ export default function ExercisePage() {
 
 
         setAnswered(true);
-
-
-        const newScore =
-            score +
-            (correct ? 1 : 0);
-
+        const newScore = score + (correct ? 1 : 0);
 
         if (correct) {
-
-            setScore(
-                newScore
-            );
+            setScore(newScore);
 
         } else {
 
-            let correctAnswer =
-                content?.answer || "";
-
+            let correctAnswer = content?.answer || "";
 
             if (
-                gamesType === "MEMORY" &&
-                !correctAnswer
+                gamesType === "MEMORY" && !correctAnswer
             ) {
-
-                correctAnswer =
-                    "Пронајди ги сите парови";
+                correctAnswer = "Пронајди ги сите парови";
             }
 
 
@@ -772,31 +418,14 @@ export default function ExercisePage() {
                     ...previous,
 
                     {
-                        taskNumber:
-                            currentTask,
-
-                        question:
-                            content?.question ||
-                            "",
-
-                        selectedAnswer:
-                            selected ||
-                            (
-                                timedOut
-                                    ? "Времето истече"
-                                    : "Нема одговор"
-                            ),
-
+                        taskNumber: currentTask,
+                        question: content?.question || "",
+                        selectedAnswer: selected || (timedOut ? "Времето истече" : "Нема одговор"),
                         correctAnswer,
                     },
                 ]
             );
         }
-
-
-        /*
-         * SAVE FIRST
-         */
 
         await saveTaskProgress({
             correct,
@@ -805,56 +434,27 @@ export default function ExercisePage() {
         });
 
 
-        /*
-         * FINISH GAME
-         */
-
         if (
-            currentTask >=
-            TOTAL_TASKS
+            currentTask >= TOTAL_TASKS
         ) {
 
-            setFinalScore(
-                newScore
-            );
-
+            setFinalScore(newScore);
             setFinished(true);
-
 
             if (timerRef.current) {
 
-                clearInterval(
-                    timerRef.current
-                );
-
+                clearInterval(timerRef.current);
                 timerRef.current = null;
             }
-
 
             return;
         }
 
-
-        /*
-         * NEXT TASK
-         */
-
         setTimeout(() => {
-
-            setCurrentTask(
-                previous =>
-                    previous + 1
-            );
-
+            setCurrentTask(previous => previous + 1);
         }, 500);
     };
 
-
-    /*
-     * ==================================================
-     * RHYMES
-     * ==================================================
-     */
 
     const handleRhymesAnswer =
         async answer => {
@@ -868,47 +468,25 @@ export default function ExercisePage() {
             }
 
 
-            const correct =
-                String(answer) ===
-                String(content?.answer);
-
-
+            const correct = String(answer) === String(content?.answer);
             setSelectedAnswer(answer);
-
             setAnswered(true);
-
             setRhymeFeedback(correct);
 
-
-            const newScore =
-                score +
-                (correct ? 1 : 0);
-
+            const newScore = score + (correct ? 1 : 0);
 
             if (correct) {
-
                 setScore(newScore);
-
             } else {
-
                 setWrongAnswers(
                     previous => [
                         ...previous,
 
                         {
-                            taskNumber:
-                                currentTask,
-
-                            question:
-                                content?.question ||
-                                "",
-
-                            selectedAnswer:
-                                answer,
-
-                            correctAnswer:
-                                content?.answer ||
-                                "",
+                            taskNumber: currentTask,
+                            question: content?.question || "",
+                            selectedAnswer: answer,
+                            correctAnswer: content?.answer || "",
                         },
                     ]
                 );
@@ -926,38 +504,19 @@ export default function ExercisePage() {
                 setTimeout(() => {
 
                     if (
-                        currentTask >=
-                        TOTAL_TASKS
+                        currentTask >= TOTAL_TASKS
                     ) {
-
-                        setFinalScore(
-                            newScore
-                        );
-
+                        setFinalScore(newScore);
                         setFinished(true);
-
                         return;
                     }
 
 
                     setRhymeFeedback(null);
-
                     setSelectedAnswer(null);
-
-                    setCurrentTask(
-                        previous =>
-                            previous + 1
-                    );
-
+                    setCurrentTask(previous => previous + 1);
                 }, 3000);
         };
-
-
-    /*
-     * ==================================================
-     * SYLLABLES
-     * ==================================================
-     */
 
     const handleSyllablesAnswer =
         async answer => {
@@ -971,27 +530,15 @@ export default function ExercisePage() {
             }
 
 
-            const correct =
-                String(answer) ===
-                String(content?.answer);
-
-
+            const correct = String(answer) === String(content?.answer);
             setSelectedAnswer(answer);
-
             setAnswered(true);
-
             setSyllableFeedback(correct);
 
-
-            const newScore =
-                score +
-                (correct ? 1 : 0);
-
+            const newScore = score + (correct ? 1 : 0);
 
             if (correct) {
-
                 setScore(newScore);
-
             } else {
 
                 setWrongAnswers(
@@ -999,19 +546,10 @@ export default function ExercisePage() {
                         ...previous,
 
                         {
-                            taskNumber:
-                                currentTask,
-
-                            question:
-                                content?.question ||
-                                "",
-
-                            selectedAnswer:
-                                answer,
-
-                            correctAnswer:
-                                content?.answer ||
-                                "",
+                            taskNumber: currentTask,
+                            question: content?.question || "",
+                            selectedAnswer: answer,
+                            correctAnswer: content?.answer || "",
                         },
                     ]
                 );
@@ -1029,38 +567,19 @@ export default function ExercisePage() {
                 setTimeout(() => {
 
                     if (
-                        currentTask >=
-                        TOTAL_TASKS
+                        currentTask >= TOTAL_TASKS
                     ) {
-
-                        setFinalScore(
-                            newScore
-                        );
-
+                        setFinalScore( newScore);
                         setFinished(true);
-
                         return;
                     }
 
-
                     setSyllableFeedback(null);
-
                     setSelectedAnswer(null);
-
-                    setCurrentTask(
-                        previous =>
-                            previous + 1
-                    );
-
+                    setCurrentTask(previous => previous + 1);
                 }, 3000);
         };
 
-
-    /*
-     * ==================================================
-     * SOUND MANIPULATION
-     * ==================================================
-     */
 
     const handleSoundManipulationAnswer =
         async answer => {
@@ -1074,29 +593,16 @@ export default function ExercisePage() {
             }
 
 
-            const correct =
-                String(answer) ===
-                String(content?.answer);
-
-
+            const correct = String(answer) === String(content?.answer);
             setSelectedAnswer(answer);
-
             setAnswered(true);
-
             setSoundFeedback(correct);
-
-
-            const newScore =
-                score +
-                (correct ? 1 : 0);
-
+            const newScore = score + (correct ? 1 : 0);
 
             if (correct) {
-
                 setScore(newScore);
 
             } else {
-
                 setWrongAnswers(
                     previous => [
                         ...previous,
@@ -1132,45 +638,26 @@ export default function ExercisePage() {
                 setTimeout(() => {
 
                     if (
-                        currentTask >=
-                        TOTAL_TASKS
+                        currentTask >= TOTAL_TASKS
                     ) {
 
-                        setFinalScore(
-                            newScore
-                        );
-
+                        setFinalScore(newScore);
                         setFinished(true);
-
                         return;
                     }
 
 
                     setSoundFeedback(null);
-
                     setSelectedAnswer(null);
-
-                    setCurrentTask(
-                        previous =>
-                            previous + 1
-                    );
-
+                    setCurrentTask(previous => previous + 1);
                 }, 3000);
         };
-
-
-    /*
-     * ==================================================
-     * NORMAL ANSWER
-     * ==================================================
-     */
 
     const handleAnswer =
         async answer => {
 
             if (
-                answered ||
-                saving
+                answered || saving
             ) {
                 return;
             }
@@ -1178,64 +665,37 @@ export default function ExercisePage() {
 
             if (isRhymesGame) {
 
-                await handleRhymesAnswer(
-                    answer
-                );
-
+                await handleRhymesAnswer(answer);
                 return;
             }
 
 
             if (isSyllablesGame) {
 
-                await handleSyllablesAnswer(
-                    answer
-                );
-
+                await handleSyllablesAnswer(answer);
                 return;
             }
 
 
             if (isSoundManipulationGame) {
 
-                await handleSoundManipulationAnswer(
-                    answer
-                );
-
+                await handleSoundManipulationAnswer(answer);
                 return;
             }
 
-
             setSelectedAnswer(answer);
-
-
-            const correct =
-                String(answer) ===
-                String(content?.answer);
-
-
-            /*
-             * MISSING LETTER
-             */
+            const correct = String(answer) === String(content?.answer);
 
             if (
                 isMissingLetterGame &&
                 correct
             ) {
 
-                setMissingLetterCompleted(
-                    true
-                );
-
+                setMissingLetterCompleted(true);
                 setAnswered(true);
-
-
-                const newScore =
-                    score + 1;
-
+                const newScore = score + 1;
 
                 setScore(newScore);
-
 
                 await saveTaskProgress({
                     correct: true,
@@ -1247,47 +707,24 @@ export default function ExercisePage() {
                 setTimeout(() => {
 
                     if (
-                        currentTask >=
-                        TOTAL_TASKS
+                        currentTask >= TOTAL_TASKS
                     ) {
 
-                        setFinalScore(
-                            newScore
-                        );
-
+                        setFinalScore(newScore);
                         setFinished(true);
-
                         return;
                     }
 
 
-                    setMissingLetterCompleted(
-                        false
-                    );
-
-                    setSelectedAnswer(
-                        null
-                    );
-
-                    setAnswered(
-                        false
-                    );
-
-                    setCurrentTask(
-                        previous =>
-                            previous + 1
-                    );
-
+                    setMissingLetterCompleted(false);
+                    setSelectedAnswer(null);
+                    setAnswered(false);
+                    setCurrentTask(previous => previous + 1);
                 }, 3000);
-
 
                 return;
             }
 
-
-            /*
-             * ALL OTHER GAMES
-             */
 
             await finishTask({
                 correct,
@@ -1297,11 +734,6 @@ export default function ExercisePage() {
         };
 
 
-    /*
-     * ==================================================
-     * WORD BUILDING
-     * ==================================================
-     */
 
     const handleWordLetterClick =
         index => {
@@ -1328,11 +760,7 @@ export default function ExercisePage() {
                 index,
             ];
 
-
-            setSelectedLetterIndexes(
-                newIndexes
-            );
-
+            setSelectedLetterIndexes(newIndexes);
 
             const builtWord =
                 newIndexes
@@ -1346,33 +774,16 @@ export default function ExercisePage() {
 
 
             if (
-                newIndexes.length ===
-                wordLetters.length
+                newIndexes.length === wordLetters.length
             ) {
 
-                const correct =
-                    builtWord ===
-                    String(
-                        content?.answer ||
-                        ""
-                    );
-
-
-                setSelectedAnswer(
-                    builtWord
-                );
-
-
+                const correct = builtWord === String(content?.answer || "");
+                setSelectedAnswer(builtWord);
                 setTimeout(() => {
-
                     finishTask({
                         correct,
-
-                        selected:
-                            builtWord,
-
-                        timedOut:
-                            false,
+                        selected: builtWord,
+                        timedOut: false,
                     });
 
                 }, 250);
@@ -1419,12 +830,6 @@ export default function ExercisePage() {
     };
 
 
-    /*
-     * ==================================================
-     * MEMORY
-     * ==================================================
-     */
-
     const handleMemoryCardClick =
         async card => {
 
@@ -1463,14 +868,11 @@ export default function ExercisePage() {
             ];
 
 
-            setFlippedCards(
-                newFlippedCards
-            );
+            setFlippedCards(newFlippedCards);
 
 
             if (
-                newFlippedCards.length ===
-                1
+                newFlippedCards.length === 1
             ) {
                 return;
             }
@@ -1493,8 +895,7 @@ export default function ExercisePage() {
 
 
             if (
-                !firstCard ||
-                !secondCard
+                !firstCard || !secondCard
             ) {
                 return;
             }
@@ -1503,13 +904,8 @@ export default function ExercisePage() {
             setMemoryBusy(true);
 
 
-            /*
-             * MATCH
-             */
-
             if (
-                firstCard.pairId ===
-                secondCard.pairId
+                firstCard.pairId === secondCard.pairId
             ) {
 
                 const newMatchedPairs =
@@ -1547,20 +943,14 @@ export default function ExercisePage() {
 
 
                         if (
-                            newMatchedPairs.length >=
-                            totalPairs
+                            newMatchedPairs.length >= totalPairs
                         ) {
 
                             await finishTask(
                                 {
-                                    correct:
-                                        true,
-
-                                    selected:
-                                        "Сите парови се пронајдени",
-
-                                    timedOut:
-                                        false,
+                                    correct: true,
+                                    selected: "Сите парови се пронајдени",
+                                    timedOut: false,
                                 }
                             );
                         }
@@ -1572,11 +962,6 @@ export default function ExercisePage() {
 
                 return;
             }
-
-
-            /*
-             * NO MATCH
-             */
 
             setTimeout(() => {
 
@@ -1591,12 +976,6 @@ export default function ExercisePage() {
             }, 850);
         };
 
-
-    /*
-     * ==================================================
-     * TIMER
-     * ==================================================
-     */
 
     useEffect(() => {
 
@@ -1684,12 +1063,6 @@ export default function ExercisePage() {
     ]);
 
 
-    /*
-     * ==================================================
-     * TIMEOUT
-     * ==================================================
-     */
-
     useEffect(() => {
 
         if (
@@ -1732,12 +1105,6 @@ export default function ExercisePage() {
     ]);
 
 
-    /*
-     * ==================================================
-     * NAVIGATION
-     * ==================================================
-     */
-
     const goBackToWorld = () => {
 
         navigate(
@@ -1746,58 +1113,101 @@ export default function ExercisePage() {
     };
 
 
-    const goToNextMission = () => {
-        const nextPin = Number(pinNumber) + 1;
+    const goToNextMission = async () => {
+        try {
+            if (!token || !userId) {
+                navigate("/login");
+                return;
+            }
 
-        // There are six missions in each game.
-        if (nextPin > 6) {
-            goBackToWorld();
-            return;
+            const response = await fetch(
+                `${API}/games/world/${Number(worldId)}?userId=${userId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Не може да се вчитаат игрите од светот.");
+            }
+
+            const data = await response.json();
+            if (!Array.isArray(data)) {
+                throw new Error("Серверот не врати валидна листа на игри.");
+            }
+
+            const games = data.slice(0, 6);
+            const currentIndex = games.findIndex(
+                game => Number(game.id) === Number(gamesId)
+            );
+
+            if (currentIndex === -1) {
+                throw new Error("Тековната игра не е пронајдена во светот.");
+            }
+
+            const nextGame = games[currentIndex + 1];
+
+            if (!nextGame) {
+                navigate(`/world/${worldId}`);
+                return;
+            }
+
+            const gameTypes = [
+                "MEMORY",
+                "WORD_BUILDING",
+                "MISSING_LETTER",
+                "RHYMES",
+                "SYLLABLES",
+                "SOUND_MANIPULATION",
+            ];
+            const nextType = nextGame.gamesType || gameTypes[currentIndex + 1];
+
+            if (!nextType) {
+                throw new Error("Следната игра нема дефиниран тип.");
+            }
+
+            if (timerRef.current) clearInterval(timerRef.current);
+            if (rhymeTimeoutRef.current) clearTimeout(rhymeTimeoutRef.current);
+            if (syllableTimeoutRef.current) clearTimeout(syllableTimeoutRef.current);
+            if (soundTimeoutRef.current) clearTimeout(soundTimeoutRef.current);
+
+            timerRef.current = null;
+            rhymeTimeoutRef.current = null;
+            syllableTimeoutRef.current = null;
+            soundTimeoutRef.current = null;
+            timeoutHandledRef.current = false;
+
+            setCurrentTask(1);
+            setScore(0);
+            setFinalScore(null);
+            setWrongAnswers([]);
+            setSelectedAnswer(null);
+            setAnswered(false);
+            setFinished(false);
+            setSaving(false);
+            setMissingLetterCompleted(false);
+            setRhymeFeedback(null);
+            setSyllableFeedback(null);
+            setSoundFeedback(null);
+            setMemoryCards([]);
+            setFlippedCards([]);
+            setMatchedPairs([]);
+            setMemoryBusy(false);
+            setWordLetters([]);
+            setSelectedLetterIndexes([]);
+            setTimeLeft(NORMAL_TIME);
+
+            navigate(`/world/${worldId}/exercise/${nextGame.id}/${nextType}/${pinNumber}`);
+        } catch (err) {
+            console.error("Next mission error:", err);
+            alert(err.message || "Не може да се отвори следната мисија.");
         }
-
-        // Reset mission progress before navigating to the next pin.
-        if (timerRef.current) clearInterval(timerRef.current);
-        if (rhymeTimeoutRef.current) clearTimeout(rhymeTimeoutRef.current);
-        if (syllableTimeoutRef.current) clearTimeout(syllableTimeoutRef.current);
-        if (soundTimeoutRef.current) clearTimeout(soundTimeoutRef.current);
-
-        timerRef.current = null;
-        rhymeTimeoutRef.current = null;
-        syllableTimeoutRef.current = null;
-        soundTimeoutRef.current = null;
-        timeoutHandledRef.current = false;
-
-        setCurrentTask(1);
-        setScore(0);
-        setFinalScore(null);
-        setWrongAnswers([]);
-        setSelectedAnswer(null);
-        setAnswered(false);
-        setFinished(false);
-        setSaving(false);
-        setMissingLetterCompleted(false);
-        setRhymeFeedback(null);
-        setSyllableFeedback(null);
-        setSoundFeedback(null);
-        setMemoryCards([]);
-        setFlippedCards([]);
-        setMatchedPairs([]);
-        setMemoryBusy(false);
-        setWordLetters([]);
-        setSelectedLetterIndexes([]);
-        setTimeLeft(NORMAL_TIME);
-
-        navigate(
-            `/world/${worldId}/exercise/${gamesId}/${gamesType}/${nextPin}`
-        );
     };
 
-
-    /*
-     * ==================================================
-     * LOADING
-     * ==================================================
-     */
 
     if (loading) {
 
@@ -1837,12 +1247,6 @@ export default function ExercisePage() {
         );
     }
 
-
-    /*
-     * ==================================================
-     * ERROR
-     * ==================================================
-     */
 
     if (error) {
 
@@ -1900,11 +1304,6 @@ export default function ExercisePage() {
     }
 
 
-    /*
-     * ==================================================
-     * FINISHED
-     * ==================================================
-     */
 
     if (finished) {
 
@@ -2050,9 +1449,7 @@ export default function ExercisePage() {
                                 className="finished-primary-btn"
                                 onClick={goToNextMission}
                             >
-                                {Number(pinNumber) < 6
-                                    ? "🚀 Следна мисија"
-                                    : "🎮 Назад кон игрите"}
+                                🚀 Следна мисија
                             </button>
 
                         </div>
@@ -2145,12 +1542,6 @@ export default function ExercisePage() {
     }
 
 
-    /*
-     * ==================================================
-     * BUILT WORD
-     * ==================================================
-     */
-
     const builtWord =
         selectedLetterIndexes
             .map(
@@ -2160,11 +1551,6 @@ export default function ExercisePage() {
             .join("");
 
 
-    /*
-     * ==================================================
-     * MISSING LETTER WORD
-     * ==================================================
-     */
 
     const missingLetterWord =
         String(
@@ -2175,12 +1561,6 @@ export default function ExercisePage() {
     const missingLetterParts =
         missingLetterWord.split("");
 
-
-    /*
-     * ==================================================
-     * MAIN PAGE
-     * ==================================================
-     */
 
     return (
 
@@ -2204,9 +1584,7 @@ export default function ExercisePage() {
             <main className="exercise-main">
 
 
-                {/* ==================================================
-                    TOP BAR
-                ================================================== */}
+                {}
 
                 <div className="exercise-topbar">
 
@@ -2246,9 +1624,7 @@ export default function ExercisePage() {
                 </div>
 
 
-                {/* ==================================================
-                    TITLE
-                ================================================== */}
+                {}
 
                 <section className="exercise-title">
 
@@ -2264,9 +1640,7 @@ export default function ExercisePage() {
                 </section>
 
 
-                {/* ==================================================
-                    WORD BUILDING
-                ================================================== */}
+                {}
 
                 {isWordBuildingGame && (
 
@@ -2444,9 +1818,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    MEMORY
-                ================================================== */}
+                {}
 
                 {isMemoryGame && (
 
@@ -2548,9 +1920,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    MISSING LETTER
-                ================================================== */}
+                {}
 
                 {isMissingLetterGame && (
 
@@ -2688,9 +2058,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    RHYMES
-                ================================================== */}
+                {}
 
                 {isRhymesGame && (
 
@@ -2841,9 +2209,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    SYLLABLES
-                ================================================== */}
+                {}
 
                 {isSyllablesGame && (
 
@@ -3005,9 +2371,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    SOUND MANIPULATION
-                ================================================== */}
+                {}
 
                 {isSoundManipulationGame && (
 
@@ -3169,9 +2533,7 @@ export default function ExercisePage() {
                 )}
 
 
-                {/* ==================================================
-                    NORMAL GAMES
-                ================================================== */}
+                {}
 
                 {!isMemoryGame &&
                     !isWordBuildingGame &&

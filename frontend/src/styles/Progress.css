@@ -19,11 +19,6 @@
     box-sizing: border-box;
 }
 
-
-/* =========================
-   HEADER
-========================= */
-
 .progress-page .home-header {
     width: 100%;
 
@@ -45,11 +40,6 @@
     display: none !important;
 }
 
-
-/* =========================
-   MAIN
-========================= */
-
 .progress-main {
     width: min(1150px, 94%);
 
@@ -60,11 +50,6 @@
 
     gap: 24px;
 }
-
-
-/* =========================
-   LOADING
-========================= */
 
 .progress-loading {
     min-height: 70vh;
@@ -95,11 +80,6 @@
 
     color: #71695d;
 }
-
-
-/* =========================
-   HERO
-========================= */
 
 .progress-hero {
     position: relative;
@@ -183,11 +163,6 @@
     bottom: 15px;
 }
 
-
-/* =========================
-   SUMMARY
-========================= */
-
 .progress-summary {
     display: grid;
 
@@ -248,11 +223,6 @@
     font-size: 11px;
 }
 
-
-/* =========================
-   TITLE
-========================= */
-
 .adventures-title {
     display: flex;
 
@@ -283,11 +253,6 @@
 .adventures-decoration {
     font-size: 22px;
 }
-
-
-/* =========================
-   EMPTY
-========================= */
 
 .empty-progress {
     padding: 45px 25px;
@@ -338,11 +303,6 @@
     cursor: pointer;
 }
 
-
-/* =========================
-   ADVENTURE GRID
-========================= */
-
 .adventure-grid {
     display: grid;
 
@@ -351,11 +311,6 @@
 
     gap: 20px;
 }
-
-
-/* =========================
-   ADVENTURE CARD
-========================= */
 
 .adventure-card {
     position: relative;
@@ -397,11 +352,6 @@
 .adventure-card.changed {
     border-top-color: #dd91bc;
 }
-
-
-/* =========================
-   CARD TOP
-========================= */
 
 .adventure-card-top {
     display: flex;
@@ -445,11 +395,6 @@
     font-size: 28px;
 }
 
-
-/* =========================
-   CARD TITLE
-========================= */
-
 .adventure-card-title {
     margin-top: 14px;
 }
@@ -469,11 +414,6 @@
 
     line-height: 1.5;
 }
-
-
-/* =========================
-   SCORE
-========================= */
 
 .adventure-score {
     display: flex;
@@ -564,10 +504,6 @@
 }
 
 
-/* =========================
-   STATUS
-========================= */
-
 .adventure-status {
     margin-top: 15px;
 }
@@ -622,11 +558,6 @@
     font-size: 10px;
 }
 
-
-/* =========================
-   BOTTOM
-========================= */
-
 .adventure-bottom {
     display: flex;
 
@@ -679,11 +610,6 @@
 
     background: #e7dda0;
 }
-
-
-/* =========================
-   MODAL
-========================= */
 
 .review-overlay {
     position: fixed;
@@ -742,11 +668,6 @@
     cursor: pointer;
 }
 
-
-/* =========================
-   REVIEW HEADING
-========================= */
-
 .review-heading {
     display: flex;
 
@@ -789,10 +710,6 @@
 }
 
 
-/* =========================
-   REVIEW RESULT
-========================= */
-
 .review-result {
     display: grid;
 
@@ -832,11 +749,6 @@
     font-size: 28px;
 }
 
-
-/* =========================
-   PERFECT REVIEW
-========================= */
-
 .perfect-review {
     padding: 25px 20px;
 
@@ -868,11 +780,6 @@
 
     line-height: 1.6;
 }
-
-
-/* =========================
-   MISTAKES
-========================= */
 
 .mistakes-review h3 {
     margin: 0;
@@ -969,11 +876,6 @@
     background: #e4f2da;
 }
 
-
-/* =========================
-   CLOSE
-========================= */
-
 .review-close-button {
     width: 100%;
 
@@ -995,11 +897,6 @@
 
     cursor: pointer;
 }
-
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 900px) {
 
