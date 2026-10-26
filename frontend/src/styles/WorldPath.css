@@ -1,81 +1,55 @@
-
-/* ==================================================
-   LEXILAND - WORLD PATH
-================================================== */
-
 .world-path {
     width: 100%;
     min-height: 100vh;
-
     background: #f1eab0;
-
-    padding:
-        0 clamp(20px, 5vw, 60px)
-        60px;
-
-    font-family:
-        "Noto Sans Mono",
-        monospace;
+    padding: 0 clamp(16px, 5vw, 60px) 60px;
+    font-family: "Noto Sans Mono", monospace;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
-/* ==================================================
-   HEADER
-================================================== */
+.world-path *,
+.world-path *::before,
+.world-path *::after {
+    box-sizing: border-box;
+}
 
 .world-path-header {
     width: 100%;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     margin-bottom: -15px;
-
     flex-wrap: wrap;
     gap: 14px;
 }
 
-/* Логото малку повнатре од левата страна */
-
 .world-path-header > :first-child {
-    margin-left: 65px;
+    margin-left: clamp(0px, 4vw, 65px);
 }
 
 .right-nav-group {
     display: flex;
     align-items: center;
-
     gap: 16px;
     flex-wrap: wrap;
 }
 
-/* ==================================================
-   BACK BUTTON
-================================================== */
-
 .world-path .back-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-
     padding: 10px 18px;
-
     border: none;
     border-radius: 14px;
-
     background: rgba(255, 255, 255, 0.92);
-
     color: #5b5366;
-
     font-family: inherit;
     font-size: 15px;
     font-weight: 700;
-
     cursor: pointer;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.10);
-
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
@@ -84,7 +58,6 @@
 
 .world-path .back-btn::before {
     content: "←";
-
     font-size: 20px;
     font-weight: 800;
     line-height: 1;
@@ -92,180 +65,127 @@
 
 .world-path .back-btn:hover {
     background: #e6ef65;
-
     transform: translateX(-3px);
-
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
 }
-
-/* ==================================================
-   LOADING / ERROR
-================================================== */
 
 .world-loading,
 .world-error {
     min-height: 50vh;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
     text-align: center;
     gap: 10px;
+    padding: 20px;
 }
 
 .world-error button {
     margin-top: 10px;
-
     padding: 12px 24px;
-
     border: none;
     border-radius: 14px;
-
     background: #f6cf63;
-
     font-family: inherit;
     font-weight: bold;
-
     cursor: pointer;
 }
 
-/* ==================================================
-   WORLD TITLE - CENTERED
-================================================== */
 
 .world-title-row {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 100%;
     max-width: 1250px;
     min-height: 55px;
-
     margin: 25px auto 24px;
-
     gap: 12px;
 }
 
 .world-title-row h1 {
     margin: 0;
-
     text-align: center;
-
-    font-size: clamp(26px, 3.4vw, 38px);
+    font-size: clamp(24px, 3.4vw, 38px);
     font-weight: 800;
     line-height: 1.3;
-
     color: #d85537;
+    overflow-wrap: anywhere;
 }
 
 .world-progress {
     position: absolute;
-
     right: 0;
     top: 50%;
-
     transform: translateY(-50%);
-
     background: #ffffff;
-
     padding: 10px 20px;
     border-radius: 999px;
-
     font-weight: 700;
     font-size: 14px;
-
     white-space: nowrap;
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .world-map-frame {
     position: relative;
-
     width: 100%;
     max-width: 1250px;
-
     margin: 0 auto;
-
-    border-radius:
-        clamp(18px, 3vw, 32px);
-
+    border-radius: clamp(18px, 3vw, 32px);
     overflow: hidden;
-
-    border:
-        clamp(3px, 0.5vw, 5px)
-        solid #F6C84C;
-
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.12);
+    border: clamp(3px, 0.5vw, 5px) solid #F6C84C;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
 }
 
 .world-bg {
-    width: 100%;
     display: block;
+    width: 100%;
+    height: auto;
 }
 
 .pin {
     position: absolute;
-
     transform: translate(-50%, -50%);
-
-    width: clamp(38px, 6vw, 58px);
-    height: clamp(38px, 6vw, 58px);
-
+    width: clamp(32px, 5vw, 58px);
+    height: clamp(32px, 5vw, 58px);
     border-radius: 50%;
     border: 4px solid white;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: clamp(16px, 2.2vw, 24px);
-
+    font-size: clamp(14px, 2vw, 24px);
     cursor: pointer;
-
-    box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.30);
-
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.30);
     transition: transform 0.2s ease;
+    padding: 0;
 }
 
 .pin:hover:not(:disabled) {
-    transform:
-        translate(-50%, -50%) scale(1.1);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.pin:disabled {
+    cursor: not-allowed;
 }
 
 .pin-number {
     position: absolute;
-
     top: -8px;
     right: -8px;
-
-    width: 22px;
-    height: 22px;
-
+    width: clamp(17px, 2vw, 22px);
+    height: clamp(17px, 2vw, 22px);
     background: white;
     border-radius: 50%;
-
-    font-size: 11px;
+    font-size: clamp(9px, 1vw, 11px);
     font-weight: 800;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: #333;
-
-    box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .pin-icon {
@@ -274,14 +194,12 @@
 
 .pin-locked {
     background: #b7b3a0;
-
     cursor: not-allowed;
     opacity: 0.85;
 }
 
 .pin-completed {
     background: #41be75;
-
     color: white;
     font-weight: 800;
 }
@@ -333,7 +251,6 @@
 .pin-gold.pin-current {
     background: #e1b22f;
 }
-
 .frame-coral {
     border-color: #d85537;
 }
@@ -357,6 +274,7 @@
 .frame-gold {
     border-color: #e1b22f;
 }
+
 
 .world-progress.pin-coral {
     color: #d85537;
@@ -383,48 +301,107 @@
 }
 
 @media (max-width: 900px) {
+    .world-path {
+        padding-left: 24px;
+        padding-right: 24px;
+        padding-bottom: 45px;
+    }
+
+    .world-path-header {
+        gap: 12px;
+    }
+
+    .world-path-header > :first-child {
+        margin-left: 10px;
+    }
+
+    .right-nav-group {
+        gap: 10px;
+    }
+
     .world-title-row {
         flex-direction: column;
         gap: 12px;
+        margin-top: 24px;
+        margin-bottom: 20px;
+        padding: 0 8px;
+    }
+
+    .world-title-row h1 {
+        max-width: 100%;
+        font-size: clamp(25px, 4vw, 32px);
     }
 
     .world-progress {
         position: static;
         transform: none;
+        align-self: center;
+        font-size: 13px;
+        padding: 9px 17px;
+    }
+
+    .world-map-frame {
+        border-radius: 22px;
+    }
+
+    .pin {
+        width: clamp(30px, 5.5vw, 46px);
+        height: clamp(30px, 5.5vw, 46px);
+        border-width: 3px;
+    }
+
+    .pin-number {
+        top: -6px;
+        right: -6px;
     }
 }
 
 @media (max-width: 640px) {
     .world-path {
-        padding:
-            0 16px 40px;
+        padding: 0 12px 35px;
     }
 
     .world-path-header {
         flex-direction: column;
         align-items: flex-start;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 0;
+        padding-top: 5px;
     }
 
     .world-path-header > :first-child {
-        margin-left: 15px;
+        margin-left: 0;
     }
 
     .right-nav-group {
         width: 100%;
         justify-content: space-between;
+        gap: 8px;
+    }
+
+    .world-path .back-btn {
+        padding: 9px 13px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    .world-path .back-btn::before {
+        font-size: 18px;
     }
 
     .world-title-row {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
         gap: 12px;
-        margin-top: 20px;
+        margin: 22px auto 18px;
+        min-height: 0;
     }
 
     .world-title-row h1 {
-        font-size: 25px;
+        font-size: clamp(22px, 6vw, 28px);
+        line-height: 1.35;
         text-align: center;
     }
 
@@ -432,12 +409,99 @@
         position: static;
         transform: none;
         align-self: center;
+        padding: 8px 15px;
+        font-size: 12px;
     }
 
     .world-map-frame {
-        border-radius: 18px;
+        border-radius: 16px;
+        border-width: 3px;
+    }
+
+    .pin {
+        width: clamp(25px, 7vw, 36px);
+        height: clamp(25px, 7vw, 36px);
+        border-width: 2px;
+        font-size: clamp(12px, 3.5vw, 17px);
+    }
+
+    .pin-number {
+        width: 16px;
+        height: 16px;
+        top: -5px;
+        right: -5px;
+        font-size: 9px;
+    }
+
+    .pin:hover:not(:disabled) {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .world-loading,
+    .world-error {
+        min-height: 40vh;
+        padding: 16px;
+        font-size: 14px;
+    }
+
+    .world-error button {
+        max-width: 100%;
+        padding: 11px 18px;
     }
 }
+
+
+@media (max-width: 380px) {
+    .world-path {
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 25px;
+    }
+
+    .right-nav-group {
+        gap: 6px;
+    }
+
+    .world-path .back-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+
+    .world-title-row {
+        margin-top: 18px;
+        margin-bottom: 14px;
+    }
+
+    .world-title-row h1 {
+        font-size: 22px;
+    }
+
+    .world-progress {
+        padding: 7px 12px;
+        font-size: 11px;
+    }
+
+    .world-map-frame {
+        border-radius: 12px;
+    }
+
+    .pin {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+        border-width: 2px;
+    }
+
+    .pin-number {
+        width: 14px;
+        height: 14px;
+        font-size: 8px;
+        top: -4px;
+        right: -4px;
+    }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
     .pin-current {

@@ -79,10 +79,8 @@ export default function LearningPage() {
     null;
 
   useEffect(() => {
-    localStorage.setItem(
-      "lexiland-reading-settings",
-      JSON.stringify(settings)
-    );
+    localStorage.setItem("lexiland-reading-settings", JSON.stringify(settings));
+    window.dispatchEvent(new Event("lexiland-settings-changed"));
   }, [settings]);
 
   const chooseStory = (id) => {

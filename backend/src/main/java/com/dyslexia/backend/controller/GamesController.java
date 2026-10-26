@@ -2,92 +2,128 @@ package com.dyslexia.backend.controller;
 import com.dyslexia.backend.model.ExerciseProgress;
 import com.dyslexia.backend.model.Games;
 import com.dyslexia.backend.model.GamesType;
-import com.dyslexia.backend.repository.ExerciseProgressRepository;
+import com.dyslexia.backend.model.User;
 import com.dyslexia.backend.repository.GameRepository;
 import com.dyslexia.backend.repository.UserRepository;
+import com.dyslexia.backend.service.GameProgressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/games")
 public class GamesController {
 
     private final GameRepository gameRepository;
-    private final ExerciseProgressRepository progressRepository;
     private final UserRepository userRepository;
-    private static final int TOTAL_GAMES_PER_WORLD = 6;
+    private final GameProgressService progressService;
 
     public GamesController(
             GameRepository gameRepository,
-            ExerciseProgressRepository progressRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            GameProgressService progressService
     ) {
         this.gameRepository = gameRepository;
-        this.progressRepository = progressRepository;
         this.userRepository = userRepository;
+        this.progressService = progressService;
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getGames(
             @PathVariable Long userId
     ) {
+        User user = userRepository
+                .findById(userId)
+                .orElse(null);
 
-        if (!userRepository.existsById(userId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                            "message",
-                            "Корисникот не постои."
-                    ));
+        if (user == null) {
+            return userNotFound();
         }
 
-        List<Games> games = gameRepository.findAllByOrderByOrderIndexAsc();
+        if (user.getAge() == null) {
+            return missingAge();
+        }
 
-        List<ExerciseProgress> progress = progressRepository.findByUserIdOrderByCompletedAtDesc(userId);
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<Games> games = gameRepository
+                .findAllByOrderByOrderIndexAsc();
+
+        List<ExerciseProgress> progress =
+                progressService.getProgress(userId);
+
+        int currentLevel =
+                progressService.levelFromAge(user.getAge());
+
+        List<Map<String, Object>> result =
+                new ArrayList<>();
+
         for (Games game : games) {
+            int levelsDone = 0;
 
-            List<ExerciseProgress> gameProgress = progress.stream().filter(p ->
-                                    p.getExercise() != null &&
-                                    p.getExercise().getGames() != null &&
-                                    Objects.equals(p.getExercise().getGames().getId(), game.getId())
-                            ).toList();
-
-            Set<Integer> completedLevels = new HashSet<>();
-            for (ExerciseProgress p : gameProgress) {
-
-                if (
-                        Boolean.TRUE.equals(p.getCompleted()) &&
-                        Boolean.TRUE.equals(p.getCorrect())
-                ) {
-
-                    completedLevels.add(p.getExercise().getPinNumber());
+            for (int level = 1; level <= 3; level++) {
+                if (progressService.isGameLevelPassed(
+                        game,
+                        level,
+                        progress
+                )) {
+                    levelsDone++;
                 }
             }
 
-            int levelsDone = completedLevels.size();
-            String status;
-
-            if (levelsDone >= game.getTotalLevels()) {
-                status = "completed";
-
-            } else if (levelsDone > 0) {
-                status = "in_progress";
-
-            } else {
-                status = "not_started";
-            }
-
-            GamesType type = getGamesType(game.getOrderIndex());
-            result.add(createGameResponse(
+            boolean passed = progressService
+                    .isGameLevelPassed(
                             game,
-                            type,
-                            levelsDone,
-                            status
-                    )
+                            currentLevel,
+                            progress
+                    );
+
+            boolean unlocked = progressService
+                    .isGameUnlocked(
+                            user,
+                            game,
+                            progress
+                    );
+
+            boolean started = progress.stream().anyMatch(
+                    item ->
+                            item.getExercise() != null &&
+                            item.getExercise().getGames() != null &&
+                            game.getId().equals(
+                                    item.getExercise()
+                                            .getGames()
+                                            .getId()
+                            ) &&
+                            Integer.valueOf(currentLevel).equals(
+                                    item.getExercise()
+                                            .getPinNumber()
+                            ) &&
+                            item.getExercise().getAgeGroup() ==
+                                    progressService.ageGroupFromAge(
+                                            user.getAge()
+                                    )
             );
+
+            String status = passed
+                    ? "completed"
+                    : started
+                        ? "in_progress"
+                        : "not_started";
+
+            Map<String, Object> response =
+                    createGameResponse(game);
+
+            response.put("levelsDone", levelsDone);
+            response.put("status", status);
+            response.put("passed", passed);
+            response.put("unlocked", unlocked);
+            response.put("currentLevel", currentLevel);
+
+            result.add(response);
         }
+
         return ResponseEntity.ok(result);
     }
 
@@ -96,23 +132,72 @@ public class GamesController {
             @PathVariable Integer worldNumber,
             @RequestParam(required = false) Long userId
     ) {
+        if (!isValidWorld(worldNumber)) {
+            return invalidWorld();
+        }
 
-        List<Games> games = gameRepository.findByWorldNumberOrderByOrderIndexAsc(worldNumber);
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Games game : games) {
+        User user = null;
+        List<ExerciseProgress> progress = List.of();
 
-            GamesType type = getGamesType(game.getOrderIndex());
-            Map<String, Object> response = new LinkedHashMap<>();
-            response.put("id", game.getId());
-            response.put("name", game.getName());
-            response.put("color", game.getColor());
-            response.put("imageUrl", game.getImageUrl());
-            response.put("worldNumber", game.getWorldNumber());
-            response.put("orderIndex", game.getOrderIndex());
-            response.put("totalLevels", game.getTotalLevels());
-            response.put("gamesType", type != null ? type.name() : null);
+        if (userId != null) {
+            user = userRepository
+                    .findById(userId)
+                    .orElse(null);
+
+            if (user == null) {
+                return userNotFound();
+            }
+
+            if (user.getAge() == null) {
+                return missingAge();
+            }
+
+            progress = progressService.getProgress(userId);
+        }
+
+        List<Games> games = gameRepository
+                .findByWorldNumberOrderByOrderIndexAsc(
+                        worldNumber
+                );
+
+        List<Map<String, Object>> result =
+                new ArrayList<>();
+
+        for (Games game : games.stream()
+                .limit(GameProgressService.GAMES_PER_WORLD)
+                .toList()) {
+
+            Map<String, Object> response =
+                    createGameResponse(game);
+
+            if (user != null) {
+                int level = progressService
+                        .levelFromAge(user.getAge());
+
+                response.put(
+                        "passed",
+                        progressService.isGameLevelPassed(
+                                game,
+                                level,
+                                progress
+                        )
+                );
+
+                response.put(
+                        "unlocked",
+                        progressService.isGameUnlocked(
+                                user,
+                                game,
+                                progress
+                        )
+                );
+
+                response.put("currentLevel", level);
+            }
+
             result.add(response);
         }
+
         return ResponseEntity.ok(result);
     }
 
@@ -121,171 +206,80 @@ public class GamesController {
             @PathVariable Integer worldNumber,
             @RequestParam Long userId
     ) {
-
-        if (!userRepository.existsById(userId)) {
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                            "message",
-                            "Корисникот не постои."
-                    ));
+        if (!isValidWorld(worldNumber)) {
+            return invalidWorld();
         }
 
-        if (worldNumber == null ||
-                worldNumber < 1 ||
-                worldNumber > 6) {
+        User user = userRepository
+                .findById(userId)
+                .orElse(null);
 
-            return ResponseEntity.badRequest().body(Map.of(
-                            "message",
-                            "Невалиден број на свет."
-                    ));
-        }
-
-        if (worldNumber == 1) {
-
-            return ResponseEntity.ok(Map.of(
-                            "worldNumber", 1,
-                            "unlocked", true,
-                            "completedPreviousWorld", true
-                    )
-            );
-        }
-
-
-        int previousWorld = worldNumber - 1;
-        List<Games> previousGames = gameRepository.findByWorldNumberOrderByOrderIndexAsc(previousWorld);
-
-        if (previousGames.size() < TOTAL_GAMES_PER_WORLD) {
-
-            return ResponseEntity.ok(Map.of(
-                            "worldNumber", worldNumber,
-                            "unlocked", false,
-                            "completedPreviousWorld", false,
-                            "completedGames", 0,
-                            "requiredGames",
-                            TOTAL_GAMES_PER_WORLD
-                    )
-            );
-        }
-
-        List<ExerciseProgress> progress = progressRepository.findByUserIdOrderByCompletedAtDesc(userId);
-        var user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                            "message",
-                            "Корисникот не постои."
-                    ));
+            return userNotFound();
         }
 
-        int currentLevel = levelFromAge(user.getAge());
-        int completedGames = 0;
-
-        for (Games game : previousGames) {
-            boolean passed = isGameLevelPassed(
-                            game,
-                            currentLevel,
-                            progress
-                    );
-
-            if (passed) {
-                completedGames++;
-            }
+        if (user.getAge() == null) {
+            return missingAge();
         }
 
-        boolean unlocked = completedGames >= TOTAL_GAMES_PER_WORLD;
+        int currentLevel = progressService
+                .levelFromAge(user.getAge());
 
-        Map<String, Object> response = new LinkedHashMap<>();
+        List<ExerciseProgress> progress =
+                progressService.getProgress(userId);
+
+        boolean unlocked = progressService
+                .isWorldUnlocked(
+                        worldNumber,
+                        currentLevel,
+                        progress
+                );
+
+        int completedGames = worldNumber == 1
+                ? 0
+                : progressService.countPassedGames(
+                        worldNumber - 1,
+                        currentLevel,
+                        progress
+                );
+
+        boolean completedPreviousWorld =
+                worldNumber == 1 ||
+                completedGames >=
+                        GameProgressService.GAMES_PER_WORLD;
+
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
         response.put("worldNumber", worldNumber);
         response.put("unlocked", unlocked);
-        response.put("completedPreviousWorld",unlocked );
-        response.put("previousWorld", previousWorld);
-        response.put("completedGames",completedGames);
-        response.put("requiredGames",TOTAL_GAMES_PER_WORLD);
-        response.put("currentLevel",currentLevel);
+        response.put(
+                "completedPreviousWorld",
+                completedPreviousWorld
+        );
+        response.put(
+                "previousWorld",
+                worldNumber == 1 ? null : worldNumber - 1
+        );
+        response.put("completedGames", completedGames);
+        response.put(
+                "requiredGames",
+                GameProgressService.GAMES_PER_WORLD
+        );
+        response.put("currentLevel", currentLevel);
+
         return ResponseEntity.ok(response);
     }
 
-    private boolean isGameLevelPassed(
-            Games game,
-            int level,
-            List<ExerciseProgress> progress
-    ) {
-
-        Map<Integer, ExerciseProgress> latestByTask = new HashMap<>();
-
-        for (ExerciseProgress item : progress) {
-            if (item.getExercise() == null) {
-                continue;
-            }
-
-            if (item.getExercise().getGames() == null) {
-                continue;
-            }
-
-            if (!Objects.equals(
-                    item.getExercise().getGames().getId(), game.getId()
-            )) {
-                continue;
-            }
-
-            if (!Objects.equals(
-                    item.getExercise().getPinNumber(), level
-            )) {
-                continue;
-            }
-
-            Integer taskNumber = item.getExercise().getTaskNumber();
-
-            if (taskNumber == null) {
-                continue;
-            }
-
-            latestByTask.putIfAbsent(taskNumber, item);
-        }
-
-        if (latestByTask.size() < 10) {
-            return false;
-        }
-
-        int score = 0;
-
-        for (ExerciseProgress item :
-                latestByTask.values()) {
-
-            if (
-                Boolean.TRUE.equals(item.getCompleted()) && Boolean.TRUE.equals(item.getCorrect())
-            ) {
-                score++;
-            }
-        }
-
-        return score >= 8;
-    }
-
-    private int levelFromAge(
-            Integer age
-    ) {
-
-        if (age == null) {
-            return 1;
-        }
-        if (age <= 7) {
-            return 1;
-        }
-        if (age <= 10) {
-            return 2;
-        }
-        return 3;
-    }
-
-
     private Map<String, Object> createGameResponse(
-            Games game,
-            GamesType type,
-            int levelsDone,
-            String status
+            Games game
     ) {
+        GamesType type = getGamesType(
+                game.getOrderIndex()
+        );
 
-        Map<String, Object> response = new LinkedHashMap<>();
+        Map<String, Object> response =
+                new LinkedHashMap<>();
 
         response.put("id", game.getId());
         response.put("name", game.getName());
@@ -294,17 +288,15 @@ public class GamesController {
         response.put("worldNumber", game.getWorldNumber());
         response.put("orderIndex", game.getOrderIndex());
         response.put("totalLevels", game.getTotalLevels());
-        response.put("gamesType",type != null ? type.name() : null);
-        response.put("levelsDone", levelsDone);
-        response.put("status", status);
+        response.put(
+                "gamesType",
+                type != null ? type.name() : null
+        );
+
         return response;
     }
 
-
-    private GamesType getGamesType(
-            Integer orderIndex
-    ) {
-
+    private GamesType getGamesType(Integer orderIndex) {
         if (orderIndex == null) {
             return null;
         }
@@ -318,5 +310,40 @@ public class GamesController {
             case 6 -> GamesType.SOUND_MANIPULATION;
             default -> null;
         };
+    }
+
+    private boolean isValidWorld(Integer worldNumber) {
+        return worldNumber != null &&
+                worldNumber >= 1 &&
+                worldNumber <= 6;
+    }
+
+    private ResponseEntity<?> invalidWorld() {
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "message",
+                        "Невалиден број на свет."
+                )
+        );
+    }
+
+    private ResponseEntity<?> userNotFound() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(
+                        Map.of(
+                                "message",
+                                "Корисникот не постои."
+                        )
+                );
+    }
+
+    private ResponseEntity<?> missingAge() {
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "message",
+                        "Корисникот нема внесено возраст."
+                )
+        );
     }
 }

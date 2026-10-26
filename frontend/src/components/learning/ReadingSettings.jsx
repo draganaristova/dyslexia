@@ -90,18 +90,6 @@ export default function ReadingSettings({
       </div>
 
       <label className="learning-check">
-        <span>Фонт за дислексија</span>
-
-        <input
-          type="checkbox"
-          checked={settings.dyslexiaFont}
-          onChange={(e) =>
-            update("dyslexiaFont", e.target.checked)
-          }
-        />
-      </label>
-
-      <label className="learning-check">
         <span>Означи ја реченицата што се чита</span>
 
         <input

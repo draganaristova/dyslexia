@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -5,8 +6,7 @@
     font-family: "Noto Sans Mono", monospace;
 }
 
-.game-selection-header > :first-child
-{
+.game-selection-header > :first-child {
     margin-left: 65px;
 }
 
@@ -16,12 +16,11 @@
     }
 }
 
-
 .game-selection {
     width: 100%;
     min-height: 100vh;
     background: linear-gradient(180deg, #f1eab0, #f1eab0);
-    padding: 0 clamp(20px, 6vw, 60px);
+    padding: 0 clamp(12px, 6vw, 60px);
     overflow: hidden;
 }
 
@@ -38,6 +37,7 @@
 .game-selection-intro {
     text-align: center;
     margin-top: clamp(24px, 4vw, 45px);
+    padding: 0 10px;
 }
 
 .game-selection-intro h1 {
@@ -45,6 +45,7 @@
     font-weight: 800;
     color: rgba(0, 0, 0, 0.7);
     line-height: 1.24;
+    overflow-wrap: anywhere;
 }
 
 .game-selection-intro h1 span {
@@ -62,15 +63,17 @@
 }
 
 .game-grid {
-    width: 92%;
+    width: 100%;
+    max-width: 1400px;
     margin: clamp(30px, 5vw, 55px) auto 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
     gap: clamp(16px, 2.5vw, 30px);
     padding-bottom: 60px;
 }
 
 .game-card {
+    min-width: 0;
     border-radius: clamp(18px, 2.5vw, 28px);
     overflow: hidden;
     cursor: pointer;
@@ -104,7 +107,11 @@
 .game-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 40%,
+        rgba(0, 0, 0, 0.55) 100%
+    );
 }
 
 .game-card.locked .game-image {
@@ -116,6 +123,7 @@
     z-index: 2;
     padding: clamp(14px, 2vw, 18px) clamp(16px, 2vw, 20px);
     color: white;
+    overflow-wrap: anywhere;
 }
 
 .game-text h3 {
@@ -134,7 +142,7 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.9);
     width: 40px;
     height: 40px;
     border-radius: 14px;
@@ -155,34 +163,67 @@
     font-size: 12px;
     font-weight: 700;
     z-index: 3;
+    max-width: calc(100% - 28px);
+    overflow-wrap: anywhere;
 }
 
-.game-coral { border-color: #d85537; }
-.game-coral .progress-pill { color: #d85537; }
+.game-coral {
+    border-color: #d85537;
+}
 
-.game-green { border-color: #41be75; }
-.game-green .progress-pill { color: #41be75; }
+.game-coral .progress-pill {
+    color: #d85537;
+}
 
-.game-blue { border-color: #3f95df; }
-.game-blue .progress-pill { color: #3f95df; }
+.game-green {
+    border-color: #41be75;
+}
 
-.game-purple { border-color: #8a58db; }
-.game-purple .progress-pill { color: #8a58db; }
+.game-green .progress-pill {
+    color: #41be75;
+}
 
-.game-pink { border-color: #db5ba0; }
-.game-pink .progress-pill { color: #db5ba0; }
+.game-blue {
+    border-color: #3f95df;
+}
 
-.game-gold { border-color: #e1b22f; }
-.game-gold .progress-pill { color: #e1b22f; }
+.game-blue .progress-pill {
+    color: #3f95df;
+}
+
+.game-purple {
+    border-color: #8a58db;
+}
+
+.game-purple .progress-pill {
+    color: #8a58db;
+}
+
+.game-pink {
+    border-color: #db5ba0;
+}
+
+.game-pink .progress-pill {
+    color: #db5ba0;
+}
+
+.game-gold {
+    border-color: #e1b22f;
+}
+
+.game-gold .progress-pill {
+    color: #e1b22f;
+}
 
 .game-selection footer {
     text-align: center;
-    padding-bottom: 30px;
+    padding: 0 10px 30px;
 }
 
 .quote {
     font-size: clamp(14px, 1.6vw, 18px);
     color: rgba(0, 0, 0, 0.7);
+    line-height: 1.5;
 }
 
 .nav-icons-row {
@@ -190,4 +231,187 @@
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+    .game-selection {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .game-selection-header > :first-child {
+        margin-left: 20px;
+    }
+
+    .game-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .game-image {
+        height: clamp(170px, 25vw, 220px);
+    }
+}
+
+
+@media (max-width: 768px) {
+    .game-selection {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .game-selection-header {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .game-selection-header > :first-child {
+        margin-left: 0;
+    }
+
+    .game-selection-intro {
+        margin-top: 28px;
+    }
+
+    .game-selection-intro h1 {
+        font-size: clamp(24px, 6vw, 34px);
+    }
+
+    .game-selection-intro p {
+        margin-top: 14px;
+        font-size: 14px;
+    }
+
+    .game-grid {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 30px;
+        padding-bottom: 40px;
+    }
+
+    .game-card {
+        border-width: 2px;
+        border-radius: 18px;
+    }
+
+    .game-image {
+        height: clamp(145px, 32vw, 200px);
+    }
+
+    .game-text {
+        padding: 12px;
+    }
+
+    .game-text h3 {
+        font-size: clamp(14px, 3vw, 18px);
+    }
+
+    .game-text p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .lock-badge {
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        font-size: 16px;
+    }
+
+    .progress-pill {
+        top: 10px;
+        right: 10px;
+        padding: 5px 9px;
+        font-size: 10px;
+    }
+
+    .nav-icons-row {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .game-selection {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .game-selection-header {
+        gap: 8px;
+    }
+
+    .game-selection-intro {
+        margin-top: 24px;
+    }
+
+    .game-selection-intro h1 {
+        font-size: clamp(22px, 7vw, 30px);
+    }
+
+    .game-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        gap: 18px;
+        margin-top: 26px;
+    }
+
+    .game-image {
+        height: clamp(180px, 55vw, 240px);
+    }
+
+    .game-text {
+        padding: 14px 16px;
+    }
+
+    .game-text h3 {
+        font-size: 18px;
+    }
+
+    .game-text p {
+        font-size: 13px;
+    }
+
+    .game-selection footer {
+        padding-bottom: 24px;
+    }
+}
+
+@media (max-width: 380px) {
+    .game-selection {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .game-selection-intro h1 {
+        font-size: 22px;
+    }
+
+    .game-selection-intro p {
+        font-size: 13px;
+    }
+
+    .game-grid {
+        gap: 14px;
+    }
+
+    .game-image {
+        height: 175px;
+    }
+
+    .game-text {
+        padding: 12px;
+    }
+
+    .lock-badge {
+        width: 30px;
+        height: 30px;
+    }
+
+    .progress-pill {
+        font-size: 9px;
+        padding: 5px 8px;
+    }
 }

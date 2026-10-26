@@ -298,9 +298,7 @@ export default function ReadingPlayer({
 
       <div
         className={`reading-text reading-bg-${settings.background} ${
-          settings.dyslexiaFont
-            ? "reading-dyslexia"
-            : ""
+          settings.dyslexiaFont ? "dyslexia-font" : ""
         }`}
         style={{
           fontSize: `${settings.fontSize}px`,

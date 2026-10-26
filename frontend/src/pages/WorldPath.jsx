@@ -1,42 +1,36 @@
 import "../styles/WorldPath.css";
-import {useParams, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import ProfileButton from "../widgets/ProfileButton";
 import HomeButton from "../widgets/HomeButton";
 import LogoutButton from "../widgets/LogoutButton";
 import Logo from "../widgets/Logo";
+
 import { worldsData } from "../data/worldsData";
 import { API } from "../data/api";
 
-const gameTypes = [
+const GAME_TYPES = [
     "MEMORY",
     "WORD_BUILDING",
     "MISSING_LETTER",
     "RHYMES",
     "SYLLABLES",
-    "SOUND_MANIPULATION"
+    "SOUND_MANIPULATION",
 ];
 
-const gameIcons = [
-    "🃏",
-    "🧩",
-    "🔤",
-    "🎵",
-    "👏",
-    "✂️"
-];
+const GAME_ICONS = ["🃏", "🧩", "🔤", "🎵", "👏", "✂️"];
 
-const gameNames = [
+const GAME_NAMES = [
     "Меморија",
     "Состави го зборот",
     "Која буква недостасува",
     "Најди ја римата",
     "Слогови",
-    "Бриши и замени гласови"
+    "Бриши и замени гласови",
 ];
 
 function levelFromAge(age) {
-
     const numericAge = Number(age);
 
     if (!numericAge || numericAge <= 7) {
@@ -50,408 +44,312 @@ function levelFromAge(age) {
     return 3;
 }
 
-
-function WorldPath() {
+export default function WorldPath() {
     const { worldId } = useParams();
     const navigate = useNavigate();
+
     const world = worldsData[worldId];
+
     const [games, setGames] = useState([]);
     const [progress, setProgress] = useState([]);
     const [user, setUser] = useState(null);
     const [worldAccess, setWorldAccess] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
     useEffect(() => {
-        const fetchWorldData =
-            async () => {
-                try {
+        let cancelled = false;
 
-                    setLoading(true);
-                    setError("");
+        const fetchWorldData = async () => {
+            try {
+                setLoading(true);
+                setError("");
 
-                    const token = localStorage.getItem("token");
-                    const userId = localStorage.getItem("userId");
+                const token = localStorage.getItem("token");
+                const userId = localStorage.getItem("userId");
 
-                    if (!token || !userId) {
+                if (!token || !userId) {
+                    navigate("/login");
+                    return;
+                }
 
-                        navigate("/login");
-                        return;
-                    }
+                const worldNumber = Number(worldId);
 
-                    const worldNumber = Number(worldId);
+                if (
+                    !Number.isInteger(worldNumber) ||
+                    !worldsData[worldNumber]
+                ) {
+                    throw new Error("Невалиден свет.");
+                }
 
-                    if (
-                        !worldNumber ||
-                        worldNumber < 1 ||
-                        worldNumber > 6
-                    ) {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                };
 
-                        setError("Невалиден свет.");
-                        return;
-                    }
+                const responses = await Promise.all([
+                    fetch(
+                        `${API}/games/world/${worldNumber}?userId=${userId}`,
+                        { headers }
+                    ),
+                    fetch(
+                        `${API}/exercise-progress/user/${userId}/summary`,
+                        { headers }
+                    ),
+                    fetch(`${API}/profile/${userId}`, {
+                        headers,
+                    }),
+                    fetch(
+                        `${API}/games/world/${worldNumber}/access?userId=${userId}`,
+                        { headers }
+                    ),
+                ]);
 
+                if (cancelled) {
+                    return;
+                }
 
-                    const headers = {
+                if (
+                    responses.some(
+                        response =>
+                            response.status === 401 ||
+                            response.status === 403
+                    )
+                ) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userId");
+                    navigate("/login");
+                    return;
+                }
 
-                        Authorization:
-                            `Bearer ${token}`,
+                const [
+                    gamesResponse,
+                    progressResponse,
+                    profileResponse,
+                    accessResponse,
+                ] = responses;
 
-                        "Content-Type":
-                            "application/json"
-
-                    };
-
-
-                    const [
-                        gamesResponse,
-                        progressResponse,
-                        profileResponse,
-                        accessResponse
-                    ] =
-                        await Promise.all([
-
-                            fetch(
-                                `${API}/games/world/${worldNumber}?userId=${userId}`,
-                                {
-                                    method: "GET",
-                                    headers
-                                }
-                            ),
-
-                            fetch(
-                                `${API}/exercise-progress/user/${userId}/summary`,
-                                {
-                                    method: "GET",
-                                    headers
-                                }
-                            ),
-
-                            fetch(
-                                `${API}/profile/${userId}`,
-                                {
-                                    method: "GET",
-                                    headers
-                                }
-                            ),
-
-                            fetch(
-                                `${API}/games/world/${worldNumber}/access?userId=${userId}`,
-                                {
-                                    method: "GET",
-                                    headers
-                                }
-                            )
-
-                        ]);
-
-                    if (
-
-                        gamesResponse.status === 401 ||
-                        gamesResponse.status === 403 ||
-                        progressResponse.status === 401 ||
-                        progressResponse.status === 403 ||
-                        profileResponse.status === 401 ||
-                        profileResponse.status === 403 ||
-                        accessResponse.status === 401 ||
-                        accessResponse.status === 403
-
-                    ) {
-
-                        localStorage.removeItem("token");
-                        localStorage.removeItem("userId");
-                        navigate("/login");
-                        return;
-                    }
-
-
-                    if (!gamesResponse.ok) {
-
-                        throw new Error(
-                            "Не може да се вчитаат игрите."
-                        );
-                    }
-
-                    const gamesData = await gamesResponse.json();
-
-                    const progressData =
-                        progressResponse.ok
-                            ? await progressResponse.json()
-                            : [];
-
-                    const profileData =
-                        profileResponse.ok
-                            ? await profileResponse.json()
-                            : null;
-
-                    const accessData =
-                        accessResponse.ok
-                            ? await accessResponse.json()
-                            : null;
-
-                    setGames(
-                        Array.isArray(gamesData)
-                            ? gamesData
-                            : []
+                if (!gamesResponse.ok) {
+                    throw new Error(
+                        "Не може да се вчитаат игрите."
                     );
+                }
 
-
-                    setProgress(
-                        Array.isArray(progressData)
-                            ? progressData
-                            : []
+                if (!progressResponse.ok) {
+                    throw new Error(
+                        "Не може да се вчита напредокот."
                     );
+                }
 
-
-                    setUser(profileData);
-                    setWorldAccess(accessData);
-
-                } catch (err) {
-
-                    console.error(
-                        "World loading error:",
-                        err
+                if (!profileResponse.ok) {
+                    throw new Error(
+                        "Не може да се вчита профилот."
                     );
+                }
 
+                if (!accessResponse.ok) {
+                    throw new Error(
+                        "Не може да се провери пристапот до светот."
+                    );
+                }
+
+                const [
+                    gamesData,
+                    progressData,
+                    profileData,
+                    accessData,
+                ] = await Promise.all([
+                    gamesResponse.json(),
+                    progressResponse.json(),
+                    profileResponse.json(),
+                    accessResponse.json(),
+                ]);
+
+                if (cancelled) {
+                    return;
+                }
+
+                if (
+                    !Array.isArray(gamesData) ||
+                    !Array.isArray(progressData)
+                ) {
+                    throw new Error(
+                        "Серверот врати невалидни податоци."
+                    );
+                }
+
+                setGames(gamesData.slice(0, 6));
+                setProgress(progressData);
+                setUser(profileData);
+                setWorldAccess(accessData);
+            } catch (err) {
+                if (!cancelled) {
+                    console.error("World loading error:", err);
 
                     setError(
                         err.message ||
-                        "Не може да се вчита патеката."
+                            "Не може да се вчита патеката."
                     );
-
-                } finally {
+                }
+            } finally {
+                if (!cancelled) {
                     setLoading(false);
                 }
-
-            };
-
+            }
+        };
 
         fetchWorldData();
 
-    }, [
-        worldId,
-        navigate
-    ]);
+        return () => {
+            cancelled = true;
+        };
+    }, [worldId, navigate]);
 
+    const currentLevel = levelFromAge(user?.age);
 
-    if (!world) {
-
-        return (
-
-            <div className="world-path">
-
-                <p>
-                    Светот не постои.
-                </p>
-
-
-                <button
-                    onClick={() =>
-                        navigate("/gameselection")
-                    }
-                >
-                    Назад
-                </button>
-
-            </div>
-        );
-    }
-
-    const currentAge = Number(user?.age);
-    const currentLevel = levelFromAge(currentAge);
-    const getLevelProgress = (gameId, level) => {
-        return progress.find(
-            item => Number(item.gamesId) === Number(gameId) && Number(item.pinNumber) === Number(level)) || null;
-    };
+    const getLevelProgress = (gameId, level) =>
+        progress.find(
+            item =>
+                Number(item.gamesId) === Number(gameId) &&
+                Number(item.pinNumber) === Number(level)
+        ) || null;
 
     const isLevelPassed = (gameId, level) => {
-        const item =
-            getLevelProgress(
-                gameId,
-                level
-            );
+        const item = getLevelProgress(gameId, level);
 
-       if (!item) {
-        return false;
-    }
-    return Number(item.completedTasks) >= 10;
-};
+        return (
+            item?.passed === true &&
+            Number(item.completedTasks) >= 10 &&
+            Number(item.score) >= 8
+        );
+    };
 
-    const isGameUnlocked = (
-        gameIndex
-    ) => {
-
+    const isGameUnlocked = gameIndex => {
         if (gameIndex === 0) {
             return true;
         }
 
-        const previousGame = games[gameIndex - 1];
-
-        if (!previousGame) {
+        if (!games[gameIndex - 1]) {
             return false;
         }
 
-        return isLevelPassed(previousGame.id, currentLevel);
+        return games
+            .slice(0, gameIndex)
+            .every(game =>
+                isLevelPassed(game.id, currentLevel)
+            );
     };
 
-
-    const openGame = (
-        game,
-        index
-    ) => {
-
-        if (!game) {
+    const openGame = (game, index) => {
+        if (!game || !isGameUnlocked(index)) {
             return;
         }
 
-
-        if (!isGameUnlocked(index)) {
-            return;
-        }
-
-
-        const type =
-            game.gamesType ||
-            gameTypes[index];
-
+        const type = game.gamesType || GAME_TYPES[index];
 
         navigate(
             `/world/${worldId}/exercise/${game.id}/${type}/${currentLevel}`
         );
-
     };
 
-    const completedGames =
-        games.filter(
-            game =>
-                isLevelPassed(
-                    game.id,
-                    currentLevel
-                )
-        ).length;
+    const completedGames = games.filter(game =>
+        isLevelPassed(game.id, currentLevel)
+    ).length;
 
     const isWorldUnlocked = worldAccess?.unlocked === true;
 
-
     const Header = () => (
-
         <header className="world-path-header">
-
             <Logo />
 
-
             <div className="right-nav-group">
-
                 <button
                     className="back-btn"
-                    onClick={() =>
-                        navigate("/gameselection")
-                    }
+                    onClick={() => navigate("/gameselection")}
                 >
                     Назад
                 </button>
 
-
                 <div className="nav-icons-row">
-
                     <HomeButton />
-
                     <LogoutButton />
-
                     <ProfileButton />
-
                 </div>
-
             </div>
-
         </header>
-
     );
 
+    if (!world) {
+        return (
+            <div className="world-path">
+                <p>Светот не постои.</p>
+
+                <button
+                    onClick={() => navigate("/gameselection")}
+                >
+                    Назад
+                </button>
+            </div>
+        );
+    }
 
     if (loading) {
-
         return (
-
             <div className="world-path">
-
                 <Header />
 
                 <div className="world-loading">
-
                     <h2>
                         Се подготвува авантурата... 🌟
                     </h2>
 
-                    <p>
-                        Ве молиме почекајте.
-                    </p>
-
+                    <p>Ве молиме почекајте.</p>
                 </div>
-
             </div>
         );
     }
 
-
     if (error) {
-
         return (
-
             <div className="world-path">
-
                 <Header />
 
                 <div className="world-error">
+                    <h2>Упс! 😕</h2>
 
-                    <h2>
-                        Упс! 😕
-                    </h2>
-
-                    <p>
-                        {error}
-                    </p>
+                    <p>{error}</p>
 
                     <button
-                        onClick={() =>
-                            window.location.reload()
-                        }
+                        onClick={() => window.location.reload()}
                     >
                         Обиди се повторно
                     </button>
-
                 </div>
-
             </div>
         );
     }
 
-
     if (!isWorldUnlocked) {
+        const completedPrevious =
+            worldAccess?.completedGames || 0;
 
-        const completedPrevious = worldAccess?.completedGames || 0;
-        const requiredPrevious = worldAccess?.requiredGames || 6;
+        const requiredPrevious =
+            worldAccess?.requiredGames || 6;
 
         return (
-
             <div className="world-path">
-
                 <Header />
-                <div className="world-error">
 
-                    <h2>
-                        🔒 Светот е заклучен
-                    </h2>
+                <div className="world-error">
+                    <h2>🔒 Светот е заклучен</h2>
 
                     <p>
-                        Прво заврши ги сите игри
-                        од претходниот свет.
+                        Прво помини ги сите игри од
+                        претходниот свет.
                     </p>
 
                     <p>
-                        Напредок:
-                        {" "}
-                        {completedPrevious}
-                        /
+                        Напредок: {completedPrevious}/
                         {requiredPrevious}
                     </p>
 
@@ -462,117 +360,86 @@ function WorldPath() {
                     >
                         Назад
                     </button>
-
                 </div>
-
             </div>
-
         );
     }
 
     return (
-
         <div className="world-path">
             <Header />
+
             <div className="world-title-row">
-                <h1>
-                    {world.name}
-                </h1>
+                <h1>{world.name}</h1>
 
                 <span
-                    className={
-                        `world-progress pin-${world.color}`
-                    }
+                    className={`world-progress pin-${world.color}`}
                 >
                     {completedGames}/6 игри
                 </span>
-
             </div>
 
             <div
-                className={
-                    `world-map-frame frame-${world.color}`
-                }
+                className={`world-map-frame frame-${world.color}`}
             >
-
                 <img
                     src={world.img}
                     alt={world.name}
                     className="world-bg"
                 />
 
+                {games.map((game, index) => {
+                    const pos = world.positions[index];
 
-                {games
-                    .slice(0, 6)
-                    .map(
-                        (
-                            game,
-                            index
-                        ) => {
+                    const passed = isLevelPassed(
+                        game.id,
+                        currentLevel
+                    );
 
-                            const pos = world.positions[index];
-                            const passed = isLevelPassed(game.id, currentLevel);
-                            const unlocked = isGameUnlocked(index);
-                            const icon = gameIcons[index];
-                            const gameName = game.name || gameNames[index];
+                    const unlocked = isGameUnlocked(index);
+                    const gameName =
+                        game.name || GAME_NAMES[index];
 
-                            return (
+                    return (
+                        <button
+                            key={game.id}
+                            className={
+                                `pin pin-${world.color} ` +
+                                `pin-${
+                                    passed
+                                        ? "completed"
+                                        : unlocked
+                                          ? "current"
+                                          : "locked"
+                                }`
+                            }
+                            style={{
+                                top: pos?.top,
+                                left: pos?.left,
+                            }}
+                            disabled={!unlocked}
+                            onClick={() => openGame(game, index)}
+                            title={
+                                unlocked
+                                    ? gameName
+                                    : "Прво помини ја претходната игра"
+                            }
+                        >
+                            <span className="pin-number">
+                                {index + 1}
+                            </span>
 
-                                <button
-                                    key={
-                                        game.id
-                                    }
-
-                                    className={
-                                        `pin pin-${world.color} ` +
-                                        `pin-${
-                                            passed
-                                                ? "completed"
-                                                : unlocked
-                                                    ? "current"
-                                                    : "locked"
-                                        }`
-                                    }
-
-                                    style={{
-                                        top: pos?.top,
-
-                                        left: pos?.left
-                                    }}
-
-                                    disabled={
-                                        !unlocked
-                                    }
-
-                                    onClick={() =>
-                                        openGame(
-                                            game,
-                                            index
-                                        )
-                                    }
-
-                                    title={
-                                        unlocked ? gameName : "Оваа игра е заклучена"
-                                    }
-                                >
-
-                                    <span className="pin-number">
-                                        {index + 1}
-                                    </span>
-
-
-                                    <span className="pin-icon">
-                                        {passed ? "✓" : unlocked ? icon : "🔒"}
-                                    </span>
-
-                                </button>
-                            );
-                        }
-                    )}
+                            <span className="pin-icon">
+                                {passed
+                                    ? "✓"
+                                    : unlocked
+                                      ? GAME_ICONS[index]
+                                      : "🔒"}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );
 }
-
-
-export default WorldPath;

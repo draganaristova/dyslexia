@@ -29,10 +29,10 @@ const relaxationExercises = [
     },
     {
         id: 5,
-        type: "LAZY_EIGHT",
-        name: "Мрзлива осмица",
+        type: "THINKING-CAP",
+        name: "Мислечка капа",
         icon: "∞",
-        instruction: "Следи ја осмицата со погледот."
+        instruction: "Нежно повлекување на ушите истовремено."
     }
 ];
 

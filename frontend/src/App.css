@@ -182,3 +182,15 @@
     border-right-color: var(--border);
   }
 }
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("/fonts/OpenDyslexic-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body.dyslexia-font,
+body.dyslexia-font * {
+  font-family: "OpenDyslexic", Arial, sans-serif !important;
+}

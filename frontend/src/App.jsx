@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -11,8 +12,31 @@ import Progress from "./pages/Progress";
 import ExercisePage from "./pages/ExercisePage";
 import RelaxationPage from "./pages/RelaxationPage";
 import LearningPage from "./pages/LearningPage";
+import "./App.css";
 
 function App() {
+  useEffect(() => {
+    const applyDyslexiaFont = () => {
+      try {
+        const settings = JSON.parse(localStorage.getItem("lexiland-reading-settings") || "{}");
+
+        document.body.classList.toggle("dyslexia-font", settings.dyslexiaFont === true);
+      } catch {
+        document.body.classList.remove("dyslexia-font");
+      }
+    };
+
+    applyDyslexiaFont();
+
+    window.addEventListener("storage", applyDyslexiaFont);
+    window.addEventListener("lexiland-settings-changed", applyDyslexiaFont);
+
+    return () => {
+      window.removeEventListener("storage", applyDyslexiaFont);
+      window.removeEventListener("lexiland-settings-changed", applyDyslexiaFont);
+    };
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

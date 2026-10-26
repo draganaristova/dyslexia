@@ -2,6 +2,7 @@
     position: fixed;
     inset: 0;
     width: 100%;
+    height: 100vh;
     height: 100dvh;
     overflow-x: hidden;
     overflow-y: auto;
@@ -16,14 +17,11 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-
     width: min(1250px, 88vw);
-    height: 90px;
-
+    min-height: 90px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 0 10px;
     box-sizing: border-box;
     z-index: 100;
@@ -33,58 +31,53 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
 }
 
 .relaxation-header-buttons {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .relaxation-content {
     width: 100%;
+    min-height: 100vh;
     min-height: 100dvh;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 145px 20px 35px;
     box-sizing: border-box;
 }
 
 .relaxation-back {
     position: fixed;
-    top: 110px;
-    left: max(20px, calc((100vw - 1200px) / 2));
-    margin-top: 40px;
-    margin-left: 80px;
-
+    top: 150px;
+    left: max(20px, calc((100vw - 1200px) / 2 + 80px));
     width: 48px;
     height: 48px;
-
     border: none;
     border-radius: 50%;
     background: #fff;
-
     font-size: 25px;
     cursor: pointer;
-
     box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
     z-index: 10;
 }
 
 .relaxation-intro {
-    width: min(850px, 90vw);
+    width: min(850px, 100%);
     padding: 30px 30px 50px;
     margin: 0 auto;
-
     text-align: center;
     box-sizing: border-box;
 }
 
 .relaxation-leaf {
-    font-size: 68px;
+    font-size: clamp(48px, 6vw, 68px);
     line-height: 1;
     margin-bottom: 12px;
 }
@@ -92,16 +85,18 @@
 .relaxation-intro h1 {
     margin: 12px 0 20px;
     font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.3;
     color: #1f2925;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-intro-text {
     max-width: 700px;
     margin: 12px auto;
-
-    font-size: 19px;
+    font-size: clamp(15px, 2vw, 19px);
     line-height: 1.65;
     color: #527064;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-info {
@@ -109,8 +104,7 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-
-    gap: 38px;
+    gap: clamp(18px, 4vw, 38px);
     margin: 35px auto;
 }
 
@@ -119,7 +113,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     gap: 8px;
     min-width: 90px;
     font-size: 26px;
@@ -136,18 +129,17 @@
 }
 
 .relaxation-start-button {
+    max-width: 100%;
     border: none;
     padding: 16px 42px;
     border-radius: 18px;
-
     background: #79cfa4;
     color: #fff;
-
-    font-size: 19px;
+    font-size: clamp(15px, 2vw, 19px);
     font-weight: 700;
-
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-start-button:hover {
@@ -156,17 +148,15 @@
 }
 
 .relaxation-back-button {
+    max-width: 100%;
     border: none;
     padding: 14px 30px;
     border-radius: 14px;
-
     background: rgba(255, 255, 255, 0.85);
     color: #476356;
-
-    font-size: 17px;
+    font-size: clamp(14px, 1.8vw, 17px);
     font-weight: 700;
     cursor: pointer;
-
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -179,7 +169,6 @@
     width: min(850px, 100%);
     padding: 30px 20px;
     margin: 0 auto;
-
     text-align: center;
     box-sizing: border-box;
 }
@@ -187,18 +176,19 @@
 .relaxation-small-title {
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: 3px;
+    letter-spacing: clamp(1px, 0.4vw, 3px);
     color: #5d9b7b;
 }
 
 .relaxation-countdown h1 {
-    font-size: clamp(28px, 4vw, 35px);
+    font-size: clamp(25px, 4vw, 35px);
+    line-height: 1.3;
     margin: 15px 0;
     color: #1f2925;
 }
 
 .big-countdown {
-    font-size: clamp(100px, 16vw, 150px);
+    font-size: clamp(80px, 16vw, 150px);
     font-weight: 800;
     line-height: 1;
     margin: 20px 0;
@@ -206,50 +196,48 @@
 }
 
 .relaxation-countdown p {
-    font-size: 18px;
+    font-size: clamp(15px, 2vw, 18px);
     line-height: 1.6;
     color: #607a70;
 }
 
 .relaxation-transition {
-    width: min(580px, 92vw);
+    width: min(580px, 100%);
     margin: 0 auto;
-    padding: 42px 35px;
-
+    padding: clamp(25px, 5vw, 42px) clamp(18px, 4vw, 35px);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
-
     text-align: center;
     box-sizing: border-box;
-
     background: rgba(255, 255, 255, 0.82);
     border: 1px solid rgba(255, 255, 255, 0.95);
     border-radius: 32px;
-
     box-shadow: 0 18px 45px rgba(45, 103, 75, 0.09);
 }
 
 .transition-icon {
-    font-size: 52px;
+    font-size: clamp(40px, 6vw, 52px);
     line-height: 1;
     margin-bottom: 4px;
 }
 
 .relaxation-transition h2 {
-    font-size: 30px;
+    font-size: clamp(23px, 4vw, 30px);
     font-weight: 800;
     line-height: 1.25;
     color: #365e4c;
     margin: 0;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-transition p {
-    font-size: 17px;
+    font-size: clamp(14px, 2vw, 17px);
     line-height: 1.5;
     color: #71877d;
     margin: 0;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-transition h1 {
@@ -257,7 +245,6 @@
     font-weight: 800;
     line-height: 1.3;
     color: #407d60;
-
     margin: 0 0 4px;
     overflow-wrap: anywhere;
 }
@@ -265,15 +252,14 @@
 .transition-countdown {
     width: 108px;
     height: 108px;
+    max-width: 100%;
+    flex-shrink: 0;
     margin: 8px 0 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #eaf7f1;
     border-radius: 50%;
-
     font-size: 58px;
     font-weight: 800;
     line-height: 1;
@@ -288,6 +274,7 @@
 
 .relaxation-page-section {
     width: 100%;
+    min-width: 0;
 }
 
 .relaxation-workout {
@@ -295,49 +282,45 @@
     min-height: auto;
     margin: 0 auto;
     padding: 0 0 28px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-
     box-sizing: border-box;
 }
 
 .relaxation-header {
     width: 100%;
     padding: 0 0 16px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
 }
 
 .relaxation-exit {
     width: 50px;
     height: 50px;
-
+    flex-shrink: 0;
     border: none;
     border-radius: 50%;
     background: #fff;
-
     font-size: 19px;
     cursor: pointer;
-
     box-shadow: 0 6px 18px rgba(41, 92, 67, 0.09);
 }
 
 .exercise-counter {
-    font-size: 20px;
+    font-size: clamp(15px, 2vw, 20px);
     font-weight: 800;
     color: #407b60;
+    text-align: right;
 }
 
 .session-progress {
     width: 100%;
     height: 12px;
     margin-bottom: 24px;
-
     background: #d0e9dc;
     border-radius: 20px;
     overflow: hidden;
@@ -352,11 +335,9 @@
 
 .relaxation-workout .relaxation-video-stage {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: fit-content;
     max-width: 100%;
     margin: 0 auto;
@@ -367,18 +348,14 @@
     max-width: min(100%, 600px);
     height: auto;
     min-height: 0;
-
     margin: 0;
     padding: 12px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: rgba(255, 255, 255, 0.82);
     border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: 30px;
-
     box-shadow: 0 15px 38px rgba(45, 103, 75, 0.09);
     overflow: hidden;
     box-sizing: border-box;
@@ -390,32 +367,26 @@
     max-width: 100%;
     height: min(53vh, 510px);
     max-height: 510px;
-
     object-fit: contain;
     border-radius: 20px;
 }
 
 .relaxation-video-stage .relaxation-floating-timer {
     position: absolute;
-
     top: 50%;
     left: calc(100% + 35px);
     transform: translateY(-50%);
-
     width: 175px;
+    max-width: 100%;
     padding: 24px 15px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid #fff;
     border-radius: 28px;
-
     box-shadow: 0 12px 30px rgba(45, 103, 75, 0.09);
-
     box-sizing: border-box;
     z-index: 5;
 }
@@ -451,19 +422,16 @@
 }
 
 .exercise-video-unavailable {
-    width: min(480px, 80vw);
+    width: min(480px, 100%);
     min-height: 280px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 12px;
-
     padding: 25px;
     box-sizing: border-box;
     text-align: center;
-
     color: #365e4c;
 }
 
@@ -473,6 +441,7 @@
 
 .exercise-video-unavailable strong {
     font-size: 18px;
+    overflow-wrap: anywhere;
 }
 
 .exercise-video-unavailable p {
@@ -480,18 +449,20 @@
     font-size: 14px;
     line-height: 1.5;
     color: #71877d;
+    overflow-wrap: anywhere;
 }
 
 .exercise-instruction {
-    max-width: 620px;
+    width: min(620px, 100%);
     margin: 22px auto 10px;
     padding: 0 14px;
-
-    font-size: 18px;
+    font-size: clamp(15px, 2vw, 18px);
     line-height: 1.65;
     font-weight: 500;
     text-align: center;
     color: #547568;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
 }
 
 .exercise-timer {
@@ -501,15 +472,12 @@
 .timer-circle {
     width: 110px;
     height: 110px;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     background: rgba(255, 255, 255, 0.95);
     border-radius: 50%;
-
     box-shadow: 0 10px 28px rgba(52, 110, 79, 0.1);
 }
 
@@ -527,35 +495,39 @@
 
 .exercise-bottom {
     margin-top: 14px;
+    padding: 0 12px;
     font-size: 14px;
     color: #71877d;
     text-align: center;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-finished {
-    width: min(700px, 90vw);
+    width: min(700px, 100%);
     margin: 0 auto;
     padding: 40px 30px 55px;
-
     text-align: center;
     box-sizing: border-box;
 }
 
 .finished-icon {
-    margin-bottom: 40px;
-    font-size: 75px;
+    margin-bottom: 30px;
+    font-size: clamp(55px, 8vw, 75px);
 }
 
 .relaxation-finished h1 {
-    font-size: 45px;
+    font-size: clamp(30px, 5vw, 45px);
+    line-height: 1.3;
     margin: 10px 0;
     color: #365e4c;
+    overflow-wrap: anywhere;
 }
 
 .relaxation-finished > p {
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
     line-height: 1.6;
     color: #607a70;
+    overflow-wrap: anywhere;
 }
 
 .finished-stats {
@@ -563,8 +535,7 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-
-    gap: 55px;
+    gap: clamp(20px, 5vw, 55px);
     margin: 35px 0;
 }
 
@@ -583,6 +554,7 @@
 .finished-stats span {
     font-size: 13px;
     color: #71877d;
+    text-align: center;
 }
 
 .finished-message {
@@ -594,12 +566,27 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-
     gap: 15px;
     margin-top: 25px;
 }
 
 @media (max-width: 900px) {
+    .relaxation-header-main {
+        width: 94vw;
+    }
+
+    .relaxation-content {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .relaxation-back {
+        left: 20px;
+    }
+
+    .relaxation-workout {
+        width: 96%;
+    }
 
     .relaxation-video-stage .relaxation-floating-timer {
         left: calc(100% + 12px);
@@ -615,14 +602,18 @@
     .relaxation-floating-timer .timer-circle span {
         font-size: 32px;
     }
+
+    .relaxation-video {
+        max-height: 460px;
+    }
 }
 
 @media (max-width: 700px) {
-
     .relaxation-header-main {
-        width: 94vw;
-        height: 75px;
-        padding: 0 5px;
+        width: 100%;
+        min-height: 72px;
+        padding: 8px 14px;
+        gap: 10px;
     }
 
     .relaxation-header-buttons {
@@ -630,140 +621,370 @@
     }
 
     .relaxation-content {
-        padding: 110px 12px 25px;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 100px 12px 24px;
+        align-items: center;
     }
 
     .relaxation-back {
-        top: 88px;
+        top: 86px;
         left: 12px;
         width: 42px;
         height: 42px;
+        font-size: 22px;
     }
 
     .relaxation-intro {
-        width: 100%;
-        padding: 40px 15px 35px;
+        padding: 35px 10px 25px;
+    }
+
+    .relaxation-leaf {
+        font-size: 52px;
     }
 
     .relaxation-intro h1 {
-        font-size: 30px;
+        font-size: clamp(25px, 6vw, 30px);
+        margin: 12px 0 16px;
     }
 
     .relaxation-intro-text {
-        font-size: 17px;
+        font-size: 16px;
+        line-height: 1.6;
     }
 
     .relaxation-info {
-        gap: 12px;
+        gap: 20px 14px;
+        margin: 25px auto;
     }
 
     .relaxation-info div {
         min-width: 75px;
+        font-size: 22px;
+    }
+
+    .relaxation-info div > span:first-child {
+        font-size: 24px;
     }
 
     .relaxation-info span {
         font-size: 12px;
     }
 
+    .relaxation-start-button {
+        width: min(100%, 340px);
+        padding: 14px 22px;
+        font-size: 16px;
+    }
+
+    .relaxation-back-button {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+
+    .relaxation-countdown {
+        padding: 25px 8px;
+    }
+
+    .relaxation-countdown h1 {
+        font-size: clamp(24px, 6vw, 30px);
+    }
+
+    .big-countdown {
+        font-size: clamp(85px, 23vw, 125px);
+        margin: 18px 0;
+    }
+
+    .relaxation-countdown p {
+        font-size: 15px;
+    }
+
+    .relaxation-transition {
+        padding: 30px 18px;
+        gap: 12px;
+        border-radius: 24px;
+    }
+
+    .transition-icon {
+        font-size: 44px;
+    }
+
+    .relaxation-transition h2 {
+        font-size: 25px;
+    }
+
+    .relaxation-transition p {
+        font-size: 15px;
+    }
+
+    .transition-countdown {
+        width: 90px;
+        height: 90px;
+        font-size: 46px;
+    }
+
     .relaxation-workout {
         width: 100%;
-        padding-bottom: 20px;
+        padding: 0 0 20px;
     }
 
     .relaxation-header {
         padding-bottom: 12px;
     }
 
+    .relaxation-exit {
+        width: 44px;
+        height: 44px;
+    }
+
+    .exercise-counter {
+        font-size: 16px;
+    }
+
     .session-progress {
+        height: 10px;
         margin-bottom: 16px;
     }
 
     .relaxation-workout .relaxation-video-stage {
         width: 100%;
+        max-width: 100%;
         flex-direction: column;
-        gap: 15px;
+        gap: 14px;
     }
 
     .exercise-animation.exercise-video-container {
+        width: 100%;
         max-width: 100%;
         padding: 7px;
-        border-radius: 22px;
+        border-radius: 20px;
     }
 
     .relaxation-video {
-        height: min(47vh, 420px);
-        max-width: 100%;
-        border-radius: 16px;
+        width: 100%;
+        height: auto;
+        max-height: 45vh;
+        object-fit: contain;
+        border-radius: 15px;
     }
 
     .relaxation-video-stage .relaxation-floating-timer {
         position: static;
+        top: auto;
+        left: auto;
         transform: none;
         order: -1;
-
         width: min(100%, 340px);
-        padding: 10px 15px;
-
+        padding: 10px 14px;
         flex-direction: row;
         justify-content: center;
         gap: 14px;
-
-        border-radius: 20px;
+        border-radius: 18px;
     }
 
     .relaxation-floating-timer .timer-circle {
-        width: 70px;
-        height: 70px;
+        width: 66px;
+        height: 66px;
     }
 
     .relaxation-floating-timer .timer-circle span {
-        font-size: 28px;
+        font-size: 27px;
+    }
+
+    .floating-timer-label {
+        font-size: 12px;
     }
 
     .floating-timer-hint {
         display: none;
     }
 
-    .floating-timer-label {
-        font-size: 13px;
-    }
-
     .exercise-instruction {
         font-size: 15px;
+        line-height: 1.6;
         margin: 16px auto 8px;
+        padding: 0 5px;
+    }
+
+    .exercise-timer .timer-circle {
+        width: 95px;
+        height: 95px;
+    }
+
+    .exercise-timer .timer-circle span {
+        font-size: 34px;
     }
 
     .exercise-bottom {
-        font-size: 13px;
-        padding: 0 10px;
+        font-size: 12px;
+        margin-top: 12px;
     }
 
-    .relaxation-transition {
-        width: 100%;
-        padding: 35px 22px;
-        gap: 12px;
+    .exercise-video-unavailable {
+        min-height: 220px;
+        padding: 20px 12px;
     }
 
-    .relaxation-transition h2 {
-        font-size: 26px;
+    .exercise-video-unavailable > span {
+        font-size: 38px;
     }
 
-    .transition-countdown {
-        width: 96px;
-        height: 96px;
-        font-size: 50px;
+    .exercise-video-unavailable strong {
+        font-size: 16px;
     }
 
     .relaxation-finished {
-        width: 100%;
-        padding: 35px 15px;
+        padding: 30px 12px;
+    }
+
+    .finished-icon {
+        margin-bottom: 20px;
     }
 
     .relaxation-finished h1 {
-        font-size: 36px;
+        font-size: clamp(28px, 7vw, 36px);
+    }
+
+    .relaxation-finished > p {
+        font-size: 16px;
     }
 
     .finished-stats {
-        gap: 20px;
+        gap: 22px;
+        margin: 25px 0;
+    }
+
+    .finished-stats strong {
+        font-size: 24px;
+    }
+
+    .finished-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .finished-buttons button,
+    .finished-buttons .relaxation-start-button,
+    .finished-buttons .relaxation-back-button {
+        width: 100%;
+        max-width: 340px;
+    }
+}
+
+@media (max-width: 380px) {
+    .relaxation-header-main {
+        padding: 8px 9px;
+    }
+
+    .relaxation-header-buttons {
+        gap: 4px;
+    }
+
+    .relaxation-content {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .relaxation-intro {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .relaxation-intro h1 {
+        font-size: 25px;
+    }
+
+    .relaxation-intro-text {
+        font-size: 14px;
+    }
+
+    .relaxation-info {
+        gap: 18px 10px;
+    }
+
+    .relaxation-info div {
+        min-width: 65px;
+    }
+
+    .relaxation-transition {
+        padding: 25px 13px;
+    }
+
+    .relaxation-transition h2 {
+        font-size: 22px;
+    }
+
+    .transition-countdown {
+        width: 78px;
+        height: 78px;
+        font-size: 40px;
+    }
+
+    .relaxation-video {
+        max-height: 38vh;
+    }
+
+    .relaxation-floating-timer .timer-circle {
+        width: 58px;
+        height: 58px;
+    }
+
+    .relaxation-floating-timer .timer-circle span {
+        font-size: 24px;
+    }
+
+    .floating-timer-label {
+        font-size: 11px;
+    }
+
+    .finished-stats {
+        gap: 16px;
+    }
+
+    .finished-stats strong {
+        font-size: 22px;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .relaxation-header-main {
+        min-height: 60px;
+    }
+
+    .relaxation-content {
+        padding-top: 75px;
+        padding-bottom: 18px;
+    }
+
+    .relaxation-video {
+        height: 55vh;
+        max-height: 300px;
+    }
+
+    .relaxation-video-stage .relaxation-floating-timer {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .relaxation-floating-timer .timer-circle {
+        width: 65px;
+        height: 65px;
+    }
+
+    .relaxation-floating-timer .timer-circle span {
+        font-size: 25px;
+    }
+
+    .relaxation-intro {
+        padding-top: 15px;
+        padding-bottom: 20px;
+    }
+
+    .relaxation-leaf {
+        font-size: 40px;
+    }
+
+    .relaxation-info {
+        margin: 18px auto;
     }
 }

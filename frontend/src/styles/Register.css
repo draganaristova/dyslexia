@@ -1,12 +1,15 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     font-family: "Noto Sans Mono", monospace;
     background: linear-gradient(180deg, #f1eab0, #f1eab0);
     transition: background .4s ease;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 body.gender-male {
@@ -28,7 +31,7 @@ body.gender-female {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 clamp(20px, 8vw, 120px);
+    padding: 0 clamp(16px, 8vw, 120px);
     margin-top: clamp(-35px, -3vw, -15px);
     flex-wrap: wrap;
     gap: 10px;
@@ -39,20 +42,21 @@ body.gender-female {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(20px, 4vw, 40px) 20px;
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 3vw, 24px);
 }
 
 .register-form {
     position: relative;
     width: 100%;
     max-width: 1200px;
+    min-width: 0;
     background: white;
     border-radius: clamp(20px, 3vw, 32px);
-    padding: clamp(80px, 10vw, 100px) clamp(20px, 4vw, 40px) clamp(24px, 4vw, 40px);
+    padding: clamp(80px, 10vw, 100px) clamp(20px, 4vw, 40px)
+        clamp(24px, 4vw, 40px);
     box-shadow: 0 20px 50px rgba(0, 0, 0, .10);
     border: 2px solid transparent;
     text-align: center;
-    box-sizing: border-box;
     margin-top: clamp(20px, 5vw, 50px);
 }
 
@@ -68,26 +72,32 @@ body.gender-female {
 
 .register-kids-image {
     position: absolute;
-    top: -216px;
+    top: clamp(-216px, -17vw, -130px);
     left: 50%;
     transform: translateX(-50%);
     width: clamp(180px, 22vw, 400px);
+    max-width: 90%;
+    height: auto;
     background: transparent;
     padding-top: 0;
+    object-fit: contain;
 }
 
 .register-form h2 {
     color: #d85537;
     font-size: clamp(20px, 3vw, 26px);
     font-weight: 800;
+    line-height: 1.35;
     margin-bottom: 8px;
+    overflow-wrap: anywhere;
 }
 
 .register-message {
     color: #666;
     font-size: clamp(12px, 1.6vw, 14px);
-    line-height: 1.4;
+    line-height: 1.6;
     margin-bottom: 25px;
+    overflow-wrap: anywhere;
 }
 
 .register-banner-error {
@@ -97,20 +107,24 @@ body.gender-female {
     border-radius: 12px;
     padding: 10px 14px;
     font-size: 13px;
+    line-height: 1.5;
     margin-bottom: 18px;
     text-align: left;
+    overflow-wrap: anywhere;
 }
 
 .register-input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+    width: 100%;
 }
 
 .register-input {
     text-align: left;
     margin-bottom: 18px;
-    margin-right: 30px;
+    margin-right: 0;
+    min-width: 0;
 }
 
 .register-input label {
@@ -119,10 +133,15 @@ body.gender-female {
     font-weight: 600;
     color: #333;
     margin-bottom: 6px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
 .register-input input {
+    display: block;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 16px);
     border-radius: 16px;
     border: 2px solid #f1eab0;
@@ -131,7 +150,6 @@ body.gender-female {
     font-family: inherit;
     outline: none;
     transition: .2s;
-    box-sizing: border-box;
 }
 
 .register-input input:focus {
@@ -148,19 +166,23 @@ body.gender-female {
     display: block;
     margin-top: 6px;
     font-size: 12px;
+    line-height: 1.5;
     color: #d85537;
+    overflow-wrap: anywhere;
 }
 
 .register-gender-field {
     margin-top: 6px;
     margin-bottom: 25px;
+    width: 100%;
 }
 
 .register-gender-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 6px;
+    width: 100%;
 }
 
 .register-gender-option {
@@ -168,6 +190,7 @@ body.gender-female {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    min-width: 0;
     padding: clamp(12px, 2vw, 16px);
     border-radius: 16px;
     border: 2px solid #f1eab0;
@@ -178,6 +201,7 @@ body.gender-female {
     color: #333;
     cursor: pointer;
     transition: .2s;
+    overflow-wrap: anywhere;
 }
 
 .register-gender-option:hover {
@@ -186,6 +210,7 @@ body.gender-female {
 
 .register-gender-emoji {
     font-size: clamp(16px, 2vw, 20px);
+    flex-shrink: 0;
 }
 
 .register-gender-option.register-selected-male {
@@ -201,7 +226,9 @@ body.gender-female {
 }
 
 .register-submit {
+    display: block;
     width: 100%;
+    min-width: 0;
     background: #d85537;
     color: white;
     border: none;
@@ -213,6 +240,7 @@ body.gender-female {
     cursor: pointer;
     box-shadow: 0 12px 35px rgba(216, 85, 55, .35);
     transition: .2s;
+    overflow-wrap: anywhere;
 }
 
 .register-submit:hover {
@@ -229,26 +257,154 @@ body.gender-female {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+    min-width: 0;
 }
 
 @media (max-width: 900px) {
+    .register-header {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .register-form-wrapper {
+        padding: 24px;
+    }
+
+    .register-form {
+        padding-left: clamp(20px, 4vw, 32px);
+        padding-right: clamp(20px, 4vw, 32px);
+    }
+
     .register-kids-image {
-        width: clamp(150px, 26vw, 300px);
+        width: clamp(150px, 26vw, 280px);
         top: -130px;
+    }
+
+    .register-input-grid {
+        gap: 0 18px;
     }
 }
 
 @media (max-width: 640px) {
-    .register-kids-image {
-        width: 160px;
-        top: -103px;
+    .register-header {
+        padding: 12px 16px;
+        margin-top: 0;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .register-form-wrapper {
+        padding: 20px 12px 28px;
+        align-items: flex-start;
     }
 
     .register-form {
-        padding-top: 130px;
+        width: 100%;
+        padding: 115px 18px 24px;
+        margin-top: 75px;
+        border-radius: 22px;
+    }
+
+    .register-form-wide {
+        text-align: left;
+    }
+
+    .register-kids-image {
+        width: clamp(130px, 38vw, 165px);
+        top: -92px;
+        max-width: 85%;
+    }
+
+    .register-form h2 {
+        font-size: clamp(19px, 5vw, 23px);
+    }
+
+    .register-message {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .register-input-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
     }
 
     .register-input {
         margin-right: 0;
+        margin-bottom: 16px;
+    }
+
+    .register-input input {
+        padding: 12px;
+        border-radius: 13px;
+        font-size: 14px;
+    }
+
+    .register-gender-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .register-gender-option {
+        padding: 13px;
+        border-radius: 14px;
+    }
+
+    .register-gender-field {
+        margin-bottom: 20px;
+    }
+
+    .register-submit {
+        padding: 14px 12px;
+        border-radius: 15px;
+    }
+
+    .register-banner-error {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .nav-icons-row {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 380px) {
+    .register-form-wrapper {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .register-form {
+        padding: 100px 13px 20px;
+        margin-top: 68px;
+        border-radius: 18px;
+    }
+
+    .register-kids-image {
+        width: 125px;
+        top: -82px;
+    }
+
+    .register-form h2 {
+        font-size: 18px;
+    }
+
+    .register-message {
+        font-size: 11px;
+    }
+
+    .register-input label {
+        font-size: 12px;
+    }
+
+    .register-input input {
+        padding: 11px 10px;
+        font-size: 13px;
+    }
+
+    .register-gender-option {
+        font-size: 12px;
+        gap: 8px;
     }
 }
